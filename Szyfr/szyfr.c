@@ -14,17 +14,12 @@ int newSign(int a, int b, char sign) {
     
     int tmp = a*sign + b;
     
-    if(tmp>=33 && tmp<=126) {
+    if(tmp>=0 && tmp<=255) {
         return tmp;
     } else {
-        int t = (tmp-126)%(126-33+1);
-        
-        if(t == 0) {
-            return 126;
-        } else {
-            t+= 32;
+        int t = (tmp-255)%(255+1);
+            t+= -1;
           return t;
-        }
     }
 
     
