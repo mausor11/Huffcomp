@@ -1,14 +1,13 @@
+libxor: szyfr.o
+	ar rvs libxor.a $^
 test: main.o szyfr.o
-	cc -o test main.o szyfr.o
-test_debug: main_d.o szyfr_d.o
-	cc -o test main.o szyfr.o
-main.o: main.c
-	cc -c main.c
-main_d.o: main.c
-	cc -c main.c -DDEBUG
-szyfr_d.o: szyfr.c
+	$(CC) -o test main.o szyfr.o	
+szyfr.o: szyfr.c szyfr.h
 	cc -c szyfr.c -DDEBUG
-szyfr.o: szyfr.c
-	cc -c szyfr.c
+main.o: main.c
+	cc -c main.c -DDEBUG
+
+.PHONY: clean
+	
 clean: main.o szyfr.o
-	rm main.o szyfr.o test
+	rm main.o szyfr.o test password

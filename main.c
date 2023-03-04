@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <getopt.h>
 
-//#include "szyfr.h"
+#include "SzyfrXOR/szyfr.h"
 
 char *usage =
 	"Usage: %s [options] input_file output_file\n"
@@ -20,6 +21,7 @@ char *usage =
 	"		* -h - print help.\n";
 
 int main(int argc, char **argv) {
+	srand(time(NULL));
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
 	int flagBit = 0;
 	int opt;
@@ -27,17 +29,45 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
 		return 1;
 	}
+    if(argc < 3){
+        fprintf(stderr, "%s: Not enough arguments to open file!\n\n%s\n", argv[0], usage);
+        return 1;
+    }
+
+        FILE *input = fopen(argv[argc-2], "r");
+        FILE *output = fopen(argv[argc-1], "w");
+        printf("->%s\n", argv[argc-1]);
+        if(input == NULL) {
+            fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-2]);
+            return -1;
+        } else if(output == NULL) {
+            fprintf(stderr, "%s: FILE %s is not open!\n",argv[0], argv[argc-1]);
+            return -1;
+        }
+
+	int char_number = 8;
+
 	while ( (opt = getopt (argc, argv, "o:cvhxz") ) != -1 ) {
 // w tym printy fo usunięcia / może dać gdy verbose?
 		switch(opt) {
 			case 'o':
 				flagBit = atoi (optarg);
 				printf("Chosen option -o %d\n", flagBit);
+				if(flagBit == 1) {
+					char_number = 8;
+				} else if(flagBit == 2) {
+					char_number = 12;
+				} else if(flagBit == 3) {
+					char_number = 16;
+				} else {
+					fprintf(stderr, "%s: Wrong option!\n\n%s\n", argv[0], usage);
+				}
 				break;
-
 			case 'c':
 				flagCrypt = 'y';
 				printf("Chosen option -c. Changes to %c\n", flagCrypt);
+				printf("bit: %d\n", char_number);
+                		XOR(input, output, char_number);
 				break;
 			case 'v':
 				flagVerb = 'y';

@@ -22,11 +22,11 @@ void XOR(FILE *input, FILE *output, int char_number)
     int position = 0;
 
     while( (x = fgetc(input)) != EOF) {
-        putc(algorithm(password[position], x - '0'), output);
+        putc(algorithm(password[position], x - '0') + '0', output);
 #ifdef DEBUG
         printf("x:%d ? pass:%d = alg:%d\n", x - '0', password[position], algorithm(password[position], x - '0'));
 #endif
-        if(position == char_number - 1)
+        if(position == char_number -1)
             position = 0;
         else position++;
     }
@@ -52,6 +52,6 @@ void print_files(FILE *input, FILE *output)
     printf("]\n");
     printf("output: [");
     while((tmp = fgetc(output)) != EOF)
-        printf("%d", tmp);
+        printf("%d", tmp - '0');
     printf("]\n");
 }
