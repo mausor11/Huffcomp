@@ -7,8 +7,6 @@
 
 #include "SzyfrXOR/szyfr.h"
 
-
-
 char *usage =
 	"Usage: %s [options] input_file output_file\n"
 	"	List of options:\n"
@@ -31,10 +29,13 @@ void setVerbose () {
 }
 
 int main(int argc, char **argv) {
+
 	srand(time(NULL));
+
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
 	int flagBit = 0;
 	int opt;
+
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
 		return 1;
@@ -44,9 +45,27 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    //sprawdzanie czy jest flaga -v i włączanie verbose
+    for(int i=1;i<argc;i++) {
+        if(strcmp(argv[i], "-v") == 0) {
+            setVerbose();
+            break;
+        }
+    }
+    if(Verbose == true) {
+        printf("==DEBUG== Huffman coding\n");
+        printf("==DEBUG== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
+        printf("==DEBUG== Command: ");
+               for(int i=0;i<argc;i++)
+                   printf("%s ", argv[i]);
+        printf("\n");
+
+    }
+
         FILE *input = fopen(argv[argc-2], "r");
         FILE *output = fopen(argv[argc-1], "w");
-        printf("->%s\n", argv[argc-1]);
+
+
         if(input == NULL) {
             fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-2]);
             return -1;
@@ -55,15 +74,13 @@ int main(int argc, char **argv) {
             return -1;
         }
 
-	int char_number = 8;
-
-        for(int i=1;i<argc;i++) {
-            if(strcmp(argv[i], "-v") == 0) {
-                printf("verbose = true\n");
-                setVerbose();
-                break;
-            }
+        if(Verbose == true) {
+            printf("==DEBUG==\n");
+            printf("==DEBUG== INPUT-OUTPUT FILES\n");
+            printf("==DEBUG==   %s -> %s\n",argv[argc-2], argv[argc-1]);
         }
+
+	int char_number = 8;
 
 	while ( (opt = getopt (argc, argv, "o:cvhxz") ) != -1 ) {
 // w tym printy fo usunięcia / może dać gdy verbose?
@@ -71,7 +88,9 @@ int main(int argc, char **argv) {
 			case 'o':
 				flagBit = atoi (optarg);
                 if(Verbose == true) {
-                    printf("Chosen option -o %d\n", flagBit);
+                    printf("==DEBUG==\n");
+                    printf("==DEBUG== COMPRESSION LEVEL\n");
+                    printf("==DEBUG==   getopt: Chosen option -o %d\n", flagBit);
                 }
 
 				if(flagBit == 1) {
@@ -83,14 +102,22 @@ int main(int argc, char **argv) {
 				} else {
 					fprintf(stderr, "%s: Wrong option!\n\n%s\n", argv[0], usage);
 				}
+                if(Verbose == true){
+                    printf("==DEBUG==   Bit number: %d\n", char_number);
+                }
+
 				break;
 			case 'c':
 				flagCrypt = 'y';
                 if(Verbose == true) {
-                    printf("Chosen option -c. Changes to %c\n", flagCrypt);
-                    printf("bit: %d\n", char_number);
+                    printf("==DEBUG==\n");
+                    printf("==DEBUG== getopt: Chosen option -c. Changes to %c\n", flagCrypt);
+
                 }
                 		XOR(input, output, char_number, Verbose);
+                if(Verbose == true) {
+                    printf("==DEBUG==\n");
+                }
 				break;
 			case 'v':
 //				flagVerb = 'y';
@@ -103,13 +130,13 @@ int main(int argc, char **argv) {
 			case 'z':
 				flagComp = 'c';
                 if(Verbose == true) {
-                    printf("Chosen force compression\n");
+                    printf("==DEBUG== getopt: Chosen force compression\n");
                 }
 				break;
 			case 'x':
 				flagComp = 'd';
                 if(Verbose == true) {
-                    printf("Chosen force decompression\n");
+                    printf("==DEBUG== getopt: Chosen force decompression\n");
                 }
 				break;
 			case 'h':

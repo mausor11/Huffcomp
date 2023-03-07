@@ -7,6 +7,10 @@
 
 void XOR(FILE *input, FILE *output, int char_number, bool Verbose)
 {
+    if(Verbose == true) {
+        printf("==DEBUG==\n");
+        printf("==DEBUG== XOR CIPHER\n");
+    }
     int password[char_number];
     FILE *pass = fopen("password", "w");
     for (int i = 0; i < char_number; i++) {
@@ -16,7 +20,7 @@ void XOR(FILE *input, FILE *output, int char_number, bool Verbose)
 
     if(Verbose == true) {
 //#ifdef DEBUG
-        printf("password: [");
+        printf("==DEBUG==   password: [");
     for(int i=0;i<char_number;i++)
         printf("%d", password[i]);
     printf("]\n");
@@ -31,7 +35,7 @@ void XOR(FILE *input, FILE *output, int char_number, bool Verbose)
         putc(algorithm(password[position], x - '0') + '0', output);
         if(Verbose == true) {
 //#ifdef DEBUG
-            printf("x:%d ? pass:%d = alg:%d\n", x - '0', password[position], algorithm(password[position], x - '0'));
+            printf("==DEBUG==     x:%d ? pass:%d = alg:%d\n", x - '0', password[position], algorithm(password[position], x - '0'));
 //#endif
         }
 
