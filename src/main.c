@@ -83,7 +83,6 @@ int main(int argc, char **argv) {
 	int char_number = 8;
 
 	while ( (opt = getopt (argc, argv, "o:cvhxz") ) != -1 ) {
-// w tym printy fo usunięcia / może dać gdy verbose?
 		switch(opt) {
 			case 'o':
 				flagBit = atoi (optarg);
