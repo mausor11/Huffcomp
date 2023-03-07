@@ -3,6 +3,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "SzyfrXOR/szyfr.h"
 
@@ -56,6 +57,14 @@ int main(int argc, char **argv) {
 
 	int char_number = 8;
 
+        for(int i=1;i<argc;i++) {
+            if(strcmp(argv[i], "-v") == 0) {
+                printf("verbose = true\n");
+                setVerbose();
+                break;
+            }
+        }
+
 	while ( (opt = getopt (argc, argv, "o:cvhxz") ) != -1 ) {
 // w tym printy fo usunięcia / może dać gdy verbose?
 		switch(opt) {
@@ -84,12 +93,12 @@ int main(int argc, char **argv) {
                 		XOR(input, output, char_number, Verbose);
 				break;
 			case 'v':
-				flagVerb = 'y';
-                if(Verbose == true)
-                {
-                    printf("Chosen option -v.\n");
-                }
-                setVerbose();
+//				flagVerb = 'y';
+//                if(Verbose == true)
+//                {
+//                    printf("Chosen option -v.\n");
+//                }
+//                setVerbose();
 				break;
 			case 'z':
 				flagComp = 'c';
