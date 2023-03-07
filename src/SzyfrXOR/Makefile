@@ -3,9 +3,9 @@ libxor: szyfr.o
 test: main.o szyfr.o
 	$(CC) -o test main.o szyfr.o	
 szyfr.o: szyfr.c szyfr.h
-	cc -c szyfr.c -DDEBUG
+	cc -c szyfr.c
 main.o: main.c
-	cc -c main.c -DDEBUG
+	cc -c main.c
 
 .PHONY: clean
 	

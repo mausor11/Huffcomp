@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <getopt.h>
+#include <stdbool.h>
 
 #include "SzyfrXOR/szyfr.h"
+
+bool Verbose = false;
 
 char *usage =
 	"Usage: %s [options] input_file output_file\n"
@@ -19,6 +22,10 @@ char *usage =
 	"		* -c - encrypt output file;\n"
 	"		* -v - print additional info into stdout;\n"
 	"		* -h - print help.\n";
+
+void setVerbose () {
+    Verbose = true;
+}
 
 int main(int argc, char **argv) {
 	srand(time(NULL));
@@ -52,7 +59,9 @@ int main(int argc, char **argv) {
 		switch(opt) {
 			case 'o':
 				flagBit = atoi (optarg);
-				printf("Chosen option -o %d\n", flagBit);
+                if(Verbose == true) {
+                    printf("Chosen option -o %d\n", flagBit);
+                }
 				if(flagBit == 1) {
 					char_number = 8;
 				} else if(flagBit == 2) {
@@ -65,21 +74,31 @@ int main(int argc, char **argv) {
 				break;
 			case 'c':
 				flagCrypt = 'y';
-				printf("Chosen option -c. Changes to %c\n", flagCrypt);
-				printf("bit: %d\n", char_number);
-                		XOR(input, output, char_number);
+                if(Verbose == true) {
+                    printf("Chosen option -c. Changes to %c\n", flagCrypt);
+                    printf("bit: %d\n", char_number);
+                }
+                		XOR(input, output, char_number, Verbose);
 				break;
 			case 'v':
 				flagVerb = 'y';
-				printf("Chosen option -v.\n");
+                if(Verbose == true)
+                {
+                    printf("Chosen option -v.\n");
+                }
+                setVerbose();
 				break;
 			case 'z':
 				flagComp = 'c';
-				printf("Chosen force compression\n");
+                if(Verbose == true) {
+                    printf("Chosen force compression\n");
+                }
 				break;
 			case 'x':
 				flagComp = 'd';
-				printf("Chosen force decompression\n");
+                if(Verbose == true) {
+                    printf("Chosen force decompression\n");
+                }
 				break;
 			case 'h':
 				fprintf(stdout, usage, argv[0]);
