@@ -6,7 +6,7 @@
 
 #include "SzyfrXOR/szyfr.h"
 
-bool Verbose = false;
+
 
 char *usage =
 	"Usage: %s [options] input_file output_file\n"
@@ -22,6 +22,8 @@ char *usage =
 	"		* -c - encrypt output file;\n"
 	"		* -v - print additional info into stdout;\n"
 	"		* -h - print help.\n";
+
+bool Verbose = false;
 
 void setVerbose () {
     Verbose = true;
@@ -62,6 +64,7 @@ int main(int argc, char **argv) {
                 if(Verbose == true) {
                     printf("Chosen option -o %d\n", flagBit);
                 }
+
 				if(flagBit == 1) {
 					char_number = 8;
 				} else if(flagBit == 2) {
