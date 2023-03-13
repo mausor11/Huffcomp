@@ -4,4 +4,5 @@
 void XOR(FILE *input, FILE *output, int char_number, bool Verbose);
 int algorithm (int A, int B);
 void print_files(FILE *input, FILE *output);
+void dec_to_binary (int num);
 #endif

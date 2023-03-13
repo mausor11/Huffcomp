@@ -5,44 +5,73 @@
 
 #include "szyfr.h"
 
+void dec_to_binary (int num) {
+    int i=31;
+    bool ok=false;
+    while(i--) {
+        if (num >> i & 1 & !ok)
+            ok = true;
+        if(ok) {
+            printf("%d", (num>>i)&1);
+        }
+    }
+}
+
+
 void XOR(FILE *input, FILE *output, int char_number, bool Verbose)
 {
+    srand(time(NULL));
     if(Verbose == true) {
         printf("==DEBUG==\n");
         printf("==DEBUG== XOR CIPHER\n");
     }
-    int password[char_number];
-    FILE *pass = fopen("password", "w");
-    for (int i = 0; i < char_number; i++) {
-        password[i] = rand() % 2;
-        fprintf(pass, "%d", password[i]);
+    short password;
+    FILE *pass = fopen("password", "wb");
+
+    switch (char_number) {
+        case 8:
+            password = rand() % 256 + 1;
+            password >> 8;
+            break;
+        case 12:
+            password >> 4;
+            password = rand() % 4096 + 1;
+            break;
+        case 16:
+            password = rand() % 65536 + 1;
+            break;
+        default:
+            fprintf(stderr, "Wrong char number!\n");
+            break;
     }
 
+    fprintf(pass, "%d", password);
     if(Verbose == true) {
-//#ifdef DEBUG
-        printf("==DEBUG==   password: [");
-    for(int i=0;i<char_number;i++)
-        printf("%d", password[i]);
-    printf("]\n");
-//#endif
-
+        printf("==DEBUG==   password: [%d: ", password);
+        dec_to_binary(password);
+        printf("]\n");
+        printf("==DEBUG==\n");
     }
 
     char x;
-    int position = 0;
 
-    while( (x = fgetc(input)) != EOF) {
-        putc(algorithm(password[position], x - '0') + '0', output);
+    while(fread(&x, sizeof(char), 1, input) == 1) {
         if(Verbose == true) {
-//#ifdef DEBUG
-            printf("==DEBUG==     x:%d ? pass:%d = alg:%d\n", x - '0', password[position], algorithm(password[position], x - '0'));
-//#endif
+            fprintf(stdout, "==DEBUG== in: %d -> '%c' [", x, x);
+            dec_to_binary(x);
+            printf("]\n");
         }
 
-        if(position == char_number -1)
-            position = 0;
-        else position++;
+        x = x^password;
+
+       if(Verbose == true) {
+           fprintf(stdout, "==DEBUG== ot: %d -> '%c' [", x, x);
+           dec_to_binary(x);
+           printf("]\n");
+       }
+        fwrite(&x, sizeof(char), 1, output);
     }
+
     fclose(input);
     fclose(output);
 }

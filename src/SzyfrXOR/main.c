@@ -7,8 +7,8 @@
 int main(int argc, char ** argv)
 {
     srand(time(NULL));
-    FILE *input = argc > 1 ? fopen(argv[1], "r") : stdin;
-    FILE *output = argc > 2 ? fopen (argv[2], "w") : stdin;
+    FILE *input = argc > 1 ? fopen(argv[1], "rb") : stdin;
+    FILE *output = argc > 2 ? fopen (argv[2], "wb") : stdin;
 
     if(input == NULL) {
         printf("ERROR1\n");
@@ -17,8 +17,8 @@ int main(int argc, char ** argv)
     int num = 12;   //ile bitów
     XOR(input, output, num, true);
 #ifdef DEBUG
-        input = fopen(argv[1], "r");
-        output = fopen(argv[2], "r");
+        input = fopen(argv[1], "rb");
+        output = fopen(argv[2], "rb");
         print_files(input, output);
 #endif
     return 0;
