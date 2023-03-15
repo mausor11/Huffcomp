@@ -19,6 +19,7 @@ char *usage =
 	"			+ 2 - 12 bit compression;\n"
 	"			+ 3 - 16 bit compression;\n"
 	"		* -c - encrypt output file;\n"
+    "			+ password;\n"
 	"		* -v - print additional info into stdout;\n"
 	"		* -h - print help.\n";
 
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
 	int flagBit = 0;
 	int opt;
+    char *password;
 
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
@@ -82,7 +84,7 @@ int main(int argc, char **argv) {
 
 	int char_number = 8;
 
-	while ( (opt = getopt (argc, argv, "o:cvhxz") ) != -1 ) {
+	while ( (opt = getopt (argc, argv, "o:c:vhxz") ) != -1 ) {
 		switch(opt) {
 			case 'o':
 				flagBit = atoi (optarg);
@@ -104,16 +106,15 @@ int main(int argc, char **argv) {
                 if(Verbose == true){
                     printf("==DEBUG==   Bit number: %d\n", char_number);
                 }
-
 				break;
 			case 'c':
+                password = optarg;
 				flagCrypt = 'y';
                 if(Verbose == true) {
                     printf("==DEBUG==\n");
                     printf("==DEBUG== getopt: Chosen option -c. Changes to %c\n", flagCrypt);
-
                 }
-                		XOR(input, output, char_number, Verbose);
+                		XOR(input, output, char_number, Verbose, password);
                 if(Verbose == true) {
                     printf("==DEBUG==\n");
                 }

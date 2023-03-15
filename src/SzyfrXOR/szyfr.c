@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
-
+#include <string.h>
 #include "szyfr.h"
 
 void dec_to_binary (int num) {
@@ -18,34 +18,37 @@ void dec_to_binary (int num) {
 }
 
 
-void XOR(FILE *input, FILE *output, int char_number, bool Verbose)
+void XOR(FILE *input, FILE *output, int char_number, bool Verbose, char *pass )
 {
     srand(time(NULL));
     if(Verbose == true) {
         printf("==DEBUG==\n");
         printf("==DEBUG== XOR CIPHER\n");
     }
-    short password;
-    FILE *pass = fopen("password", "wb");
+    unsigned short password;
 
+
+    for(int i=0;i<strlen(pass);i++) {
+//        printf(">%c -> ", pass[i]);
+//        dec_to_binary((int)pass[i]);
+//        printf("\n");
+        password ^= pass[i];
+    }
     switch (char_number) {
         case 8:
-            password = rand() % 256 + 1;
             password >> 8;
             break;
         case 12:
             password >> 4;
-            password = rand() % 4096 + 1;
             break;
         case 16:
-            password = rand() % 65536 + 1;
             break;
         default:
             fprintf(stderr, "Wrong char number!\n");
             break;
     }
 
-    fprintf(pass, "%d", password);
+    //fprintf(pass, "%d", password);
     if(Verbose == true) {
         printf("==DEBUG==   password: [%d: ", password);
         dec_to_binary(password);
@@ -53,7 +56,7 @@ void XOR(FILE *input, FILE *output, int char_number, bool Verbose)
         printf("==DEBUG==\n");
     }
 
-    char x;
+    unsigned char x;
 
     while(fread(&x, sizeof(char), 1, input) == 1) {
         if(Verbose == true) {
