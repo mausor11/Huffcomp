@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "SzyfrXOR/szyfr.h"
+#include "Tree/tree.h"
 
 char *usage =
 	"Usage: %s [options] input_file output_file\n"
