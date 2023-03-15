@@ -101,7 +101,9 @@ int main(int argc, char **argv) {
 				} else if(flagBit == 3) {
 					char_number = 16;
 				} else {
-					fprintf(stderr, "%s: Wrong option!\n\n%s\n", argv[0], usage);
+                    printf("Chosen default option: 8bit compression\n");
+                    char_number = 8;
+					//fprintf(stderr, "%s: Wrong option!\n\n%s\n", argv[0], usage);
 				}
                 if(Verbose == true){
                     printf("==DEBUG==   Bit number: %d\n", char_number);
