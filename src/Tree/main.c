@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     char x;
 
     test = charCounter(in, test, true);
-    readTree(test);
+    writeTree(test);
     freeTree(test);
 
 
