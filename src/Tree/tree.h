@@ -2,8 +2,8 @@
 #define TREE_H_INCLUDED
 
 typedef struct e {
-    char znak;
     int counter;
+    char znak;
     struct e *right_node;
     struct e *left_node;
 

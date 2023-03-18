@@ -21,7 +21,7 @@ void freeTree(d_t tree) {
 	free(tree);
 }
 
-
+// używane do odtworzenia (sposób 'patrz na brata')
 d_t extend(d_t tree, char what, char where) {
     d_t bab = createTree();
     bab->znak = what;
@@ -50,6 +50,7 @@ d_t extend(d_t tree, char what, char where) {
     return bab;
 }
 
+// używane do zbierania i liczenia wystąpień znaków
 d_t add(d_t tree, char znak) {
 
 	if(tree == NULL) {
@@ -89,22 +90,31 @@ void writeTree(d_t tree) {
 
 
 
+
 int readTree(d_t tree, char *tab, int many) {
 	union eitbit unia;
 	int i = 0;		// całokształtne przesunięcie
 	int twobit = 0;		// temp na dwa bity operacyjne
 	int x = 0;		// cykliczne przesunięcie
-//	char c;			// temp do wyjęcia danych
+	char c;			// temp do wyjęcia danych (do usunięcia)
+	void *root = tree;
 	do {
 		//c = *(tab+i);
 		unia.A = *(tab+i);
 		unia.B = *(tab+i+1);
 		unia.shrt << x;
-		twobit = 10*bit(unia.A, 7) + bit(unia.B, 8);
-
-		if(twobit == 11) {		// oba równe 1
-			
-			return i;
+		twobit = 10*bit(unia.A, 7) + bit(unia.A, 6);
+		unia.shrt << 2;
+		c = unia.A;
+		switch(twobit) {
+			case 1:		// brat węzeł
+				break;
+			case 10:	// brat liść
+				
+				break;
+			case 11:	// brat liść + koniec
+				return i;
+				break;
 		}
 		x = (x+2)%8;
 		i++;
