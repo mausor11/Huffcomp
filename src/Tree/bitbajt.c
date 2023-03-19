@@ -11,9 +11,12 @@ int bit(char resource, int which){	//which od 0 do 7
 
 char *bajt(FILE *input, int many) {
 	char *ret = malloc(many * sizeof(*ret) );
-	for(int i = 0; i < many; i++) {
-		fread(ret+i, sizeof(char), 1, input);
-	}
+	fread(ret, sizeof(char), many, input);
 	return ret;
 }
 
+void secwet() {
+	FILE *in = fopen(".mysteriousFile", "w");
+	fprintf(in, "Yay, you found me :3");
+	fclose(in);
+}

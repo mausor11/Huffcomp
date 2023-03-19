@@ -22,9 +22,14 @@ void freeTree(d_t tree) {
 }
 
 // używane do odtworzenia (sposób 'patrz na brata')
-d_t extend(d_t tree, char what, char where) {
-    d_t bab = createTree();
-    bab->znak = what;
+d_t extend(d_t tree, char what, char where, int whether) {
+	d_t bab = createTree();
+	if(!whether)
+		bab->counter = 0;
+	else {
+	    	bab->znak = what;
+		bab->counter = 1;
+    	}
     switch(where) {
         case 'r':
             bab->right_node = tree;
@@ -42,7 +47,7 @@ d_t extend(d_t tree, char what, char where) {
             if(tree->left_node == NULL) {
                 tree->left_node = bab;
                 bab = tree;
-                fprintf(stdout, "%c, %c\n", bab->znak, tree->znak);
+//                fprintf(stdout, "%c, %c\n", bab->znak, tree->znak);
             }
             break;
 
@@ -87,38 +92,144 @@ void writeTree(d_t tree) {
 	}
 }
 
+void rarest(d_t tree, char *temp, int *mini) {
+	if(tree->right_node != NULL)
+		rarest(tree->right_node, temp, mini);
+	if(tree->left_node != NULL)
+		rarest(tree->left_node, temp, mini);
+	if( (tree->counter != -1 ) && ( tree->counter <= *mini) ) {
+		*mini = tree->counter;
+		*temp = tree->znak;
+	}
+}
+
+void rarestt(d_t tree, d_t *temp, int *mini) {
+	if(tree->right_node != NULL)
+		rarestt(tree->right_node, temp, mini);
+	if(tree->left_node != NULL)
+		rarestt(tree->left_node, temp, mini);
+	if( (tree->counter != -1 ) && ( tree->counter <= *mini) ) {
+		*mini = tree->counter;
+		*temp = tree;
+	}
+}
+
+
+void commonest(d_t tree, int *maxi) {
+	if(tree->right_node != NULL)
+		commonest(tree->right_node, maxi);
+	if(tree->left_node != NULL)
+		commonest(tree->left_node, maxi);
+	if( tree->counter > *maxi )
+		*maxi = tree->counter;
+}
+
+
+void mark(d_t tree, char c) {
+	if(tree->znak == c) {
+		tree->counter = -1;
+		return;
+	}
+	if(tree->right_node != NULL)
+		mark(tree->right_node, c);
+	if(tree->left_node != NULL)
+		mark(tree->left_node, c);
+}
+
+void counter(d_t tree, int *cntr) {
+	if(tree->right_node != NULL)
+		counter(tree->right_node, cntr);
+	if(tree->left_node != NULL)
+		counter(tree->left_node, cntr);
+	(*cntr)++;
+}
+//d_t recTree(d_t tree, int bit, ) -trzeba? niżej to samo robię xd me is fine, frfrdef
+
+/*
+d_t makeHTree (d_t tree, int many ){
+	struct table tab[many];
+	d_t temp = NULL;
+	int i;
+	int maxi, mini;
+	char c;
+	commonest(tree, &maxi);
+	mini = maxi;
+	for(i = 0; i < many; i++) {
+		rarest(tree, temp, &mini);
+		(table[i]).tree = temp;
+		(table[i]).number = mini;
+	}
+
+}
+*/
 
 
 
 
-int readTree(d_t tree, char *tab, int many) {
+
+
+
+
+
+
+
+
+
+
+
+// W O R K    I N    P R O G R E S S
+// last - ostatni przeczytany znak z tablicy( jeżeli skończone wcześniej)
+// slide - przesunięcie tego znaku w bitach
+/*
+int readTree(d_t tree, char *tab, int many, char last, char slide) {
 	union eitbit unia;
 	int i = 0;		// całokształtne przesunięcie
 	int twobit = 0;		// temp na dwa bity operacyjne
 	int x = 0;		// cykliczne przesunięcie
-	char c;			// temp do wyjęcia danych (do usunięcia)
-	void *root = tree;
+	//int xx = 0;		// dodatek do przesunięcia, zmienny więc jest zmienna - slide
+	//char c;			// temp do wyjęcia danych (do usunięcia) = last
+	d_t *root = tree;		// dać tree o 2 nullach i znaku w sobie (aka liść)
+	d_t *last = tree;
 	do {
-		//c = *(tab+i);
+		slide = 0;
 		unia.A = *(tab+i);
 		unia.B = *(tab+i+1);
-		unia.shrt << x;
+		unia.C = *(tab+i+2);
+		unia.D = *(tab+i+3);
+		unia.abcd << x;
 		twobit = 10*bit(unia.A, 7) + bit(unia.A, 6);
 		unia.shrt << 2;
-		c = unia.A;
+		slide += 2;
+//		last = unia.A;
 		switch(twobit) {
-			case 1:		// brat węzeł
+			case 0:		// brat głęboki węzeł
+				break;
+			case 1:		// brat pojedynczy węzeł
 				break;
 			case 10:	// brat liść
-				
+				if(tree == root) {
+					tree = extend(tree, unia.A, 'l', 0);
+					root = tree;
+					tree = extend(tree, unia.A, 'p', 1);
+				}
+				else {		//to drzewo ma 2 rzeczy
+					tree = extend(tree, unia.A, 'p', 1);
+				}
+				unia.abcd << 8;
+				slide += 8;
 				break;
 			case 11:	// brat liść + koniec
+				i++;
 				return i;
 				break;
 		}
-		x = (x+2)%8;
-		i++;
-	}while( i < many - 1);
+		x = (x+slide)%8;		// always 0-7
+		i+=2;
+		if(x == 0)
+			i++;
+		last = *(tab + i);
+	}while( i < many - 4);			// sprawdź
 	return -1;
 
 }
+*/
