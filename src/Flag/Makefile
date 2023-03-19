@@ -1,0 +1,8 @@
+all: main.o flag.o
+	$(CC) -o test main.o flag.o
+main.o: main.c
+	$(CC) -c main.c
+flag.o: flag.c
+	$(CC) -c flag.c
+clear:
+	rm *.o output
