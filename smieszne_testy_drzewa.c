@@ -63,12 +63,12 @@ int main(int argc, char **argv) {
 	void *const ptr = tab;
 	tab->znak = 'a';
 	d_t ntab = extend(tab, 'b', 'r');
-	tab = extend(tab, 'c', 'n');
-	tab = ptr;
+	tab = extend(ntab, 'c', 'n');
+//	tab = ptr;
 	if(ntab->wyz != NULL)
 		printf("dziaa: %c -> %c\n", ntab->znak, ntab->wyz->znak);
 	if(tab->niz != NULL)
-		printf("dziaa drugie: %c -> %c -> %c\n", ntab->znak, ntab->wyz->znak, ntab->wyz->niz->znak);// tab->niz->wyz->znak);
+		printf("dziaa drugie: %c -> %c -> %c\n", tab->znak, tab->wyz->znak, tab->niz->znak);// tab->niz->wyz->znak);
 
 	/*
 	co tu się wydarzylo:
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
 		ntab->wyz->znak = tab->znak = a
 		ntab->wyz->niz->znak = ntab->niz->znak = c
 		reszta null
-
+	^ nieaktualne as of 17.03.23
 	*/
 
 	freeTree(ntab);

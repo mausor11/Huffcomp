@@ -5,13 +5,12 @@
 #include "tree.h"
 
 int main(int argc, char **argv) {
-    d_t test = createTree();
-    test = NULL;
+    d_t test = NULL;
     FILE *in = fopen(argv[1], "r");
     char x;
 
     test = charCounter(in, test, true);
-    readTree(test);
+    writeTree(test);
     freeTree(test);
 
 

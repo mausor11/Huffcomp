@@ -1,7 +1,7 @@
 libxor: szyfr.o
 	ar rvs libxor.a $^
 test: main.o szyfr.o
-	$(CC) -o test main.o szyfr.o	
+	$(CC) -o test main.o szyfr.o
 szyfr.o: szyfr.c szyfr.h
 	$(CC) -c szyfr.c
 main.o: main.c
