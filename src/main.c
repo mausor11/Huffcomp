@@ -7,6 +7,8 @@
 
 #include "SzyfrXOR/szyfr.h"
 #include "Tree/tree.h"
+#include "Tree/bitbajt.h"
+
 
 char *usage =
 	"Usage: %s [options] input_file output_file\n"
@@ -33,11 +35,15 @@ void setVerbose () {
 int main(int argc, char **argv) {
 
 	srand(time(NULL));
-
-	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
+	int char_number = 8;
 	int flagBit = 0;
 	int opt;
+	int i;
 	char *password;
+	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
+
+	FILE *input = fopen(argv[argc-2], "r");
+	FILE *output = fopen(argv[argc-1], "w");
 
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
@@ -49,7 +55,7 @@ int main(int argc, char **argv) {
 	}
 
 	//sprawdzanie czy jest flaga -v i włączanie verbose
-	for(int i=1;i<argc;i++) {
+	for(i=1;i<argc;i++) {
 		if(strcmp(argv[i], "-v") == 0) {
 			setVerbose();
 			break;
@@ -59,15 +65,11 @@ int main(int argc, char **argv) {
 		printf("==DEBUG== Huffman coding\n");
 		printf("==DEBUG== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
 		printf("==DEBUG== Command: ");
-		for(int i=0;i<argc;i++)
+		for(i=0;i<argc;i++)
 			printf("%s ", argv[i]);
 		printf("\n");
 	}
-
-	FILE *input = fopen(argv[argc-2], "r");
-	FILE *output = fopen(argv[argc-1], "w");
-
-
+	secwet();
 	if(input == NULL) {
 		fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-2]);
 		return -1;
@@ -81,8 +83,6 @@ int main(int argc, char **argv) {
 		printf("==DEBUG== INPUT-OUTPUT FILES\n");
 		printf("==DEBUG==   %s -> %s\n",argv[argc-2], argv[argc-1]);
 	}
-
-	int char_number = 8;
 
 	while ( (opt = getopt (argc, argv, "o:c:vhxz") ) != -1 ) {
 		switch(opt) {
@@ -103,9 +103,9 @@ int main(int argc, char **argv) {
 					default:	// 1 albo inne
 						char_number = 8;
 						break;
-
 				}
-				if(Verbose){ printf("==DEBUG== Bit number: %d\n", char_number);
+
+				if(Verbose){ printf("==DEBUG== Bit number: %d\n", char_number); };
 				break;
 			case 'c':
 				password = optarg;

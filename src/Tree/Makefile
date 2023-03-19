@@ -8,6 +8,10 @@ main.o: main.c
 	$(CC) -c main.c
 
 
+test2: test2.c tree.o
+	$(CC) -o test2 test2.c tree.o
+
+
 test: test.c bitbajt.o
 	$(CC) -o test test.c bitbajt.o
 

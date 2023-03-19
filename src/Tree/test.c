@@ -20,15 +20,18 @@ int main() {
 	char d = 0b00000100;
 	char e = 0b10000100;
 	char *tab;
+	char *bat;
 	FILE *in = fopen("abcd", "rb");
 	tab = bajt(in, 4);
+	fread(bat, sizeof(char), 4, in);
 	(bit(c, 0)) && (bit(c, 1)) ? printf("11\n") : printf("nei\n");
 	(bit(c, 2)) && (bit(c, 1)) ? printf("11\n") : printf("nei\n");
 	printf("%c\n", c);
 	c += d;
 	printf("%c\n", c);
-	for(i = 0; i < 4; i++)
-		printf("%c\n", *(tab+i) );
+	for(i = 0; i < 4; i++){
+		printf("%c\n", *(tab+i));
+	}
 	fclose(in);
 
 	in = fopen("abcd", "rb");
