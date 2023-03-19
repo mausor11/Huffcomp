@@ -103,6 +103,18 @@ void rarest(d_t tree, char *temp, int *mini) {
 	}
 }
 
+void rarestt(d_t tree, d_t *temp, int *mini) {
+	if(tree->right_node != NULL)
+		rarestt(tree->right_node, temp, mini);
+	if(tree->left_node != NULL)
+		rarestt(tree->left_node, temp, mini);
+	if( (tree->counter != -1 ) && ( tree->counter <= *mini) ) {
+		*mini = tree->counter;
+		*temp = tree;
+	}
+}
+
+
 void commonest(d_t tree, int *maxi) {
 	if(tree->right_node != NULL)
 		commonest(tree->right_node, maxi);

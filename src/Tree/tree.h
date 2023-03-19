@@ -27,6 +27,7 @@ void writeTree(d_t tree);
 d_t charCounter (FILE *input, d_t tree, bool Verbose);
 //int readTree(d_t, char *, int);
 void rarest(d_t, char *, int *);
+void rarestt(d_t, d_t*, int *);
 void commonest(d_t, int *);
 void mark(d_t, char);
 void counter(d_t, int*);

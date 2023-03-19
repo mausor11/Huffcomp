@@ -5,7 +5,8 @@
 #include "tree.h"
 
 int main() {
-	d_t tree = createTree();
+	d_t tree = createTree(), tree2;
+	void *temp;
 	int mini, maxi, i = 0;
 	char c = 'e';
 	table_t tab[4];
@@ -18,6 +19,7 @@ int main() {
 	tree->right_node = extend(tree->right_node, 'd', 'p', 1);
 	tree->right_node->right_node->counter = 1000;
 	commonest(tree, &maxi);
+	/*
 	do {
 		mini = maxi;
 		rarest(tree, &c, &mini);
@@ -30,6 +32,11 @@ int main() {
 	} while(mini != maxi);
 	for(i = 0; i < 4; i++)
 		printf("%d\n", tab[i].priority );
+	*/
+	printf("aa\n");
+	rarestt(tree, &tree2, &mini);
+	printf("aa %p\n", tree2);
+	printf("%d\n", tree2->znak );
 	freeTree(tree);
 	return 0;
 }
