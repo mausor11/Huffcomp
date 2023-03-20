@@ -112,6 +112,7 @@ d_t makeHTree (d_t tree){
     return tree;
 }
 
+/*
 void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
 	if(*cntr == 8) {
 	// potrzebny wskaźnik na początek
@@ -138,7 +139,7 @@ void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
 	if(tree->right_node != NULL)
 		codeTree(tree->right_node, output, temp, cntr);
 }
-
+*/
 
 
 
