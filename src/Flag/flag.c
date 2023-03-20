@@ -7,9 +7,9 @@ int bit(char resource, int which){	//which od 0 do 7
     return (resource & mask) ? 1 : 0;
 }
 
-void printBits( unsigned int n )
+void printBits( unsigned int n, int b )
 {
-    const int Bits = 8;
+    const int Bits = b;
     char tmp[ Bits + 1 ];
 
     for( int i = 0; i < Bits; ++i )
@@ -74,15 +74,31 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask) {
 }
 
 void checkFlag(FILE *output) {
-    char maskSzyfr = 0b00100000;
-    char maskMask =  0b00001111;
-    char maskComp =  0b11000000;
-    int check = fseek(output, 2, SEEK_SET);
+      char maskSzyfr = 0b00100000;
+      char maskMask =  0b00001111;
+      char maskComp =  0b11000000;
     unsigned char Flag;
-
-    if(Flag & maskSzyfr) {
-        printf("1. Jest szyfrowanie\n");
-    } else {
-        printf("1. Brak szyfrowania\n");
+    int check = fseek(output, 2, SEEK_SET);
+    if(check != 0 ) {
+        fprintf(stderr, "Error with fseek\n");
+        return;
     }
+    fread(&Flag, sizeof(char), 1, output);
+    if(Flag & maskSzyfr) {
+        printf("1. Encypting: true\n");
+    } else {
+        printf("1. Encypting: false\n");
+    }
+    unsigned char tmp = Flag;
+    tmp = tmp & maskComp;
+    tmp >>= 6;
+    printf("2. Compression level: %d\n", tmp);
+
+    tmp = Flag;
+    tmp = tmp & maskMask;
+    printf("3. Mask: ");
+    printBits((int)tmp,4);
+    printf("\n");
+
+
 }
