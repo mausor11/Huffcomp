@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "tree.h"
+#include "treemaker.h"
 
 int main() {
 	d_t tree = createTree();

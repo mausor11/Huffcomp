@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	while(fread(&c, sizeof(char), 1, in) == 1) {	// funkcja wczytywania binarnych plikówj
+	while(fread(&c, sizeof(char), 1, in) == 1) {	// funkcja wczytywania binarnych plików
 		fprintf(stdout, "%d -> '%c'\n", c, c);
 		fwrite(&c, sizeof(char), 1, out);
 	}

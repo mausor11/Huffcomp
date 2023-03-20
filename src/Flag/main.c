@@ -8,7 +8,8 @@ int main(int argc, char ** argv)
 
     char mask = 0b1111;
     FILE *ot = fopen("output", "wb");
-    addFlag(ot, 2,true,mask);
+    char cntr = 65;
+    addFlag(ot, 2,true,mask, &cntr);
     fclose(ot);
     FILE *in = fopen("output", "r");
     checkFlag(in);

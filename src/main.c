@@ -7,6 +7,7 @@
 
 #include "SzyfrXOR/szyfr.h"
 #include "Tree/tree.h"
+#include "Tree/treemaker.h"
 #include "Tree/bitbajt.h"
 
 

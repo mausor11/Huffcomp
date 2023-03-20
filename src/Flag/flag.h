@@ -2,7 +2,7 @@
 #define FLAG_H_INCLUDED
 
 int bit(char resource, int which);
-void addFlag(FILE *output, int compression, bool encrypt, char mask);
+void addFlag(FILE *output, int compression, bool encrypt, char mask, char *cntr);
 void checkFlag(FILE *output);
 void printBits( unsigned int n );
 
