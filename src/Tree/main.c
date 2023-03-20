@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
     char x;
 
     test = charCounter(in, test, true);
-    writeTree(test);
+    writeTree(test, 0);
     freeTree(test);
 
 
