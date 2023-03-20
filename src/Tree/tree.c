@@ -141,7 +141,8 @@ void counter(d_t tree, int *cntr) {
 		counter(tree->right_node, cntr);
 	if(tree->left_node != NULL)
 		counter(tree->left_node, cntr);
-	(*cntr)++;
+	if(tree->counter != 0)
+		(*cntr)++;
 }
 
 //d_t recTree(d_t tree, int bit, ) -trzeba? niżej to samo robię xd me is fine, frfrdef

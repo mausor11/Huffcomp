@@ -5,8 +5,8 @@
 #include "tree.h"
 
 int main() {
-	d_t tree = createTree(), temp, drzewo = NULL;
-	int mini, maxi, i, ile = 0;
+	d_t tree = createTree();
+	int ile = 0;
 	char c = 'e';
 	table_t tab[4];
 	// insert
@@ -18,7 +18,6 @@ int main() {
 	tree->right_node->left_node->counter = 1;
 	tree->right_node = extend(tree->right_node, 'd', 'p', 1);
 	tree->right_node->right_node->counter = 1000;
-	commonest(tree, &maxi);
 	counter(tree, &ile);
 	printf("Drzewo ze wczytania\n\nliczba liści drzewa: %d\n\n", ile);
 	writeTree(tree, 0);
@@ -77,6 +76,10 @@ int main() {
 	tree = makeHTree(tree);
 	printf("\nDrzewo Huffmana\n\n");
 	writeTree(tree, 0);
+	ile = 0;
+	counter(tree, &ile);
+	printf("%d\n", ile);
+	FILE *out = fopen("tutej_drzewo", "wb");
 	freeTree(tree);
 	return 0;
 }
