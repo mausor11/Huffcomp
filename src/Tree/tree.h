@@ -1,6 +1,9 @@
 #ifndef TREE_H_INCLUDED
 #define TREE_H_INCLUDED
 
+#include <stdio.h>
+#include <stdbool.h>
+
 typedef struct e {
     int counter;
     char znak;
@@ -9,10 +12,12 @@ typedef struct e {
 
 } *d_t;
 
+
 typedef struct {
 	d_t tree;
 	int priority;
 } table_t;
+
 
 union eitbit{
 	int abcd;
@@ -23,13 +28,15 @@ d_t createTree();
 void freeTree(d_t tree);
 d_t extend(d_t tree, char what, char where, int);
 d_t add(d_t tree, char znak);
-void writeTree(d_t tree);
+void writeTree(d_t tree, int i);
 d_t charCounter (FILE *input, d_t tree, bool Verbose);
-//int readTree(d_t, char *, int);
+int readTree(d_t, char *, int);
 void rarest(d_t, char *, int *);
 void rarestt(d_t, d_t*, int *);
 void commonest(d_t, int *);
 void mark(d_t, char);
 void counter(d_t, int*);
+d_t makeHTree(d_t);
+
 
 #endif

@@ -1,8 +1,10 @@
 main: main.o tree.o bitbajt.o
 	$(CC) -o main main.o tree.o bitbajt.o
 
-tree: tree.c
-	$(CC) -c tree.c
+tree: tree.c tree.h
+	$(CC) -c tree.c tree.h
+
+
 
 main.o: main.c
 	$(CC) -c main.c

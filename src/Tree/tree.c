@@ -47,7 +47,6 @@ d_t extend(d_t tree, char what, char where, int whether) {
             if(tree->left_node == NULL) {
                 tree->left_node = bab;
                 bab = tree;
-//                fprintf(stdout, "%c, %c\n", bab->znak, tree->znak);
             }
             break;
 
@@ -84,11 +83,12 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 }
 
 
-void writeTree(d_t tree) {
+void writeTree(d_t tree, int i) {
 	if(tree != NULL) {
-		writeTree( tree->left_node);
-		writeTree( tree->right_node);
-		printf("%c ascii:%d -> %d\n", tree->znak, tree->znak, tree->counter);
+		i++;
+		writeTree( tree->left_node, i);
+		writeTree( tree->right_node, i);
+		printf("poziom %d | %c ascii:%d -> %d\n", i, tree->znak, tree->znak, tree->counter);
 	}
 }
 
@@ -143,26 +143,54 @@ void counter(d_t tree, int *cntr) {
 		counter(tree->left_node, cntr);
 	(*cntr)++;
 }
+
 //d_t recTree(d_t tree, int bit, ) -trzeba? niżej to samo robię xd me is fine, frfrdef
 
-/*
-d_t makeHTree (d_t tree, int many ){
-	struct table tab[many];
-	d_t temp = NULL;
-	int i;
-	int maxi, mini;
-	char c;
+
+// make Huffman tree
+d_t makeHTree (d_t tree){
+	int many = 0;
+	counter(tree, &many);
+	table_t tab[many];
+	int i, maxi;
+	d_t root = NULL;
 	commonest(tree, &maxi);
-	mini = maxi;
 	for(i = 0; i < many; i++) {
-		rarest(tree, temp, &mini);
-		(table[i]).tree = temp;
-		(table[i]).number = mini;
+		tab[many-1-i].priority = maxi;
+		rarestt(tree, &(tab[many-1-i].tree), &(tab[many-1-i].priority));
+		tab[many-1-i].tree->counter = -1;
+	}
+	for(i = 0; i < many; i++) {
+		tab[i].tree->right_node = NULL;
+		tab[i].tree->left_node = NULL;
+	}
+	// at this moment we've got a priority queueueueueueue as tab
+	for(i = 0; tab[1].tree != NULL; i++) {
+		int j = many-i-1, temp;
+		tree = createTree();
+		tree->counter = 0;
+		tree->right_node = tab[j].tree;
+		tree->left_node = tab[j-1].tree;
+		tab[j].tree = NULL;
+		tab[j-1].tree = tree;
+		tab[j-1].priority += tab[j].priority;
+		tab[j].priority = 0;
+		j--;
+		while(j > 0 && ( tab[j].priority >= tab[j-1].priority ) ) {
+			tree = tab[j].tree;
+			temp = tab[j].priority;
+			tab[j].tree = tab[j-1].tree;
+			tab[j].priority = tab[j-1].priority;
+			tab[j-1].tree = tree;
+			tab[j-1].priority = temp;
+		}
 	}
 
-}
-*/
+	tree = tab[0].tree;
+	tab[0].tree = NULL;
 
+	return tree;
+}
 
 
 
