@@ -6,6 +6,23 @@
 #include "treemaker.h"
 #include "bitbajt.h"
 
+
+d_t createTree() {
+    d_t neww = malloc(sizeof *neww);
+    neww->right_node = NULL;
+    neww->left_node = NULL;
+    neww->counter = 0;
+    return neww;
+}
+
+void freeTree(d_t tree) {
+    if(tree->left_node != NULL)
+        freeTree(tree->left_node);
+    if(tree->right_node != NULL)
+        freeTree(tree->right_node);
+    free(tree);
+}
+
 void writeTree(d_t tree, int i) {
 	if(tree != NULL) {
 		i++;
@@ -48,17 +65,6 @@ void commonest(d_t tree, int *maxi) {
 }
 
 
-void mark(d_t tree, char c) {
-	if(tree->znak == c) {
-		tree->counter = -1;
-		return;
-	}
-	if(tree->right_node != NULL)
-		mark(tree->right_node, c);
-	if(tree->left_node != NULL)
-		mark(tree->left_node, c);
-}
-
 void counter(d_t tree, int *cntr) {
 	if(tree->right_node != NULL)
 		counter(tree->right_node, cntr);
@@ -67,6 +73,4 @@ void counter(d_t tree, int *cntr) {
 	if(tree->counter != 0)
 		(*cntr)++;
 }
-
-//d_t recTree(d_t tree, int bit, ) -trzeba? niżej to samo robię xd me is fine, frfrdef
 

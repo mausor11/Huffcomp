@@ -2,24 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "treemaker.h
+#include "treemaker.h"
 #include "bitbajt.h"
-
-d_t createTree() {
-    d_t neww = malloc(sizeof *neww);
-    neww->right_node = NULL;
-    neww->left_node = NULL;
-    neww->counter = 0;
-    return neww;
-}
-
-void freeTree(d_t tree) {
-    if(tree->left_node != NULL)
-        freeTree(tree->left_node);
-    if(tree->right_node != NULL)
-        freeTree(tree->right_node);
-    free(tree);
-}
+#include "list.h"
 
 // używane do odtworzenia (sposób 'patrz na brata')
 d_t extend(d_t tree, char what, char where, int whether) {
@@ -126,6 +111,36 @@ d_t makeHTree (d_t tree){
 
     return tree;
 }
+
+void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
+	if(*cntr == 8) {
+	// potrzebny wskaźnik na początek
+		*output = expandList(*output, *temp);
+		*temp = 0;
+		*(cntr)-=8;
+	}
+	*temp <<= 1;
+	*cntr++;
+	if(tree->counter == 0)
+		*temp += 0;
+	else {
+		*temp += 1;
+		union eitbit saas;
+		saas.A = *temp;
+		saas.B = tree->znak;
+		saas.ab <<= (8 - *cntr);
+		*output = expandList( *output, saas.A);
+		saas.ab <<= 8;
+		*temp = saas.A;
+	}
+	if(tree->left_node != NULL)
+		codeTree(tree->left_node, output, temp, cntr);
+	if(tree->right_node != NULL)
+		codeTree(tree->right_node, output, temp, cntr);
+}
+
+
+
 
 // W O R K    I N    P R O G R E S S
 // last - ostatni przeczytany znak z tablicy( jeżeli skończone wcześniej)

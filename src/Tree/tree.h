@@ -4,7 +4,18 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "treemaker.h"
+typedef struct e {
+    int counter;
+    char znak;
+    struct e *right_node;
+    struct e *left_node;
+
+} *d_t;
+
+
+d_t createTree();
+
+void freeTree(d_t tree);
 
 void writeTree(d_t tree, int i);
 
@@ -16,8 +27,7 @@ void rarestt(d_t, d_t*, int *);
 
 void commonest(d_t, int *);
 
-void mark(d_t, char);
-
 void counter(d_t, int*);
+
 
 #endif

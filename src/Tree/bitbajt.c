@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "bitbajt.h"
 
 // credit to  zlog for the idea (code written myself)

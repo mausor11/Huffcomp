@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "bitbajt.h"
+#include "tree.h"
+#include "list.h"
 
 // testowanie zależności bitowych,
 // funkcji bit i bajt, oraz odczytu 
@@ -13,7 +15,14 @@ union expanded{
 };
 
 int main() {
-	union expanded abc;
+	lista_t lista = malloc(sizeof *lista), begin;
+	begin = lista;
+	lista->c = 'a';
+	lista = expandList(lista, 'b');
+	lista = begin;
+	printf("%c\n", lista->c);
+	freeList(begin);
+	union eitbit abc;
 	int i;
 	char tmp;
 	char c = 0b00101011;
@@ -41,6 +50,10 @@ int main() {
 	fclose(in);
 	i = 10*bit(e, 7) + bit(e, 6);
 	printf("%d\n", i);
-	
+	c = 0b00001111;
+	printf("%d\n", c);
+	c <<= 1;
+	printf("%d\n", c);
+	free(tab);
 	return 0;
 }
