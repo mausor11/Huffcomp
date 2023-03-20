@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "tree.h"
+#include "treemaker.h"
 #include "bitbajt.h"
 
 void writeTree(d_t tree, int i) {

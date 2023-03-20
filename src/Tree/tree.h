@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "treemaker.h"
+
 void writeTree(d_t tree, int i);
 
 int readTree(d_t, char *, int);
