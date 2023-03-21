@@ -54,6 +54,8 @@ int main() {
 	printf("%d\n", c);
 	c <<= 1;
 	printf("%d\n", c);
+	c = 0;
+	printf("%d\n", c);
 	free(tab);
 	return 0;
 }

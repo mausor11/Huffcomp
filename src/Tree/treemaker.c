@@ -112,26 +112,35 @@ d_t makeHTree (d_t tree){
     return tree;
 }
 
-/*
+
 void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
+	printf("codeTree: entered\n");
 	if(*cntr == 8) {
-	// potrzebny wskaźnik na początek
+	// potrzebny wskaźnik na początek w programie wywołującym
 		*output = expandList(*output, *temp);
 		*temp = 0;
 		*(cntr)-=8;
 	}
 	*temp <<= 1;
-	*cntr++;
-	if(tree->counter == 0)
+	(*cntr)++;
+	fprintf(stdout, "\ncounter: %x\n", *cntr);
+	if(tree->counter == 0) {
 		*temp += 0;
+	}
 	else {
 		*temp += 1;
 		union eitbit saas;
+		saas.ab = 0x1234;
+		fprintf(stdout, "A:%x, B:%x\n", saas.A, saas.B);
+		saas.ab <<= 4;
+		fprintf(stdout, "A:%x, B:%x\n", saas.A, saas.B);
 		saas.A = *temp;
 		saas.B = tree->znak;
+		fprintf(stdout, "temp: %x, saas.A: %x, saas.B: %x\n", *temp, saas.A, saas.B);
 		saas.ab <<= (8 - *cntr);
+		fprintf(stdout, "temp: %x, saas.A: %x, saas.B: %x\n", *temp, saas.A, saas.B);
 		*output = expandList( *output, saas.A);
-		saas.ab <<= 8;
+		saas.ab <<= *cntr;
 		*temp = saas.A;
 	}
 	if(tree->left_node != NULL)
@@ -139,7 +148,7 @@ void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
 	if(tree->right_node != NULL)
 		codeTree(tree->right_node, output, temp, cntr);
 }
-*/
+
 
 
 

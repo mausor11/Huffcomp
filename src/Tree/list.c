@@ -5,14 +5,14 @@
 lista_t expandList(lista_t input, char c) {
 	if(input != NULL) {
 		lista_t tmp = input;
-		tmp->next = malloc(sizeof *(tmp->next) );
+		tmp->next = malloc(sizeof(slist));
 		tmp->next->c = c;
 		tmp->next->next = NULL;
 		tmp = tmp->next;
 		return tmp;
 	}
 	else {
-		lista_t tmp = malloc(sizeof *tmp);
+		lista_t tmp = malloc(sizeof(slist));
 		tmp->next = NULL;
 		tmp->c = c;
 		return tmp;

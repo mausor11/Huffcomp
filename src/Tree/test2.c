@@ -4,20 +4,23 @@
 
 #include "tree.h"
 #include "treemaker.h"
+#include "list.h"
+#include "bitbajt.h"
 
 int main() {
+	lista_t lista = malloc(sizeof(slist));
 	d_t tree = createTree();
-	int ile = 0;
-	char c = 'e';
+	int ile = 0, cntr = 0;
+	char c = 'e', temp = 0;
 	table_t tab[4];
 	// insert
-	tree->znak = 'a';
+	tree->znak = 'd';
 	tree->counter = 10;
 	tree = extend(tree, 'b', 'p', 1);
 	tree->right_node->counter = 100;
 	tree->right_node = extend(tree->right_node, 'c', 'n', 1);
 	tree->right_node->left_node->counter = 1;
-	tree->right_node = extend(tree->right_node, 'd', 'p', 1);
+	tree->right_node = extend(tree->right_node, 'a', 'p', 1);
 	tree->right_node->right_node->counter = 1000;
 	counter(tree, &ile);
 	printf("Drzewo ze wczytania\n\nliczba liści drzewa: %d\n\n", ile);
@@ -79,8 +82,16 @@ int main() {
 	writeTree(tree, 0);
 	ile = 0;
 	counter(tree, &ile);
-	printf("%d\n", ile);
+	printf("%d\n\n", ile);
 	FILE *out = fopen("tutej_drzewo", "wb");
+	codeTree(tree, &lista, &temp, &cntr);
+	while(lista != NULL) {
+		printf("%c\n", lista->c);
+		for(int i = 0; i < 8; i++)
+			printf("%d", bit(lista->c, i) );
+		printf("\n");
+		lista = lista->next;
+	}
 	freeTree(tree);
 	return 0;
 }
