@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
         return -1;
     }
     int num = 12;   //ile bitów
-    XOR(input, output, num, true, "abc");
+    XOR(input, output, num, false, "abc");
 #ifdef DEBUG
         input = fopen(argv[1], "rb");
         output = fopen(argv[2], "rb");
