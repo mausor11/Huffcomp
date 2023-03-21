@@ -3,10 +3,14 @@
 
 #include <stdio.h>
 
+#pragma pack(push,1)
+
 union eitbit {
 	short ab;
-	struct {char A; char B;};
+	struct {char B; char A;};
 };
+
+#pragma pack(pop)
 
 int bit(char, int );
 char *bajt(FILE *, int );

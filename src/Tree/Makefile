@@ -18,8 +18,8 @@ main.o: main.c
 	$(CC) -c main.c
 
 
-test2: test2.c tree.o treemaker.o list.o
-	$(CC) -o test2 test2.c tree.o treemaker.o list.o
+test2: test2.c tree.o treemaker.o list.o bitbajt.o
+	$(CC) -o test2 test2.c tree.o treemaker.o list.o bitbajt.o
 
 
 test: test.c tree.o bitbajt.o list.o
