@@ -15,5 +15,5 @@ union eitbit {
 int bit(char, int );
 char *bajt(FILE *, int );
 void secwet();
-
+void printBits( unsigned int n, int b );
 #endif

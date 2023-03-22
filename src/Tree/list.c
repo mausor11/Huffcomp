@@ -1,5 +1,5 @@
 #include <stdlib.h>
-
+#include <stdio.h>
 #include "list.h"
 
 lista_t expandList(lista_t input, char c) {
@@ -17,6 +17,40 @@ lista_t expandList(lista_t input, char c) {
 		tmp->c = c;
 		return tmp;
 	}
+}
+
+lista_t addToList(lista_t list, char c) {
+
+    if(list == NULL) {
+        list = malloc(sizeof(slist));
+        list->c = c;
+        list->next = NULL;
+        return list;
+    } else {
+
+        lista_t tmp = list;
+        while(tmp->next != NULL) tmp = tmp->next;
+        tmp->next = malloc(sizeof(slist));
+        tmp->next->next = NULL;
+        tmp->next->c = c;
+        return list;
+    }
+}
+
+void list_size(lista_t lista) {
+    int counter = 0;
+    if(lista == NULL) {
+        printf("List size: %d\n", counter);
+        return;
+    } else {
+        lista_t tmp = lista;
+        do {
+            counter++;
+            tmp = tmp->next;
+        } while(tmp != NULL);
+        printf("List size: %d\n", counter);
+        return;
+    }
 }
 
 void freeList(lista_t input) {

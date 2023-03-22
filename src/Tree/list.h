@@ -7,6 +7,8 @@ typedef struct f {
 } *lista_t, slist;
 
 lista_t expandList(lista_t, char);
+lista_t addToList(lista_t list, char c);
+void list_size(lista_t lista);
 void freeList(lista_t);
 
 

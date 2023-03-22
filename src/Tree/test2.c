@@ -9,6 +9,7 @@
 
 int main() {
 	lista_t lista = malloc(sizeof(slist));
+    lista = NULL;
 	d_t tree = createTree();
 	int ile = 0, cntr = 0;
 	char c = 'e', temp = 0;
@@ -85,13 +86,18 @@ int main() {
 	printf("%d\n\n", ile);
 	FILE *out = fopen("tutej_drzewo", "wb");
 	codeTree(tree, &lista, &temp, &cntr);
-	while(lista != NULL) {
-		printf("%c\n", lista->c);
-		for(int i = 0; i < 8; i++)
-			printf("%d", bit(lista->c, i) );
-		printf("\n");
-		lista = lista->next;
+    printf("\n");
+    lista_t tm = lista;
+    list_size(tm);
+	while(tm != NULL) {
+		//printf("%c\n", tm->c);
+		printBits(tm->c,8);
+        printf("|");
+		tm = tm->next;
+
 	}
+    printBits(temp, 8);
 	freeTree(tree);
+    freeList(lista);
 	return 0;
 }

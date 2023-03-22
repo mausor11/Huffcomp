@@ -123,25 +123,27 @@ void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
 	}
 	*temp <<= 1;
 	(*cntr)++;
-	fprintf(stdout, "\ncounter: %x\n", *cntr);
+	fprintf(stdout, "counter: %d\n\n", *cntr);
 	if(tree->counter == 0) {
 		*temp += 0;
 	}
 	else {
 		*temp += 1;
 		union eitbit saas;
-		saas.ab = 0x1234;
-		fprintf(stdout, "A:%x, B:%x\n", saas.A, saas.B);
-		saas.ab <<= 4;
-		fprintf(stdout, "A:%x, B:%x\n", saas.A, saas.B);
 		saas.A = *temp;
+            printBits(saas.A,6);
+            printf(" + ");
 		saas.B = tree->znak;
-		fprintf(stdout, "temp: %x, saas.A: %x, saas.B: %x\n", *temp, saas.A, saas.B);
+        printBits(saas.B,8);
+            printf("(%c)\n",saas.B);
 		saas.ab <<= (8 - *cntr);
-		fprintf(stdout, "temp: %x, saas.A: %x, saas.B: %x\n", *temp, saas.A, saas.B);
-		*output = expandList( *output, saas.A);
+        printBits(saas.A,8);
+        printf("\n");
+//		*output = expandList( *output, saas.A);
+        *output = addToList( *output, saas.A);
 		saas.ab <<= *cntr;
 		*temp = saas.A;
+
 	}
 	if(tree->left_node != NULL)
 		codeTree(tree->left_node, output, temp, cntr);
