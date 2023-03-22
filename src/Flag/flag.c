@@ -18,7 +18,7 @@ void printBits2( unsigned int n, int b )
 }
 
 
-void addFlag(FILE *output, int compression, bool encrypt, char mask, char *cntr) {
+void addFlag(FILE *output, int compression, bool encrypt, char mask, char cntr) {
     unsigned char Flag = 0;
 
     switch(compression) {
@@ -63,14 +63,8 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, char *cntr)
     Flag += mask;
 
     char *signature = "BJ";
-    printf("counter: %d\n", *cntr);
-    char *f = signature;
-    printf(">>%s\n",f );
-    printf("cntr: %c\n", *cntr);
-    f += *cntr;
-    printf(">>%s\n",f );
     fwrite(&*signature, sizeof(char), 2, output);
-    fwrite(&*cntr, sizeof(char), 1, output);
+    fwrite(&cntr, sizeof(char), 1, output);
     fwrite(&Flag, sizeof(unsigned char), 1, output);
 }
 
@@ -100,6 +94,4 @@ void checkFlag(FILE *output) {
     printf("3. Mask: ");
     printBits2((int)tmp,4);
     printf("\n");
-
-
 }

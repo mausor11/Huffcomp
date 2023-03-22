@@ -143,26 +143,37 @@ int main(int argc, char **argv) {
 	}
     // WORK IN PROGRESS
 
-//    lista_t lista = malloc(sizeof(slist));
-//    lista = NULL;
-//    d_t tree = createTree();
-//    tree = NULL;
-//    int cntr = 0;
-//    char temp = 0;
-//    char x;
-//
-//    while((fread(&x,sizeof(char),1,input)) == 1) {
-//        tree = add(tree, x);
-//    }
-//    //writeTree(tree, 0);
-//    tree = makeHTree(tree);
-//    //writeTree(tree, 0);
-//    char ile = 0;
-//    counter(tree, &ile);
-//    codeTree(tree, &lista, &temp, &cntr);
-//
-//    addFlag(output,flagBit,encypt,cntr, &ile);
-//    checkFlag(output);
+    lista_t lista = malloc(sizeof(slist));
+    lista = NULL;
+    d_t tree = createTree();
+    tree = NULL;
+    int cntr = 0;
+    char temp = 0;
+    char x;
+
+    while((fread(&x,sizeof(char),1,input)) == 1) {
+        tree = add(tree, x);
+    }
+    //writeTree(tree, 0);
+    tree = makeHTree(tree);
+    //writeTree(tree, 0);
+    char ile = 0;
+    counter(tree, &ile);
+    codeTree(tree, &lista, &temp, &cntr);
+    printf("Flagbit: %d\n Lista: ", flagBit);
+    lista_t tm = lista;
+    list_size(tm);
+    while(tm != NULL) {
+        //printf("%c\n", tm->c);
+        printBits(tm->c,8);
+        printf("|");
+        tm = tm->next;
+
+    }
+    printBits(temp, cntr);
+    printf("\n");
+    addFlag(output,flagBit,encypt,cntr, ile);
+    checkFlag(output);
 
 	return 0;
 }
