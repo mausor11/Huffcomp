@@ -27,7 +27,7 @@ void rarestt(d_t, d_t*, int *);
 
 void commonest(d_t, int *);
 
-void counter(d_t, int*);
+void counter(d_t, char*);
 
 
 #endif

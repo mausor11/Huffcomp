@@ -2,12 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int bit(char resource, int which){	//which od 0 do 7
-    int mask = 1 << which;
-    return (resource & mask) ? 1 : 0;
-}
-
-void printBits( unsigned int n, int b )
+void printBits2( unsigned int n, int b )
 {
     const int Bits = b;
     char tmp[ Bits + 1 ];
@@ -48,7 +43,7 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, char *cntr)
             break;
     }
 
-    switch(encrypt) {
+    switch((int)encrypt) {
         case true:
             Flag <<= 1;
             Flag += 0b1;
@@ -68,7 +63,12 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, char *cntr)
     Flag += mask;
 
     char *signature = "BJ";
-
+    printf("counter: %d\n", *cntr);
+    char *f = signature;
+    printf(">>%s\n",f );
+    printf("cntr: %c\n", *cntr);
+    f += *cntr;
+    printf(">>%s\n",f );
     fwrite(&*signature, sizeof(char), 2, output);
     fwrite(&*cntr, sizeof(char), 1, output);
     fwrite(&Flag, sizeof(unsigned char), 1, output);
@@ -79,7 +79,7 @@ void checkFlag(FILE *output) {
       char maskMask =  0b00001111;
       char maskComp =  0b11000000;
     unsigned char Flag;
-    int check = fseek(output, 2, SEEK_SET);
+    int check = fseek(output, 3, SEEK_SET);
     if(check != 0 ) {
         fprintf(stderr, "Error with fseek\n");
         return;
@@ -98,7 +98,7 @@ void checkFlag(FILE *output) {
     tmp = Flag;
     tmp = tmp & maskMask;
     printf("3. Mask: ");
-    printBits((int)tmp,4);
+    printBits2((int)tmp,4);
     printf("\n");
 
 

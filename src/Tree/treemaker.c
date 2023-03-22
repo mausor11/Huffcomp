@@ -69,7 +69,7 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 
 // make Huffman tree
 d_t makeHTree (d_t tree){
-    int many = 0;
+    char many = 0; //byl int
     counter(tree, &many);
     table_t tab[many];
     int i, maxi;
@@ -114,7 +114,7 @@ d_t makeHTree (d_t tree){
 
 
 void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
-	printf("codeTree: entered\n");
+	//printf("codeTree: entered\n");
 	if(*cntr == 8) {
 	// potrzebny wskaźnik na początek w programie wywołującym
 		*output = expandList(*output, *temp);
@@ -123,7 +123,7 @@ void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
 	}
 	*temp <<= 1;
 	(*cntr)++;
-	fprintf(stdout, "counter: %d\n\n", *cntr);
+	//fprintf(stdout, "counter: %d\n\n", *cntr);
 	if(tree->counter == 0) {
 		*temp += 0;
 	}
@@ -131,14 +131,11 @@ void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
 		*temp += 1;
 		union eitbit saas;
 		saas.A = *temp;
-            printBits(saas.A,6);
-            printf(" + ");
+//        printBits(saas.A,6);
 		saas.B = tree->znak;
-        printBits(saas.B,8);
-            printf("(%c)\n",saas.B);
+//        printBits(saas.B,8);
 		saas.ab <<= (8 - *cntr);
-        printBits(saas.A,8);
-        printf("\n");
+//        printBits(saas.A,8);
 //		*output = expandList( *output, saas.A);
         *output = addToList( *output, saas.A);
 		saas.ab <<= *cntr;

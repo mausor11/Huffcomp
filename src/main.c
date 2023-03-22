@@ -9,6 +9,7 @@
 #include "Tree/tree.h"
 #include "Tree/treemaker.h"
 #include "Tree/bitbajt.h"
+#include "Flag/flag.h"
 
 
 char *usage =
@@ -42,9 +43,9 @@ int main(int argc, char **argv) {
 	int i;
 	char *password;
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
-
-	FILE *input = fopen(argv[argc-2], "r");
-	FILE *output = fopen(argv[argc-1], "w");
+    bool encypt = false;
+	FILE *input = fopen(argv[argc-2], "rb");
+	FILE *output = fopen(argv[argc-1], "wb");
 
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
@@ -110,13 +111,15 @@ int main(int argc, char **argv) {
 				break;
 			case 'c':
 				password = optarg;
+                encypt = true;
 				flagCrypt = 'y';
 				if(Verbose) {
 					printf("==DEBUG==\n");
 					printf("==DEBUG== getopt: Chosen option -c. Changes to %c\n", flagCrypt);
 					printf("==DEBUG==\n");
 				}
-				XOR(input, output, char_number, Verbose, password);
+                //zaraz na dol
+				//XOR(input, output, char_number, Verbose, password);
 				break;
 			case 'v':
 				break;
@@ -138,6 +141,28 @@ int main(int argc, char **argv) {
 				exit(EXIT_FAILURE);
 		}
 	}
+    // WORK IN PROGRESS
+
+//    lista_t lista = malloc(sizeof(slist));
+//    lista = NULL;
+//    d_t tree = createTree();
+//    tree = NULL;
+//    int cntr = 0;
+//    char temp = 0;
+//    char x;
+//
+//    while((fread(&x,sizeof(char),1,input)) == 1) {
+//        tree = add(tree, x);
+//    }
+//    //writeTree(tree, 0);
+//    tree = makeHTree(tree);
+//    //writeTree(tree, 0);
+//    char ile = 0;
+//    counter(tree, &ile);
+//    codeTree(tree, &lista, &temp, &cntr);
+//
+//    addFlag(output,flagBit,encypt,cntr, &ile);
+//    checkFlag(output);
 
 	return 0;
 }

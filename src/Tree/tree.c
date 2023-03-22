@@ -65,7 +65,7 @@ void commonest(d_t tree, int *maxi) {
 }
 
 
-void counter(d_t tree, int *cntr) {
+void counter(d_t tree, char *cntr) {
 	if(tree->right_node != NULL)
 		counter(tree->right_node, cntr);
 	if(tree->left_node != NULL)

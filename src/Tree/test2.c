@@ -96,7 +96,8 @@ int main() {
 		tm = tm->next;
 
 	}
-    printBits(temp, 8);
+    printBits(temp, cntr);
+    printf("\n");
 	freeTree(tree);
     freeList(lista);
 	return 0;
