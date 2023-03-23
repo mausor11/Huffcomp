@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
     lista = NULL;
     d_t tree = createTree();
     tree = NULL;
-    int cntr = 0;
+    char cntr = 0;
     char temp = 0;
     char x;
 
@@ -155,7 +155,8 @@ int main(int argc, char **argv) {
         tree = add(tree, x);
     }
     //writeTree(tree, 0);
-    tree = makeHTree(tree);
+    d_t tmp = tree;
+    tree = makeHTree(tmp);
     //writeTree(tree, 0);
     char ile = 0;
     counter(tree, &ile);
@@ -175,5 +176,7 @@ int main(int argc, char **argv) {
     addFlag(output,flagBit,encypt,cntr, ile);
     checkFlag(output);
 
+    freeList(lista);
+    freeTree(tree);
 	return 0;
 }

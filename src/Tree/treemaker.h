@@ -21,6 +21,6 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose);
 
 d_t makeHTree(d_t);
 
-void codeTree(d_t, lista_t *, char *, int *);
+void codeTree(d_t, lista_t *, char *, char *);
 
 #endif

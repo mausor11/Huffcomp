@@ -12,6 +12,7 @@ d_t createTree() {
     neww->right_node = NULL;
     neww->left_node = NULL;
     neww->counter = 0;
+    neww->znak = 0; //dodane
     return neww;
 }
 

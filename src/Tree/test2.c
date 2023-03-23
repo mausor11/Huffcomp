@@ -11,7 +11,7 @@ int main() {
 	lista_t lista = malloc(sizeof(slist));
     lista = NULL;
 	d_t tree = createTree();
-	int ile = 0, cntr = 0;
+	char ile = 0, cntr = 0; //ile bylo int
 	char c = 'e', temp = 0;
 	table_t tab[4];
 	// insert
@@ -98,7 +98,9 @@ int main() {
 	}
     printBits(temp, cntr);
     printf("\n");
+
 	freeTree(tree);
     freeList(lista);
+    free(tm);
 	return 0;
 }

@@ -7,4 +7,4 @@ main.o: main.c
 flag.o: flag.c
 	$(CC) -c flag.c
 clean:
-	rm *.o output test
+	rm *.o output test libflag.a

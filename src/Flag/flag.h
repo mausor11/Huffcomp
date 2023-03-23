@@ -3,7 +3,7 @@
 
 void addFlag(FILE *output, int compression, bool encrypt, char mask, char cntr);
 void checkFlag(FILE *output);
-void printBits2( unsigned int n, int b );
+void printBits2( unsigned char n, int b );
 
 
 

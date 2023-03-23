@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void printBits2( unsigned int n, int b )
+void printBits2( unsigned char n, int b )
 {
     const int Bits = b;
     char tmp[ Bits + 1 ];
@@ -14,9 +14,11 @@ void printBits2( unsigned int n, int b )
     }
 
     tmp[ Bits ] = 0;
-    printf("%s",tmp);
-}
+    for(int i=0;i< Bits; i++) {
+        printf("%c", tmp[i]);
+    }
 
+}
 
 void addFlag(FILE *output, int compression, bool encrypt, char mask, char cntr) {
     unsigned char Flag = 0;
@@ -72,13 +74,16 @@ void checkFlag(FILE *output) {
       char maskSzyfr = 0b00100000;
       char maskMask =  0b00001111;
       char maskComp =  0b11000000;
-    unsigned char Flag;
+    unsigned char Flag = 0;
     int check = fseek(output, 3, SEEK_SET);
     if(check != 0 ) {
         fprintf(stderr, "Error with fseek\n");
         return;
     }
-    fread(&Flag, sizeof(char), 1, output);
+    fread(&Flag, sizeof(unsigned char), 1, output);
+    printf("Flaga: ");
+    printBits2(Flag,8);
+    printf("\n");
     if(Flag & maskSzyfr) {
         printf("1. Encypting: true\n");
     } else {
@@ -92,6 +97,6 @@ void checkFlag(FILE *output) {
     tmp = Flag;
     tmp = tmp & maskMask;
     printf("3. Mask: ");
-    printBits2((int)tmp,4);
+    printBits2(tmp,4);
     printf("\n");
 }
