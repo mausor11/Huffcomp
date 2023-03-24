@@ -36,3 +36,7 @@ void printBits( unsigned int n, int b )
     tmp[ Bits ] = 0;
     printf("%s",tmp);
 }
+
+char intToBit() {
+
+}

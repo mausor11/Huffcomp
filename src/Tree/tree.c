@@ -74,3 +74,20 @@ void counter(d_t tree, char *cntr) {
 		(*cntr)++;
 }
 
+/*
+void makeTable(d_t tree, tabt_t *tab, int *which, char path) {
+	path
+	if(tree->counter == 0){
+		
+	}
+	else {
+
+	}
+	if(tree->left_node != NULL)
+		makeTable(tree->left_node, tab, which);
+	if(tree->right_node != NULL)
+		makeTable(tree->right_node, tab, which);
+
+}
+^ not worth
+*/
