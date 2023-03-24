@@ -6,10 +6,10 @@
 int main(int argc, char ** argv)
 {
 
-    char mask = 0b1110;
+    char mask = 0b1001;
     FILE *ot = fopen("output", "wb");
-    char cntr = 65;
-    addFlag(ot, 2,true,mask, &cntr);
+    char cntr = 23;
+    addFlag(ot, 1,false,mask, &cntr);
     fclose(ot);
     FILE *in = fopen("output", "r");
     checkFlag(in);

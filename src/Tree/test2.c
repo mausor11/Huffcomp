@@ -8,8 +8,8 @@
 #include "bitbajt.h"
 
 int main() {
-	lista_t lista = malloc(sizeof(slist));
-    lista = NULL;
+	lista_t lista = NULL;
+//    lista_t lista = createList();
 	d_t tree = createTree();
 	char ile = 0, cntr = 0; //ile bylo int
 	char c = 'e', temp = 0;
@@ -87,20 +87,21 @@ int main() {
 	FILE *out = fopen("tutej_drzewo", "wb");
 	codeTree(tree, &lista, &temp, &cntr);
     printf("\n");
-    lista_t tm = lista;
-    list_size(tm);
-	while(tm != NULL) {
-		//printf("%c\n", tm->c);
-		printBits(tm->c,8);
-        printf("|");
-		tm = tm->next;
-
-	}
+//    lista_t tm = lista;
+//    list_size(tm);
+//	while(tm != NULL) {
+//		//printf("%c\n", tm->c);
+//		printBits(tm->c,8);
+//        printf("|");
+//		tm = tm->next;
+//
+//	}
     printBits(temp, cntr);
     printf("\n");
 
 	freeTree(tree);
+    fclose(out);
     freeList(lista);
-    free(tm);
+    //free(tm);
 	return 0;
 }

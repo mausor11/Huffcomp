@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
     bool encypt = false;
 	FILE *input = fopen(argv[argc-2], "rb");
-	FILE *output = fopen(argv[argc-1], "wb");
+	FILE *output = fopen(argv[argc-1], "wb+");
 
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
@@ -143,10 +143,10 @@ int main(int argc, char **argv) {
 	}
     // WORK IN PROGRESS
 
-    lista_t lista = malloc(sizeof(slist));
-    lista = NULL;
-    d_t tree = createTree();
-    tree = NULL;
+
+    lista_t lista = NULL;
+    d_t tree = NULL;
+
     char cntr = 0;
     char temp = 0;
     char x;
@@ -160,8 +160,9 @@ int main(int argc, char **argv) {
     //writeTree(tree, 0);
     char ile = 0;
     counter(tree, &ile);
+    writeTree(tree,0);
     codeTree(tree, &lista, &temp, &cntr);
-    printf("Flagbit: %d\n Lista: ", flagBit);
+    printf("%d\n", tree->left_node->counter);
     lista_t tm = lista;
     list_size(tm);
     while(tm != NULL) {
@@ -173,9 +174,12 @@ int main(int argc, char **argv) {
     }
     printBits(temp, cntr);
     printf("\n");
-    addFlag(output,flagBit,encypt,cntr, ile);
+    addFlag(output,flagBit,encypt,cntr, &ile);
+
     checkFlag(output);
 
+    fclose(input);
+    fclose(output);
     freeList(lista);
     freeTree(tree);
 	return 0;

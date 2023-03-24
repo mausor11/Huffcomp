@@ -12,14 +12,9 @@ union eitbit {
 
 #pragma pack(pop)
 
-typedef struct {
-	char znak;
-	char kod;
-	int ile;
-} tabt_t;
-
 int bit(char, int );
-char *bajt(FILE *, int );
+int bajt(char *,FILE *, int );
 void secwet();
 void printBits( unsigned int n, int b );
+
 #endif

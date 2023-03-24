@@ -19,15 +19,20 @@ lista_t expandList(lista_t input, char c) {
 	}
 }
 
-lista_t addToList(lista_t list, char c) {
+lista_t createLista() {
+    lista_t list = malloc(sizeof(lista_t));
+    list->c = 0;
+    list->next = NULL;
+    return list;
+}
 
+lista_t addToList(lista_t list, char c) {
     if(list == NULL) {
         list = malloc(sizeof(slist));
         list->c = c;
         list->next = NULL;
         return list;
     } else {
-
         lista_t tmp = list;
         while(tmp->next != NULL) tmp = tmp->next;
         tmp->next = malloc(sizeof(slist));

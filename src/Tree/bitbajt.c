@@ -10,10 +10,8 @@ int bit(char resource, int which){	//which od 0 do 7
 	return (resource & mask) ? 1 : 0;
 }
 
-char *bajt(FILE *input, int many) {
-	char *ret = malloc(many * sizeof(*ret) );
-	fread(ret, sizeof(char), many, input);
-	return ret;
+int bajt(char *ret, FILE *input, int many) {
+	return fread(ret, sizeof(char), many, input);
 }
 
 void secwet() {
@@ -35,8 +33,4 @@ void printBits( unsigned int n, int b )
 
     tmp[ Bits ] = 0;
     printf("%s",tmp);
-}
-
-char intToBit() {
-
 }

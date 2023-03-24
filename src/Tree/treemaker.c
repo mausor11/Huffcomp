@@ -94,6 +94,7 @@ d_t makeHTree (d_t tree){
         tab[j].tree = NULL;
         tab[j-1].tree = tree;
         tab[j-1].priority += tab[j].priority;
+        //printf("tab: %d\n", tab[j-1].priority);
         tab[j].priority = 0;
         j--;
         while(j > 0 && ( tab[j].priority >= tab[j-1].priority ) ) {
@@ -103,6 +104,7 @@ d_t makeHTree (d_t tree){
             tab[j].priority = tab[j-1].priority;
             tab[j-1].tree = tree;
             tab[j-1].priority = temp;
+            j--;
         }
     }
 
@@ -117,7 +119,7 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 	//printf("codeTree: entered\n");
 	if(*cntr == 8) {
 	// potrzebny wskaźnik na początek w programie wywołującym
-		*output = expandList(*output, *temp);
+		*output = addToList(*output, *temp);
 		*temp = 0;
 		*(cntr)-=8;
 	}

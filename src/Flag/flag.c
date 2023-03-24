@@ -20,7 +20,7 @@ void printBits2( unsigned char n, int b )
 
 }
 
-void addFlag(FILE *output, int compression, bool encrypt, char mask, char cntr) {
+void addFlag(FILE *output, int compression, bool encrypt, char mask, char* cntr) {
     unsigned char Flag = 0;
 
     switch(compression) {
@@ -66,21 +66,24 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, char cntr) 
 
     char *signature = "BJ";
     fwrite(&*signature, sizeof(char), 2, output);
-    fwrite(&cntr, sizeof(char), 1, output);
+    fwrite(&*cntr, sizeof(char), 1, output);
     fwrite(&Flag, sizeof(unsigned char), 1, output);
 }
 
 void checkFlag(FILE *output) {
-      char maskSzyfr = 0b00100000;
-      char maskMask =  0b00001111;
-      char maskComp =  0b11000000;
     unsigned char Flag = 0;
+    unsigned char Liscie = 0;
+    char maskSzyfr = 0b00100000;
+    char maskMask =  0b00001111;
+    char maskComp =  0b11000000;
+
     int check = fseek(output, 3, SEEK_SET);
     if(check != 0 ) {
         fprintf(stderr, "Error with fseek\n");
         return;
     }
-    fread(&Flag, sizeof(unsigned char), 1, output);
+    check = fseek(output, 3, SEEK_SET);
+    fread(&Flag, sizeof(char), 1, output);
     printf("Flaga: ");
     printBits2(Flag,8);
     printf("\n");
@@ -99,4 +102,9 @@ void checkFlag(FILE *output) {
     printf("3. Mask: ");
     printBits2(tmp,4);
     printf("\n");
+    check = fseek(output, 2, SEEK_SET);
+    fread(&Liscie, sizeof(char), 1, output);
+    printf("4. Leaves: %d (", Liscie);
+    printBits2(Liscie, 8);
+    printf(")\n");
 }
