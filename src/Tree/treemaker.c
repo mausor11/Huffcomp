@@ -72,7 +72,7 @@ d_t makeHTree (d_t tree){
     char many = 0; //byl int
     counter(tree, &many);
     table_t tab[many];
-    int i, maxi;
+    int i, maxi = 0;
     d_t root = NULL;
     commonest(tree, &maxi);
     for(i = 0; i < many; i++) {
@@ -113,7 +113,7 @@ d_t makeHTree (d_t tree){
 }
 
 
-void codeTree(d_t tree, lista_t *output, char *temp, int *cntr) {
+void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 	//printf("codeTree: entered\n");
 	if(*cntr == 8) {
 	// potrzebny wskaźnik na początek w programie wywołującym
