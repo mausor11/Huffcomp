@@ -150,23 +150,6 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 		codeTree(tree->right_node, output, temp, cntr);
 }
 
-/*
-void commpress(d_t tree, FILE *input, FILE *output) {
-	d_t begin = tree;
-	char = 0;
-	int cntr = 0;
-	while( (fread(&temp
-}
-*/
-
-/*
- decTrec(d_t *tree, lista_t input, union eitbit *temp, int *cntr) {
-	
-	(*temp).A = input->c;
-	(*temp).B = input->next->c;
-
-}
-*/
 
 // W O R K    I N    P R O G R E S S
 // last - ostatni przeczytany znak z tablicy( jeżeli skończone wcześniej)

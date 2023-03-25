@@ -20,25 +20,25 @@ lista_t expandList(lista_t input, char c) {
 }
 
 lista_t createLista() {
-    lista_t list = malloc(sizeof(lista_t));
+    lista_t list = malloc(sizeof(slist));
     list->c = 0;
     list->next = NULL;
     return list;
 }
 
 lista_t addToList(lista_t list, char c) {
-    if(list == NULL) {
-        list = createLista();
-        list->c = c;
-        return list;
-    } else {
+	if(list == NULL) {
+		list = createLista();
+		list->c = c;
+		return list;
+	} else {
         lista_t tmp = list;
-        while(tmp->next != NULL) tmp = tmp->next;
-        tmp->next = malloc(sizeof(slist));
-        tmp->next->next = NULL;
-        tmp->next->c = c;
-        return list;
-    }
+        while(tmp->next != NULL) { tmp = tmp->next; }
+		tmp->next = malloc(sizeof(slist));
+		tmp->next->next = NULL;
+		tmp->next->c = c;
+		return list;
+	}
 }
 
 void list_size(lista_t lista) {
@@ -61,4 +61,12 @@ void freeList(lista_t input) {
 	if(input->next != NULL)
 		freeList(input->next);
 	free(input);
+}
+
+
+void listToFile(lista_t input, FILE *output){
+	while(input != NULL){
+		fwrite(&(input->c), sizeof(char), 1, output);
+		input = input->next;
+	}
 }

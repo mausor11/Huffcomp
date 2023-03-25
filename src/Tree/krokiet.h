@@ -2,7 +2,7 @@
 #define _KROKIET_H_
 
 #include "tree.h"
-
+#include "list.h"
 
 /* uwagi do struktury:
  	- kod[0] będzie zawsze równe 2
@@ -21,8 +21,10 @@ void fillKrokiet(d_t, krokiet_t [], int, int);
 
 void printKrokiet(krokiet_t []);
 
+void prepareKrokiet(krokiet_t []);
+
 void emptyKrokiet(krokiet_t []);
 
-void codeFile(krokiet_t [], FILE *, FILE *);
+void codeFile(krokiet_t [], FILE *, lista_t *, char *, char *);
 
 #endif

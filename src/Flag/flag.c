@@ -65,8 +65,8 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, char* cntr)
     Flag += mask;
 
     char *signature = "BJ";
-    fwrite(&*signature, sizeof(char), 2, output);
-    fwrite(&*cntr, sizeof(char), 1, output);
+    fwrite(signature, sizeof(char), 2, output);
+    fwrite(cntr, sizeof(char), 1, output);
     fwrite(&Flag, sizeof(unsigned char), 1, output);
 }
 

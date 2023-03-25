@@ -10,6 +10,7 @@
 #include "Tree/tree.h"
 #include "Tree/treemaker.h"
 #include "Tree/bitbajt.h"
+#include "Tree/list.h"
 #include "Tree/krokiet.h"
 #include "Flag/flag.h"
 
@@ -46,8 +47,8 @@ int main(int argc, char **argv) {
 	char *password;
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
 	bool encypt = false;
-	FILE *input = fopen(argv[argc-2], "rb");
-	FILE *output = fopen(argv[argc-1], "wb+");
+	FILE *input;
+	FILE *output;
 
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
@@ -57,6 +58,9 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "%s: Not enough arguments to open file!\n\n%s\n", argv[0], usage);
 		return 1;
 	}
+
+	input = fopen(argv[argc-2], "rb");
+	output = fopen(argv[argc-1], "wb+");
 
 	//sprawdzanie czy jest flaga -v i włączanie verbose
 	for(i=1;i<argc;i++) {
@@ -146,47 +150,92 @@ int main(int argc, char **argv) {
     // WORK IN PROGRESS
 
 
-	lista_t lista = NULL;
+	lista_t zakod = NULL;
 	d_t tree = NULL;
 	krokiet_t obiad[256];
 
 	char cntr = 0;
-	char temp = 0;
-	char x;
+	char temp;
 
 
-	while((fread(&x,sizeof(char),1,input)) == 1) {
-		tree = add(tree, x);
+	while((fread(&temp,sizeof(char),1,input)) == 1) {
+		tree = add(tree, temp);
     }
     //writeTree(tree, 0);
     //d_t tmp = tree;
     tree = makeHTree(tree);
     //writeTree(tree, 0);
+    temp = 0;
     char ile = 0;
     counter(tree, &ile);
-    writeTree(tree,0);
-	fillKrokiet(tree, obiad, 0, 2);
+	writeTree(tree,0);
+
+	prepareKrokiet(obiad);
+	fillKrokiet(tree, obiad, 0, -2);
 	printKrokiet(obiad);
-    codeTree(tree, &lista, &temp, &cntr);
-    printf("%d\n", tree->left_node->counter);
-    lista_t tm = lista;
-    list_size(tm);
-    while(tm != NULL) {
+
+
+    codeTree(tree, &zakod, &temp, &cntr);
+//	temp <<= (8 - cntr);
+//	drzewo = addToList(drzewo, temp);
+//	lista_t tm = drzewo;
+//	list_size(tm);
+/*	while(tm != NULL) {
         //printf("%c\n", tm->c);
         printBits(tm->c,8);
         printf("|");
         tm = tm->next;
 
     }
-    printBits(temp, cntr);
-    printf("\n");
-    addFlag(output,flagBit,encypt,cntr, &ile);
+*/
+//    printBits(temp, cntr);
+//    printf("\nIstotne bity ostatniego znaku - %d\n", cntr);
 
-    checkFlag(output);
+
+	fclose(input);
+	input = fopen(argv[argc-2], "rb");
+
+//	cntr = 0;
+
+//	printf("==Zakodowany plik input:\n");
+	codeFile(obiad, input, &zakod, &temp, &cntr);
+//	printf("\nOstatni znak, cyfry znaczące - %d: ", cntr);
+
+	temp <<= (8-cntr);
+	zakod = addToList(zakod, temp);
+
+//	printBits(temp, 8);
+//	printf("\n");
+
+	addFlag(output,flagBit,encypt,cntr, &ile);
+
+	listToFile(zakod, output);
+	lista_t tm = zakod;
+	list_size(tm);
+
+    while(tm != NULL) {
+        //printf("%c\n", tm->c);
+        printBits(tm->c,8);
+        printf("|");
+        tm = tm->next;
+	}
+
+	printf("bits used in last: %d\n", cntr);
+
+	checkFlag(output);
+
+	printf("aa\n");
 
     fclose(input);
     fclose(output);
-    freeList(lista);
+    freeList(zakod);
     freeTree(tree);
+	printf("\n\n=============================================\n\n");
+	input = fopen(argv[argc-1], "rb");
+	while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
+		printBits(cntr, 8);
+		printf(" - %c\n", cntr);
+	}
+	fclose(input);
 	return 0;
 }

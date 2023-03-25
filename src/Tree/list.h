@@ -1,6 +1,8 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
+#include <stdio.h>
+
 typedef struct f {
 	char c;
 	struct f *next;
@@ -11,6 +13,6 @@ lista_t addToList(lista_t list, char c);
 lista_t createList();
 void list_size(lista_t lista);
 void freeList(lista_t);
-
+void listToFile(lista_t, FILE *in);
 
 #endif
