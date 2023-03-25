@@ -5,10 +5,12 @@
 #include <stdbool.h>
 #include <string.h>
 
+
 #include "SzyfrXOR/szyfr.h"
 #include "Tree/tree.h"
 #include "Tree/treemaker.h"
 #include "Tree/bitbajt.h"
+#include "Tree/krokiet.h"
 #include "Flag/flag.h"
 
 
@@ -43,7 +45,7 @@ int main(int argc, char **argv) {
 	int i;
 	char *password;
 	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
-    bool encypt = false;
+	bool encypt = false;
 	FILE *input = fopen(argv[argc-2], "rb");
 	FILE *output = fopen(argv[argc-1], "wb+");
 
@@ -144,23 +146,27 @@ int main(int argc, char **argv) {
     // WORK IN PROGRESS
 
 
-    lista_t lista = NULL;
-    d_t tree = NULL;
+	lista_t lista = NULL;
+	d_t tree = NULL;
+	krokiet_t obiad[256];
 
-    char cntr = 0;
-    char temp = 0;
-    char x;
+	char cntr = 0;
+	char temp = 0;
+	char x;
 
-    while((fread(&x,sizeof(char),1,input)) == 1) {
-        tree = add(tree, x);
+
+	while((fread(&x,sizeof(char),1,input)) == 1) {
+		tree = add(tree, x);
     }
     //writeTree(tree, 0);
-    d_t tmp = tree;
-    tree = makeHTree(tmp);
+    //d_t tmp = tree;
+    tree = makeHTree(tree);
     //writeTree(tree, 0);
     char ile = 0;
     counter(tree, &ile);
     writeTree(tree,0);
+	fillKrokiet(tree, obiad, 0, 2);
+	printKrokiet(obiad);
     codeTree(tree, &lista, &temp, &cntr);
     printf("%d\n", tree->left_node->counter);
     lista_t tm = lista;

@@ -16,7 +16,7 @@ int main() {
 	table_t tab[4];
 
 	krokiet_t obiad[256];
-
+	/*
 	// insert
 	tree->znak = 'a';
 	tree->counter = 10;
@@ -30,6 +30,8 @@ int main() {
 	printf("Drzewo ze wczytania\n\nliczba liści drzewa: %d\n\n", ile);
 	writeTree(tree, 0);
 	tree = makeHTree(tree);
+	*/
+	
 	/*
 	printf("\nDrzewo Huffmana\n\n");
 	writeTree(tree, 0);

@@ -1,4 +1,4 @@
-libtree: tree.o treemaker.o bitbajt.o list.o
+libtree: tree.o treemaker.o bitbajt.o list.o krokiet.o
 	ar rvs libtree.a $^
 
 main: main.o tree.o bitbajt.o

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 
 #include "krokiet.h"
@@ -36,7 +37,7 @@ void printKrokiet(krokiet_t obiad[]) {
 	for(int i = 0; i < 256; i++)
 		if(obiad[i].done == 1) {
 			printf("%c - ", i);
-			for(int j = 1; obiad[i].kod[j] != 2; j++)
+			for(int j = 1; obiad[i].kod[j] < 2; j++)
 				printf("%d", obiad[i].kod[j]);
 			printf("\n");
 		}
@@ -44,10 +45,27 @@ void printKrokiet(krokiet_t obiad[]) {
 
 
 void codeFile(krokiet_t obiad[], FILE *in, FILE *out) {
-	char *buf;
+	char *buf = malloc(100 * sizeof (*buf) );
+	char temp = 0;
+	int cntr = 0;
 	int liczba = bajt(buf, in, 100);
-	for(int i = 0; i < liczba; i++) {
-		
+	while(liczba != 0) {
+		for(int i = 0; i < liczba; i++) {
+			int j = 1;
+			while(obiad[*(buf+i)].kod[j] < 2) {
+				// zapełnienie temp
+				if(cntr == 8) {
+					fwrite(&temp, sizeof(char), 1, out);
+					temp = 0;
+					cntr -= 8;
+				}
+				temp <<= 1;
+				temp += obiad[*(buf+i)].kod[j++];
+				cntr++;
+				//j++;
+			}
+		}
+		liczba = bajt(buf, in, 100);	// kolejna dawka danych
 	}
 	free(buf);
 }

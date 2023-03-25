@@ -8,6 +8,7 @@ int main() {
 	char *abc = malloc(100 * sizeof(*abc));
 	int ile = bajt(abc, in, 2);
 	ile = bajt(abc, in, 2);
+	ile = bajt(abc, in, 2);
 	printf("ile:%d\nznak:%c\n", ile, *(abc+1));
 	free(abc);
 	fclose(in);
