@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
     tree = makeHTree(tree);
     //writeTree(tree, 0);
     temp = 0;
-    char ile = 0;
+    short ile = 0;
     counter(tree, &ile);
 	writeTree(tree,0);
 
@@ -207,7 +207,7 @@ int main(int argc, char **argv) {
 //	printBits(temp, 8);
 //	printf("\n");
 
-	addFlag(output,flagBit,encypt,cntr, &ile);
+	addFlag(output,flagBit,encypt,cntr, ile);
 
 	listToFile(zakod, output);
 	lista_t tm = zakod;
@@ -222,8 +222,8 @@ int main(int argc, char **argv) {
 
 	printf("bits used in last: %d\n", cntr);
 
-    char Flag = 0, mask = 0; //czytanie flagi i maski
-	checkFlag(output, &mask, &Flag);
+    char Flag = 0; //czytanie flagi i maski
+	checkFlag(output, &Flag, &ile);
 
     fclose(input);
     fclose(output);

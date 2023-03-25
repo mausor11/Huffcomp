@@ -10,8 +10,8 @@ tree: tree.c tree.h
 list: list.c list.h
 	$(CC) -c list.c list.h
 
-treemaker: treemaker.c treemaker.h tree.h list.h
-	$(CC) -c treemaker.c treemaker.h tree.h list.h
+treemaker: treemaker.c treemaker.h tree.h list.h bitbajt.h
+	$(CC) -c treemaker.c treemaker.h tree.h list.h bitbajt.h
 
 krokiet: krokiet.c krokiet.h tree.h list.h bitbajt.h
 	$(CC) -c $^

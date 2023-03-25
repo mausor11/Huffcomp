@@ -69,7 +69,7 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 
 // make Huffman tree
 d_t makeHTree (d_t tree){
-    char many = 0; //byl int
+    short many = 0; //byl int
     counter(tree, &many);
     table_t tab[many];
     int i, maxi = 0;
@@ -149,6 +149,109 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 	if(tree->right_node != NULL)
 		codeTree(tree->right_node, output, temp, cntr);
 }
+
+// to *powinno* stworzyć drzewo
+// cntr od 0 do 8 - liczba ważnych bitów w temp.B
+//		(tak, żeby w temp.A zawsze był pełny char)
+void readTree(d_t tree, lista_t in, short *liscie, union eitbit *temp, char *cntr) {
+	if(*liscie == 0)
+		return;
+
+	else {
+		int currentBit;
+		while(*cntr <= 0) {
+			temp->B = in->c;
+			in = in->next;
+			if(in == NULL)			// skończyły się dane
+				return;
+			(*cntr) += 8;
+		}
+		currentBit = bit(temp->A, 7);
+		temp->ab <<= 1;
+		(*cntr)--;
+		if(currentBit == 0) {
+			if(tree->left_node == NULL) {
+				tree->left_node = createTree();
+				// jest piękny, it's beautiful
+				readTree( tree->left_node, in, liscie, temp, cntr);
+			}
+			else {
+				tree->right_node = createTree();
+				readTree(tree->right_node, in, liscie, temp, cntr);
+			}
+		}
+		else {
+			if(tree->left_node == NULL) {
+				tree->left_node = createTree();
+				tree->left_node->znak = temp->A;
+				tree->left_node->counter = -1;
+			}
+			else {
+				tree->right_node = createTree();
+				tree->right_node->znak = temp->A;
+				tree->right_node->counter = -1;
+			}
+			temp->ab <<= *cntr;
+			temp->B = in->c;
+			in = in->next;
+			temp->ab <<= (8 - *cntr);
+			(*liscie)--;
+			if(in == NULL) return;
+		}
+	}
+}
+
+
+
+/* dumb kopia, dodatkowe wskaźniki niepotrzebne (ale kompilowalne)
+void readTree(d_t *tree, lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
+	if(*liscie == 0)
+		return;
+
+	else {
+		int currentBit;
+		while(*cntr <= 0) {
+			temp->B = (*in)->c;
+			(*in) = (*in)->next;
+			if((*in) == NULL)			// skończyły się dane
+				return;
+			(*cntr) += 8;
+		}
+		currentBit = bit(temp->A, 7);
+		temp->ab <<= 1;
+		(*cntr)--;
+		if(currentBit == 0) {
+			if((*tree)->left_node == NULL) {
+				(*tree)->left_node = createTree();
+				// jest piękny, it's beautiful
+				readTree( &( (*tree)->left_node ) , in, liscie, temp, cntr);
+			}
+			else {
+				(*tree)->right_node = createTree();
+				readTree( &( (*tree)->right_node ) , in, liscie, temp, cntr);
+			}
+		}
+		else {
+			if((*tree)->left_node == NULL) {
+				(*tree)->left_node = createTree();
+				(*tree)->left_node->znak = temp->A;
+				(*tree)->left_node->counter = -1;
+			}
+			else {
+				(*tree)->right_node = createTree();
+				(*tree)->right_node->znak = temp->A;
+				(*tree)->right_node->counter = -1;
+			}
+			temp->ab <<= *cntr;
+			temp->B = (*in)->c;
+			(*in) = (*in)->next;
+			temp->ab <<= (8 - *cntr);
+			(*liscie)--;
+			if((*in) == NULL) return;
+		}
+	}
+}
+*/
 
 
 // W O R K    I N    P R O G R E S S

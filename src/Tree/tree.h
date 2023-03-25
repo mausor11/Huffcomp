@@ -19,15 +19,11 @@ void freeTree(d_t tree);
 
 void writeTree(d_t tree, int i);
 
-int readTree(d_t, char *, int);
-
-// void rarest(d_t, char *, int *);
-
 void rarestt(d_t, d_t*, int *);
 
 void commonest(d_t, int *);
 
-void counter(d_t, char*);
+void counter(d_t, short*);
 
 
 #endif
