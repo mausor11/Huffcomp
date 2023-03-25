@@ -21,7 +21,7 @@ void writeTree(d_t tree, int i);
 
 int readTree(d_t, char *, int);
 
-void rarest(d_t, char *, int *);
+// void rarest(d_t, char *, int *);
 
 void rarestt(d_t, d_t*, int *);
 

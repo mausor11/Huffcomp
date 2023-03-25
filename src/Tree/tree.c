@@ -33,6 +33,7 @@ void writeTree(d_t tree, int i) {
 	}
 }
 
+/*
 void rarest(d_t tree, char *temp, int *mini) {
 	if(tree->right_node != NULL)
 		rarest(tree->right_node, temp, mini);
@@ -43,6 +44,7 @@ void rarest(d_t tree, char *temp, int *mini) {
 		*temp = tree->znak;
 	}
 }
+*/
 
 void rarestt(d_t tree, d_t *temp, int *mini) {
 	if(tree->right_node != NULL)
@@ -74,21 +76,3 @@ void counter(d_t tree, char *cntr) {
 	if(tree->counter != 0)
 		(*cntr)++;
 }
-
-/*
-void makeTable(d_t tree, tabt_t *tab, int *which, char path) {
-	path
-	if(tree->counter == 0){
-		
-	}
-	else {
-
-	}
-	if(tree->left_node != NULL)
-		makeTable(tree->left_node, tab, which);
-	if(tree->right_node != NULL)
-		makeTable(tree->right_node, tab, which);
-
-}
-^ not worth
-*/

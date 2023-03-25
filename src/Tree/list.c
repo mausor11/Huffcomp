@@ -28,9 +28,8 @@ lista_t createLista() {
 
 lista_t addToList(lista_t list, char c) {
     if(list == NULL) {
-        list = malloc(sizeof(slist));
+        list = createLista();
         list->c = c;
-        list->next = NULL;
         return list;
     } else {
         lista_t tmp = list;

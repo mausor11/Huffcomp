@@ -13,10 +13,16 @@ list: list.c list.h
 treemaker: treemaker.c treemaker.h tree.h list.h
 	$(CC) -c treemaker.c treemaker.h tree.h list.h
 
+krokiet: krokiet.c krokiet.h tree.h
+	$(CC) -c $^
+
+
 
 main.o: main.c
 	$(CC) -c main.c
 
+test3: test3.c tree.o treemaker.o list.o bitbajt.o krokiet.o
+	$(CC) -o test3 $^
 
 test2: test2.c tree.o treemaker.o list.o bitbajt.o
 	$(CC) -o test2 test2.c tree.o treemaker.o list.o bitbajt.o

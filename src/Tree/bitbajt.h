@@ -1,5 +1,5 @@
 #ifndef _BITBAJT_H_
-#define _BITBATJ_H_
+#define _BITBAJT_H_
 
 #include <stdio.h>
 
