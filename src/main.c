@@ -222,9 +222,8 @@ int main(int argc, char **argv) {
 
 	printf("bits used in last: %d\n", cntr);
 
-	checkFlag(output);
-
-	printf("aa\n");
+    char Flag = 0, mask = 0; //czytanie flagi i maski
+	checkFlag(output, &mask, &Flag);
 
     fclose(input);
     fclose(output);

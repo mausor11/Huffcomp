@@ -70,7 +70,7 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, char* cntr)
     fwrite(&Flag, sizeof(unsigned char), 1, output);
 }
 
-void checkFlag(FILE *output) {
+void checkFlag(FILE *output, char *Mask, char *flag) {
     unsigned char Flag = 0;
     unsigned char Liscie = 0;
     char maskSzyfr = 0b00100000;
@@ -87,6 +87,7 @@ void checkFlag(FILE *output) {
     printf("Flaga: ");
     printBits2(Flag,8);
     printf("\n");
+    *flag = Flag;
     if(Flag & maskSzyfr) {
         printf("1. Encypting: true\n");
     } else {
@@ -99,9 +100,10 @@ void checkFlag(FILE *output) {
 
     tmp = Flag;
     tmp = tmp & maskMask;
-    printf("3. Mask: ");
+    printf("3. Mask: %d (", tmp);
     printBits2(tmp,4);
-    printf("\n");
+    printf(")\n");
+    *Mask = tmp;
     check = fseek(output, 2, SEEK_SET);
     fread(&Liscie, sizeof(char), 1, output);
     printf("4. Leaves: %d (", Liscie);
