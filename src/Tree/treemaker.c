@@ -153,50 +153,80 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 // to *powinno* stworzyć drzewo
 // cntr od 0 do 8 - liczba ważnych bitów w temp.B
 //		(tak, żeby w temp.A zawsze był pełny char)
-void readTree(d_t tree, lista_t in, short *liscie, union eitbit *temp, char *cntr) {
-	if(*liscie == 0)
-		return;
-
-	else {
+void readTree(d_t tree, lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
+	if(*liscie) {			// nie wczytano wszystkich liści
+		tree = createTree();
+//		printf("\t\tcreated new tree: %d\n", tree->counter);
 		int currentBit;
-		while(*cntr <= 0) {
-			temp->B = in->c;
-			in = in->next;
-			if(in == NULL)			// skończyły się dane
-				return;
+		if(*cntr == 0) {
+			if((*in) == NULL){return;}			// skończyły się dane
+			temp->B = (*in)->c;
+			(*in)  = (*in)->next;
 			(*cntr) += 8;
 		}
 		currentBit = bit(temp->A, 7);
 		temp->ab <<= 1;
 		(*cntr)--;
+//		printf("cntr: %d\n", *cntr);
 		if(currentBit == 0) {
-			if(tree->left_node == NULL) {
+			printf("got a 0\n");
+			readTree(tree->left_node, in, liscie, temp, cntr);
+			printf("-doing right, this node's counter is %d\n", tree->znak);
+			printf("\n");
+//			printf("left node's counter is %d\n", tree->left_node->counter);
+			readTree(tree->right_node, in, liscie, temp, cntr);
+/*			if(tree->left_node == NULL) {
+				printf("how>\n");
 				tree->left_node = createTree();
-				// jest piękny, it's beautiful
 				readTree( tree->left_node, in, liscie, temp, cntr);
 			}
 			else {
+				printf("aa\n");
 				tree->right_node = createTree();
+				printf("bb\n");
 				readTree(tree->right_node, in, liscie, temp, cntr);
 			}
+*/
 		}
+
 		else {
-			if(tree->left_node == NULL) {
+			printf("got a 1: %c - ", temp->A);
+			printBits(temp->A, 8);
+			printf("\n");
+			tree->znak = temp->A;
+			printf("\%\% %c\n", tree->znak);
+			tree->counter = -1;
+			temp->ab <<= *cntr;
+			if((*in) == NULL){return;}
+			printf("didnt return prematurely\n");
+			temp->B = (*in)->c;
+			(*in) = (*in)->next;
+			temp->ab <<= (8 - *cntr);
+			printf("\ttemp->A i B: %c%c - ", temp->A, temp->B);
+			printBits(temp->A, 8);
+			printBits(temp->B, 8);
+			printf("\n");
+			(*liscie)--;
+			printf("leaves: %d\n", *liscie);
+/*			if(tree->left_node == NULL) {
 				tree->left_node = createTree();
 				tree->left_node->znak = temp->A;
 				tree->left_node->counter = -1;
+				temp->ab <<= *cntr;
+				if(in == NULL) return;
+				temp->B = in->c;
+				in = in->next;
+				temp->ab <<= (8 - *cntr);
+				(*liscie)--;
+				readTree(tree->right_node, in, liscie, temp, cntr);
 			}
 			else {
 				tree->right_node = createTree();
 				tree->right_node->znak = temp->A;
 				tree->right_node->counter = -1;
+				(*liscie)--;
 			}
-			temp->ab <<= *cntr;
-			temp->B = in->c;
-			in = in->next;
-			temp->ab <<= (8 - *cntr);
-			(*liscie)--;
-			if(in == NULL) return;
+*/
 		}
 	}
 }

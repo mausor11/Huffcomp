@@ -176,18 +176,31 @@ int main(int argc, char **argv) {
 
 
     codeTree(tree, &zakod, &temp, &cntr);
-//	temp <<= (8 - cntr);
-//	drzewo = addToList(drzewo, temp);
-//	lista_t tm = drzewo;
-//	list_size(tm);
-/*	while(tm != NULL) {
+	temp <<= (8 - cntr);
+	zakod = addToList(zakod, temp);
+	zakod = addToList(zakod, 'b');
+	lista_t beginning = zakod;
+	union eitbit trempe;
+//	printf("\n\n\n%c\n\n\n", zakod->c);
+	trempe.A = zakod->c;
+	trempe.B = zakod->next->c;
+	zakod = zakod->next->next;
+	char abcdefg = 8;
+	d_t ntree = NULL;
+	d_t top = ntree;
+	readTree(ntree, &zakod, &ile, &trempe, &abcdefg);
+	printf("\n\nNowe drzewo:\n");
+//	writeTree(top, 0);
+	lista_t tm = beginning;
+	list_size(tm);
+	while(tm != NULL) {
         //printf("%c\n", tm->c);
         printBits(tm->c,8);
         printf("|");
         tm = tm->next;
 
     }
-*/
+
 //    printBits(temp, cntr);
 //    printf("\nIstotne bity ostatniego znaku - %d\n", cntr);
 
@@ -196,7 +209,6 @@ int main(int argc, char **argv) {
 	input = fopen(argv[argc-2], "rb");
 
 //	cntr = 0;
-
 //	printf("==Zakodowany plik input:\n");
 	codeFile(obiad, input, &zakod, &temp, &cntr);
 //	printf("\nOstatni znak, cyfry znaczące - %d: ", cntr);
@@ -210,7 +222,7 @@ int main(int argc, char **argv) {
 	addFlag(output,flagBit,encypt,cntr, ile);
 
 	listToFile(zakod, output);
-	lista_t tm = zakod;
+	tm = zakod;
 	list_size(tm);
 
     while(tm != NULL) {
@@ -223,12 +235,14 @@ int main(int argc, char **argv) {
 	printf("bits used in last: %d\n", cntr);
 
     char Flag = 0; //czytanie flagi i maski
-	checkFlag(output, &Flag, &ile);
+    checkFlag(output, &Flag, &ile);
 
-    fclose(input);
-    fclose(output);
-    freeList(zakod);
-    freeTree(tree);
+	fclose(input);
+	fclose(output);
+	freeList(zakod);
+	freeTree(tree);
+//	freeTree(ntree);
+//	freeTree(top);
 	printf("\n\n=============================================\n\n");
 	input = fopen(argv[argc-1], "rb");
 	while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
