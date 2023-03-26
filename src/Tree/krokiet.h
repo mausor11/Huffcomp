@@ -25,6 +25,6 @@ void prepareKrokiet(krokiet_t []);
 
 void emptyKrokiet(krokiet_t []);
 
-void codeFile(krokiet_t [], FILE *, lista_t *, char *, char *);
+lista_t codeFile(krokiet_t [], FILE *, char *, char *);
 
 #endif

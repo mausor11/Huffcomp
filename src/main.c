@@ -160,14 +160,12 @@ int main(int argc, char **argv) {
 
 	while((fread(&temp,sizeof(char),1,input)) == 1) {
 		tree = add(tree, temp);
-    }
-    //writeTree(tree, 0);
-    //d_t tmp = tree;
-    tree = makeHTree(tree);
-    //writeTree(tree, 0);
-    temp = 0;
-    short ile = 0;
-    counter(tree, &ile);
+	}
+	tree = makeHTree(tree);
+	temp = 0;
+	short ile = 0, ilee;
+	counter(tree, &ile);
+	ilee = ile;
 	writeTree(tree,0);
 
 	prepareKrokiet(obiad);
@@ -175,44 +173,58 @@ int main(int argc, char **argv) {
 	printKrokiet(obiad);
 
 
-    codeTree(tree, &zakod, &temp, &cntr);
+	codeTree(tree, &zakod, &temp, &cntr);
 	temp <<= (8 - cntr);
 	zakod = addToList(zakod, temp);
 	zakod = addToList(zakod, 'b');
 	lista_t beginning = zakod;
+	printf("\n\n\nbeginning: %c, zakod: %c\n\n\n", beginning->c, zakod->c);
+
+/*
 	union eitbit trempe;
-//	printf("\n\n\n%c\n\n\n", zakod->c);
 	trempe.A = zakod->c;
 	trempe.B = zakod->next->c;
 	zakod = zakod->next->next;
 	char abcdefg = 8;
 	d_t ntree = NULL;
-	d_t top = ntree;
-	readTree(ntree, &zakod, &ile, &trempe, &abcdefg);
+	ntree = readTree(&zakod, &ilee, &trempe, &abcdefg);
+
 	printf("\n\nNowe drzewo:\n");
-//	writeTree(top, 0);
+	writeTree(ntree, 0);
+*/
 	lista_t tm = beginning;
 	list_size(tm);
 	while(tm != NULL) {
-        //printf("%c\n", tm->c);
+//		printf("%c\n", tm->c);
         printBits(tm->c,8);
         printf("|");
         tm = tm->next;
 
     }
 
-//    printBits(temp, cntr);
-//    printf("\nIstotne bity ostatniego znaku - %d\n", cntr);
+    printBits(temp, cntr);
+    printf("\nIstotne bity ostatniego znaku - %d\n", cntr);
 
 
 	fclose(input);
 	input = fopen(argv[argc-2], "rb");
 
 //	cntr = 0;
-//	printf("==Zakodowany plik input:\n");
-	codeFile(obiad, input, &zakod, &temp, &cntr);
-//	printf("\nOstatni znak, cyfry znaczące - %d: ", cntr);
-
+	printf("\n==Zakodowany plik input:\n");
+	temp >>= (8 - cntr);
+	lista_t pliczek = codeFile(obiad, input, &temp, &cntr);
+//	printf("\nOstatni znak,\n cyfry znaczące - %c: ", temp);
+	zakod = beginning;
+	while(zakod->next->next != NULL) zakod = zakod->next;
+	freeList(zakod->next);
+	printf("after while\n");
+	zakod->c = pliczek->c;
+	printf("eee\n");
+	zakod->next = pliczek->next;
+	printf("huh\n");
+	free(pliczek);
+	zakod = beginning;
+	printf("\n\n\nbeginning: %c\n", zakod->c);
 	temp <<= (8-cntr);
 	zakod = addToList(zakod, temp);
 
@@ -222,7 +234,7 @@ int main(int argc, char **argv) {
 	addFlag(output,flagBit,encypt,cntr, ile);
 
 	listToFile(zakod, output);
-	tm = zakod;
+	tm = beginning;
 	list_size(tm);
 
     while(tm != NULL) {
@@ -237,12 +249,14 @@ int main(int argc, char **argv) {
     char Flag = 0; //czytanie flagi i maski
     checkFlag(output, &Flag, &ile);
 
+	printf("\n\nbeginning: %c\n", beginning->c);
+
+
 	fclose(input);
 	fclose(output);
-	freeList(zakod);
+	freeList(beginning);
 	freeTree(tree);
 //	freeTree(ntree);
-//	freeTree(top);
 	printf("\n\n=============================================\n\n");
 	input = fopen(argv[argc-1], "rb");
 	while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {

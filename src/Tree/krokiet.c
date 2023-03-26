@@ -55,22 +55,20 @@ void printKrokiet(krokiet_t obiad[]) {
 }
 
 
-void codeFile(krokiet_t obiad[], FILE *in, lista_t *lista, char *temp, char *cntr) {
-//	printf("\n==beginning codeFile\n\n");
+lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
+	lista_t lista = NULL;
 	char *buf = malloc(100 * sizeof (*buf) );
 	int liczba = bajt(buf, in, 100);
-//	printf("liczba = %d\nZakodowany ciąg:\n", liczba);
 	while(liczba != 0) {
 		for(int i = 0; i < liczba; i++) {
 			int j = 1;
-//			printf("codeFile intake: %c, %d\n", *(buf+i), *(buf+1) );
 			while(obiad[*(buf+i)].kod[j+1] >= 0) {
+
 				// zapełnienie temp
 				if(*cntr == 8) {
-//					printBits(*temp, 8);
-//					printf(" ");
-					*lista = addToList(*lista, *temp);
-//					fwrite(temp, sizeof(char), 1, out);
+					lista = addToList(lista, *temp);
+//					printf("dodano do listy. %d, %c\n", lista->c, *temp);
+					printList(lista);
 					*temp = 0;
 					(*cntr) -= 8;
 				}
@@ -83,4 +81,5 @@ void codeFile(krokiet_t obiad[], FILE *in, lista_t *lista, char *temp, char *cnt
 		liczba = bajt(buf, in, 100);	// kolejna dawka danych
 	}
 	free(buf);
+	return lista;
 }
