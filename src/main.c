@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	int opt;
 	int i;
 	char *password;
-	char flagComp = 'n', flagCrypt = 'n', flagVerb = 'n';
+	char flagComp = 'c', flagCrypt = 'n', flagVerb = 'n';
 	bool encypt = false;
 	FILE *input;
 	FILE *output;
@@ -94,6 +94,7 @@ int main(int argc, char **argv) {
 
 	while ( (opt = getopt (argc, argv, "o:c:vhxz") ) != -1 ) {
 		switch(opt) {
+
 			case 'o':
 				flagBit = atoi (optarg);
 				if(Verbose == true) {
@@ -112,9 +113,9 @@ int main(int argc, char **argv) {
 						char_number = 8;
 						break;
 				}
-
 				if(Verbose){ printf("==DEBUG== Bit number: %d\n", char_number); };
 				break;
+
 			case 'c':
 				password = optarg;
                 encypt = true;
@@ -127,142 +128,159 @@ int main(int argc, char **argv) {
                 //zaraz na dol
 				//XOR(input, output, char_number, Verbose, password);
 				break;
+
 			case 'v':
 				break;
+
 			case 'z':
 				flagComp = 'c';
 				if(Verbose == true)
 					printf("==DEBUG== getopt: Chosen force compression\n");
 				break;
+
 			case 'x':
 				flagComp = 'd';
 				if(Verbose == true)
 					printf("==DEBUG== getopt: Chosen force decompression\n");
 				break;
+
 			case 'h':
 				fprintf(stdout, usage, argv[0]);
 				return 0;
+
 			default:
 				fprintf(stderr, usage, argv[0]);
 				exit(EXIT_FAILURE);
 		}
 	}
+
+// kompresja
+	if(flagComp == 'c') {
+
+
+/* deklaracje zmiennych */
+		krokiet_t obiad[256];
+		short ile = 0, ilee;
+		char cntr = 0, temp;
+		d_t tree = NULL;
+		lista_t zakod = NULL, beginning, pliczek = NULL;
+
+
+/* liczenie wszystkich znaków w input */
+		while((fread(&temp,sizeof(char),1,input)) == 1) {
+			tree = add(tree, temp);
+		}
+
+
+/* tworzenie drzewa huffmana i tablicy alfabetowej*/
+		tree = makeHTree(tree);
+		temp = 0;
+		counter(tree, &ile);
+		ilee = ile;
+		prepareKrokiet(obiad);
+		fillKrokiet(tree, obiad, 0, -2);
+
+
+/* zakodowanie drzewa */
+		codeTree(tree, &zakod, &temp, &cntr);
+		beginning = zakod;
+		temp <<= (8 - cntr);
+		zakod = addToList(zakod, temp);
+		zakod = addToList(zakod, 'b');
+
+
+/* powrót do początku pliku */
+		if(fseek(input, 0, SEEK_SET) ){
+			fprintf(stderr, "%s: There was an error while reading the file. Aborting.\n", argv[0]);
+			return EXIT_FAILURE;
+		}
+
+
+/* kompresja pliku input */
+		temp >>= (8 - cntr);
+		pliczek = codeFile(obiad, input, &temp, &cntr);
+
+
+/* połączenie list zakod i pliczek, dodanie ostatniego znaku */ //(?)
+		zakod = beginning;
+		while(zakod->next->next != NULL)
+			zakod = zakod->next;
+		freeList(zakod->next);
+		zakod->c = pliczek->c;
+		zakod->next = pliczek->next;
+		free(pliczek);
+		zakod = beginning;
+		temp <<= (8-cntr);
+		zakod = addToList(zakod, temp);
+
+
+
+
+/* w tym momencie w zakod jest drzewo oraz skompresowany plik */
+
+
+
+
+/* dodanie inicjałów oraz flag do pliku output */
+		addFlag(output,flagBit,encypt,cntr, ile);
+
+
+/* dodanie drzewa oraz skompresowanego pliku do output */
+		listToFile(zakod, output);
+
+
+/* zwolnienie alokowanej pamięci */
+		freeList(beginning);
+		freeTree(tree);
+	}
+
     // WORK IN PROGRESS
 
 
-	lista_t zakod = NULL;
-	d_t tree = NULL;
-	krokiet_t obiad[256];
 
-	char cntr = 0;
-	char temp;
-
-
-	while((fread(&temp,sizeof(char),1,input)) == 1) {
-		tree = add(tree, temp);
-	}
-	tree = makeHTree(tree);
-	temp = 0;
-	short ile = 0, ilee;
-	counter(tree, &ile);
-	ilee = ile;
-	writeTree(tree,0);
-
-	prepareKrokiet(obiad);
-	fillKrokiet(tree, obiad, 0, -2);
-	printKrokiet(obiad);
+	else {
+/*
+		union eitbit trempe;
+		trempe.A = zakod->c;
+		trempe.B = zakod->next->c;
+		zakod = zakod->next->next;
+		char abcdefg = 8;
+		d_t ntree = NULL;
+		ntree = readTree(&zakod, &ilee, &trempe, &abcdefg);
+*/
+	//	printf("\n\nNowe drzewo:\n");
+	//	writeTree(ntree, 0);
 
 
-	codeTree(tree, &zakod, &temp, &cntr);
-	temp <<= (8 - cntr);
-	zakod = addToList(zakod, temp);
-	zakod = addToList(zakod, 'b');
-	lista_t beginning = zakod;
-	printf("\n\n\nbeginning: %c, zakod: %c\n\n\n", beginning->c, zakod->c);
+
+	//	fclose(input);
+	//	input = fopen(argv[argc-2], "rb");
+
+	//	cntr = 0;
 
 /*
-	union eitbit trempe;
-	trempe.A = zakod->c;
-	trempe.B = zakod->next->c;
-	zakod = zakod->next->next;
-	char abcdefg = 8;
-	d_t ntree = NULL;
-	ntree = readTree(&zakod, &ilee, &trempe, &abcdefg);
+		printf("bits used in last: %d\n", cntr);
 
-	printf("\n\nNowe drzewo:\n");
-	writeTree(ntree, 0);
+	    char Flag = 0; //czytanie flagi i maski
+	    checkFlag(output, &Flag, &ile);
+
+		printf("\n\nbeginning: %c\n", beginning->c);
+
+
+
+
+		freeTree(ntree);
+
+		printf("\n\n=============================================\n\n");
+		input = fopen(argv[argc-1], "rb");
+		while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
+			printBits(cntr, 8);
+			printf(" - %c\n", cntr);
+		}
+		fclose(input);
 */
-	lista_t tm = beginning;
-	list_size(tm);
-	while(tm != NULL) {
-//		printf("%c\n", tm->c);
-        printBits(tm->c,8);
-        printf("|");
-        tm = tm->next;
-
-    }
-
-    printBits(temp, cntr);
-    printf("\nIstotne bity ostatniego znaku - %d\n", cntr);
-
-
-	fclose(input);
-	input = fopen(argv[argc-2], "rb");
-
-//	cntr = 0;
-	printf("\n==Zakodowany plik input:\n");
-	temp >>= (8 - cntr);
-	lista_t pliczek = codeFile(obiad, input, &temp, &cntr);
-//	printf("\nOstatni znak,\n cyfry znaczące - %c: ", temp);
-	zakod = beginning;
-	while(zakod->next->next != NULL) zakod = zakod->next;
-	freeList(zakod->next);
-	printf("after while\n");
-	zakod->c = pliczek->c;
-	printf("eee\n");
-	zakod->next = pliczek->next;
-	printf("huh\n");
-	free(pliczek);
-	zakod = beginning;
-	printf("\n\n\nbeginning: %c\n", zakod->c);
-	temp <<= (8-cntr);
-	zakod = addToList(zakod, temp);
-
-//	printBits(temp, 8);
-//	printf("\n");
-
-	addFlag(output,flagBit,encypt,cntr, ile);
-
-	listToFile(zakod, output);
-	tm = beginning;
-	list_size(tm);
-
-    while(tm != NULL) {
-        //printf("%c\n", tm->c);
-        printBits(tm->c,8);
-        printf("|");
-        tm = tm->next;
 	}
-
-	printf("bits used in last: %d\n", cntr);
-
-    char Flag = 0; //czytanie flagi i maski
-    checkFlag(output, &Flag, &ile);
-
-	printf("\n\nbeginning: %c\n", beginning->c);
-
-
 	fclose(input);
 	fclose(output);
-	freeList(beginning);
-	freeTree(tree);
-//	freeTree(ntree);
-	printf("\n\n=============================================\n\n");
-	input = fopen(argv[argc-1], "rb");
-	while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
-		printBits(cntr, 8);
-		printf(" - %c\n", cntr);
-	}
-	fclose(input);
 	return 0;
 }

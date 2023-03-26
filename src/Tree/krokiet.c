@@ -18,8 +18,6 @@ void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 		obiad[tree->znak].kod[poziom] = what;
 		obiad[tree->znak].kod[poziom+1] = poziom;
 		obiad[tree->znak].done = 1;
-		printf("%c: %d\n", tree->znak, tree->znak);
-		printf("%d\n", obiad[tree->znak].kod[poziom+1] );
 	}
 	if(tree->left_node != NULL)
 		fillKrokiet(tree->left_node, obiad, poziom+1, 0);
@@ -68,7 +66,7 @@ lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
 				if(*cntr == 8) {
 					lista = addToList(lista, *temp);
 //					printf("dodano do listy. %d, %c\n", lista->c, *temp);
-					printList(lista);
+//					printList(lista);
 					*temp = 0;
 					(*cntr) -= 8;
 				}

@@ -150,7 +150,7 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 		codeTree(tree->right_node, output, temp, cntr);
 }
 
-// to *powinno* stworzyć drzewo
+// to *powinno* stworzyć drzewo <- i tak robi :D
 // cntr od 0 do 8 - liczba ważnych bitów w temp.B
 //		(tak, żeby w temp.A zawsze był pełny char)
 d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
@@ -186,112 +186,13 @@ d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 	}
 }
 
-
-
-/* dumb, stinky kopia, dodatkowe wskaźniki niepotrzebne (ale kompilowalne)
-void readTree(d_t *tree, lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
-	if(*liscie == 0)
-		return;
-
-	else {
-		int currentBit;
-		while(*cntr <= 0) {
-			temp->B = (*in)->c;
-			(*in) = (*in)->next;
-			if((*in) == NULL)			// skończyły się dane
-				return;
-			(*cntr) += 8;
-		}
-		currentBit = bit(temp->A, 7);
-		temp->ab <<= 1;
-		(*cntr)--;
-		if(currentBit == 0) {
-			if((*tree)->left_node == NULL) {
-				(*tree)->left_node = createTree();
-				// jest piękny, it's beautiful
-				readTree( &( (*tree)->left_node ) , in, liscie, temp, cntr);
-			}
-			else {
-				(*tree)->right_node = createTree();
-				readTree( &( (*tree)->right_node ) , in, liscie, temp, cntr);
-			}
-		}
-		else {
-			if((*tree)->left_node == NULL) {
-				(*tree)->left_node = createTree();
-				(*tree)->left_node->znak = temp->A;
-				(*tree)->left_node->counter = -1;
-			}
-			else {
-				(*tree)->right_node = createTree();
-				(*tree)->right_node->znak = temp->A;
-				(*tree)->right_node->counter = -1;
-			}
-			temp->ab <<= *cntr;
-			temp->B = (*in)->c;
-			(*in) = (*in)->next;
-			temp->ab <<= (8 - *cntr);
-			(*liscie)--;
-			if((*in) == NULL) return;
-		}
+// cntr to, znów, licznik, ale teraz całego ab - należy dodać 8 w mainie, jeżeli 
+char decodeFile(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
+	d_t current;
+	int b;
+	while(in != NULL) {
+		current = tree;
+		b = bit(temp->A, 7);
 	}
 }
-*/
 
-
-// W O R K    I N    P R O G R E S S
-// last - ostatni przeczytany znak z tablicy( jeżeli skończone wcześniej)
-// slide - przesunięcie tego znaku w bitach
-/*
-int readTree(d_t tree, char *tab, int many, char last, char slide) {
-	union eitbit unia;
-	int i = 0;		// całokształtne przesunięcie
-	int twobit = 0;		// temp na dwa bity operacyjne
-	int x = 0;		// cykliczne przesunięcie
-	//int xx = 0;		// dodatek do przesunięcia, zmienny więc jest zmienna - slide
-	//char c;			// temp do wyjęcia danych (do usunięcia) = last
-	d_t *root = tree;		// dać tree o 2 nullach i znaku w sobie (aka liść)
-	d_t *last = tree;
-	do {
-		slide = 0;
-		unia.A = *(tab+i);
-		unia.B = *(tab+i+1);
-		unia.C = *(tab+i+2);
-		unia.D = *(tab+i+3);
-		unia.abcd << x;
-		twobit = 10*bit(unia.A, 7) + bit(unia.A, 6);
-		unia.shrt << 2;
-		slide += 2;
-//		last = unia.A;
-		switch(twobit) {
-			case 0:		// brat głęboki węzeł
-				break;
-			case 1:		// brat pojedynczy węzeł
-				break;
-			case 10:	// brat liść
-				if(tree == root) {
-					tree = extend(tree, unia.A, 'l', 0);
-					root = tree;
-					tree = extend(tree, unia.A, 'p', 1);
-				}
-				else {		//to drzewo ma 2 rzeczy
-					tree = extend(tree, unia.A, 'p', 1);
-				}
-				unia.abcd << 8;
-				slide += 8;
-				break;
-			case 11:	// brat liść + koniec
-				i++;
-				return i;
-				break;
-		}
-		x = (x+slide)%8;		// always 0-7
-		i+=2;
-		if(x == 0)
-			i++;
-		last = *(tab + i);
-	}while( i < many - 4);			// sprawdź
-	return -1;
-
-}
-*/
