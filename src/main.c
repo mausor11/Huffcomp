@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-2]);
 		return -1;
 	} else if(output == NULL) {
-		fprintf(stderr, "%s: FILE %s is not open!\n",argv[0], argv[argc-1]);
+		fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-1]);
 		return -1;
 	}
 
@@ -219,7 +219,8 @@ int main(int argc, char **argv) {
         printf("|");
         tm = tm->next;
 	}
-
+    printBits(temp, cntr);
+    printf("\n");
 	printf("bits used in last: %d\n", cntr);
 
     char Flag = 0, mask = 0; //czytanie flagi i maski

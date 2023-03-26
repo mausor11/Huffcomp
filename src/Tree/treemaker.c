@@ -142,14 +142,12 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
         *output = addToList( *output, saas.A);
 		saas.ab <<= *cntr;
 		*temp = saas.A;
-
 	}
 	if(tree->left_node != NULL)
 		codeTree(tree->left_node, output, temp, cntr);
 	if(tree->right_node != NULL)
 		codeTree(tree->right_node, output, temp, cntr);
 }
-
 
 // W O R K    I N    P R O G R E S S
 // last - ostatni przeczytany znak z tablicy( jeżeli skończone wcześniej)
