@@ -18,8 +18,6 @@ void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 		obiad[tree->znak].kod[poziom] = what;
 		obiad[tree->znak].kod[poziom+1] = poziom;
 		obiad[tree->znak].done = 1;
-		printf("%c: %d\n", tree->znak, tree->znak);
-		printf("%d\n", obiad[tree->znak].kod[poziom+1] );
 	}
 	if(tree->left_node != NULL)
 		fillKrokiet(tree->left_node, obiad, poziom+1, 0);
@@ -55,22 +53,20 @@ void printKrokiet(krokiet_t obiad[]) {
 }
 
 
-void codeFile(krokiet_t obiad[], FILE *in, lista_t *lista, char *temp, char *cntr) {
-//	printf("\n==beginning codeFile\n\n");
+lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
+	lista_t lista = NULL;
 	char *buf = malloc(100 * sizeof (*buf) );
 	int liczba = bajt(buf, in, 100);
-//	printf("liczba = %d\nZakodowany ciąg:\n", liczba);
 	while(liczba != 0) {
 		for(int i = 0; i < liczba; i++) {
 			int j = 1;
-//			printf("codeFile intake: %c, %d\n", *(buf+i), *(buf+1) );
 			while(obiad[*(buf+i)].kod[j+1] >= 0) {
+
 				// zapełnienie temp
 				if(*cntr == 8) {
-//					printBits(*temp, 8);
-//					printf(" ");
-					*lista = addToList(*lista, *temp);
-//					fwrite(temp, sizeof(char), 1, out);
+					lista = addToList(lista, *temp);
+//					printf("dodano do listy. %d, %c\n", lista->c, *temp);
+//					printList(lista);
 					*temp = 0;
 					(*cntr) -= 8;
 				}
@@ -83,4 +79,5 @@ void codeFile(krokiet_t obiad[], FILE *in, lista_t *lista, char *temp, char *cnt
 		liczba = bajt(buf, in, 100);	// kolejna dawka danych
 	}
 	free(buf);
+	return lista;
 }

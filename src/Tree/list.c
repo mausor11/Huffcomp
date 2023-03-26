@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "list.h"
+#include "bitbajt.h"
 
 lista_t expandList(lista_t input, char c) {
 	if(input != NULL) {
@@ -19,7 +20,7 @@ lista_t expandList(lista_t input, char c) {
 	}
 }
 
-lista_t createLista() {
+lista_t createList() {
     lista_t list = malloc(sizeof(slist));
     list->c = 0;
     list->next = NULL;
@@ -28,7 +29,7 @@ lista_t createLista() {
 
 lista_t addToList(lista_t list, char c) {
 	if(list == NULL) {
-		list = createLista();
+		list = createList();
 		list->c = c;
 		return list;
 	} else {
@@ -69,4 +70,15 @@ void listToFile(lista_t input, FILE *output){
 		fwrite(&(input->c), sizeof(char), 1, output);
 		input = input->next;
 	}
+}
+
+
+void printList(lista_t list) {
+	lista_t tmp = list;
+	while(tmp != NULL) {
+		printBits(tmp->c, 8);
+		printf(" | ");
+		tmp = tmp->next;
+	}
+	printf("\n");
 }

@@ -69,7 +69,7 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 
 // make Huffman tree
 d_t makeHTree (d_t tree){
-    char many = 0; //byl int
+    short many = 0; //byl int
     counter(tree, &many);
     table_t tab[many];
     int i, maxi = 0;
@@ -142,6 +142,7 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
         *output = addToList( *output, saas.A);
 		saas.ab <<= *cntr;
 		*temp = saas.A;
+
 	}
 	if(tree->left_node != NULL)
 		codeTree(tree->left_node, output, temp, cntr);
@@ -149,59 +150,49 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 		codeTree(tree->right_node, output, temp, cntr);
 }
 
-// W O R K    I N    P R O G R E S S
-// last - ostatni przeczytany znak z tablicy( jeżeli skończone wcześniej)
-// slide - przesunięcie tego znaku w bitach
-/*
-int readTree(d_t tree, char *tab, int many, char last, char slide) {
-	union eitbit unia;
-	int i = 0;		// całokształtne przesunięcie
-	int twobit = 0;		// temp na dwa bity operacyjne
-	int x = 0;		// cykliczne przesunięcie
-	//int xx = 0;		// dodatek do przesunięcia, zmienny więc jest zmienna - slide
-	//char c;			// temp do wyjęcia danych (do usunięcia) = last
-	d_t *root = tree;		// dać tree o 2 nullach i znaku w sobie (aka liść)
-	d_t *last = tree;
-	do {
-		slide = 0;
-		unia.A = *(tab+i);
-		unia.B = *(tab+i+1);
-		unia.C = *(tab+i+2);
-		unia.D = *(tab+i+3);
-		unia.abcd << x;
-		twobit = 10*bit(unia.A, 7) + bit(unia.A, 6);
-		unia.shrt << 2;
-		slide += 2;
-//		last = unia.A;
-		switch(twobit) {
-			case 0:		// brat głęboki węzeł
-				break;
-			case 1:		// brat pojedynczy węzeł
-				break;
-			case 10:	// brat liść
-				if(tree == root) {
-					tree = extend(tree, unia.A, 'l', 0);
-					root = tree;
-					tree = extend(tree, unia.A, 'p', 1);
-				}
-				else {		//to drzewo ma 2 rzeczy
-					tree = extend(tree, unia.A, 'p', 1);
-				}
-				unia.abcd << 8;
-				slide += 8;
-				break;
-			case 11:	// brat liść + koniec
-				i++;
-				return i;
-				break;
+// to *powinno* stworzyć drzewo <- i tak robi :D
+// cntr od 0 do 8 - liczba ważnych bitów w temp.B
+//		(tak, żeby w temp.A zawsze był pełny char)
+d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
+	if(*liscie) {			// są liście do wczytania
+		d_t tree = createTree();
+		int currentBit;
+		if(*cntr == 0) {
+			if((*in) == NULL){return tree;}			// skończyły się dane (liście != 0 - sprawdzaj)
+			temp->B = (*in)->c;
+			(*in)  = (*in)->next;
+			(*cntr) += 8;
 		}
-		x = (x+slide)%8;		// always 0-7
-		i+=2;
-		if(x == 0)
-			i++;
-		last = *(tab + i);
-	}while( i < many - 4);			// sprawdź
-	return -1;
+		currentBit = bit(temp->A, 7);
+		temp->ab <<= 1;
+		(*cntr)--;
+		if(currentBit == 0) {
+			tree->left_node = readTree(in, liscie, temp, cntr);
+			tree->right_node = readTree(in, liscie, temp, cntr);
+		}
 
+		else {
+			printBits(temp->A, 8);
+			tree->znak = temp->A;
+			tree->counter = -1;
+			temp->ab <<= *cntr;
+			if((*in) == NULL){return tree;}
+			temp->B = (*in)->c;
+			(*in) = (*in)->next;
+			temp->ab <<= (8 - *cntr);
+			(*liscie)--;
+		}
+		return tree;
+	}
 }
-*/
+
+// cntr to, znów, licznik, ale teraz całego ab - należy dodać 8 w mainie, jeżeli 
+char decodeFile(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
+	d_t current;
+	int b;
+	while(in != NULL) {
+		current = tree;
+		b = bit(temp->A, 7);
+	}
+}
+

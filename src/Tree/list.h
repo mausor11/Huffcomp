@@ -14,5 +14,6 @@ lista_t createList();
 void list_size(lista_t lista);
 void freeList(lista_t);
 void listToFile(lista_t, FILE *in);
+void printList(lista_t);
 
 #endif

@@ -33,18 +33,6 @@ void writeTree(d_t tree, int i) {
 	}
 }
 
-/*
-void rarest(d_t tree, char *temp, int *mini) {
-	if(tree->right_node != NULL)
-		rarest(tree->right_node, temp, mini);
-	if(tree->left_node != NULL)
-		rarest(tree->left_node, temp, mini);
-	if( (tree->counter != -1 ) && ( tree->counter <= *mini) ) {
-		*mini = tree->counter;
-		*temp = tree->znak;
-	}
-}
-*/
 
 void rarestt(d_t tree, d_t *temp, int *mini) {
 	if(tree->right_node != NULL)
@@ -68,7 +56,7 @@ void commonest(d_t tree, int *maxi) {
 }
 
 
-void counter(d_t tree, char *cntr) {
+void counter(d_t tree, short *cntr) {
 	if(tree->right_node != NULL)
 		counter(tree->right_node, cntr);
 	if(tree->left_node != NULL)

@@ -6,6 +6,7 @@
 
 #include "tree.h"
 #include "list.h"
+#include "bitbajt.h"
 
 typedef struct {
     d_t tree;
@@ -22,5 +23,7 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose);
 d_t makeHTree(d_t);
 
 void codeTree(d_t, lista_t *, char *, char *);
+
+d_t readTree(lista_t *, short *, union eitbit *, char *);
 
 #endif
