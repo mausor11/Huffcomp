@@ -237,47 +237,60 @@ int main(int argc, char **argv) {
 
 
 // WORK IN PROGRESS
+
 	else {
-/*
 		union eitbit trempe;
-		trempe.A = zakod->c;
-		trempe.B = zakod->next->c;
-		zakod = zakod->next->next;
+		int dlugosc;
+		short liscie;
 		char abcdefg = 8;
+	    char Flag = 0;
 		d_t ntree = NULL;
-		ntree = readTree(&zakod, &ilee, &trempe, &abcdefg);
-*/
-	//	printf("\n\nNowe drzewo:\n");
-	//	writeTree(ntree, 0);
+		lista_t wagonik = createList(), lokomotywa;
+	    checkFlag(input, &Flag, &liscie);
+		fseek(input, 5, SEEK_SET);
+
+/*sczyt do 100 elem. pliku do listy */
+		dlugosc = getTreeLength(input, liscie);
+		fseek(input, 5, SEEK_SET);
+	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
+	    lokomotywa = wagonik;
+
+		trempe.A = wagonik->c;
+		trempe.B = wagonik->next->c;
+		wagonik = wagonik->next->next;
+		ntree = readTree(&wagonik, &liscie, &trempe, &abcdefg);
+		printf("\n\nNowe drzewo:\n");
+		writeTree(ntree, 0);
+
+		fseek(input, 6 + dlugosc, SEEK_SET);
+		dlugosc = fileToList(wagonik, input, dlugosc);
 
 
+//		fclose(input);
+//		input = fopen(argv[argc-2], "rb");
 
-	//	fclose(input);
-	//	input = fopen(argv[argc-2], "rb");
+//		cntr = 0;
 
-	//	cntr = 0;
 
-/*
-		printf("bits used in last: %d\n", cntr);
+//		printf("bits used in last: %d\n", cntr);
 
-	    char Flag = 0; //czytanie flagi i maski
-	    checkFlag(output, &Flag, &ile);
 
-		printf("\n\nbeginning: %c\n", beginning->c);
+//		printf("\n\nbeginning: %c\n", beginning->c);
 
 
 
 
 		freeTree(ntree);
 
-		printf("\n\n=============================================\n\n");
-		input = fopen(argv[argc-1], "rb");
-		while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
-			printBits(cntr, 8);
-			printf(" - %c\n", cntr);
-		}
-		fclose(input);
-*/
+//		printf("\n\n=============================================\n\n");
+//		input = fopen(argv[argc-1], "rb");
+//		while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
+//			printBits(cntr, 8);
+//			printf(" - %c\n", cntr);
+//		}
+//		fclose(input);
+
+		freeList(lokomotywa);
 	}
 	fclose(input);
 	fclose(output);

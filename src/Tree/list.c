@@ -82,3 +82,53 @@ void printList(lista_t list) {
 	}
 	printf("\n");
 }
+
+
+// lista nie może być NULL
+int fileToList(lista_t list, FILE *in, int ile) {
+	int count;
+	char c;
+	lista_t tmp = list;
+	for(count = 0; count < ile; count++) {
+		if( (fread(&c, sizeof(char), 1, in) ) != 1)
+			return count;
+		tmp->c = c;
+		tmp->next = createList();
+		tmp = tmp->next;
+	}
+	return count;
+}
+
+
+
+
+
+
+int getTreeLength(FILE *in, short ile) {
+	int dlugosc = 1;
+	int whatBit;
+	int fs = ile;
+	char grbg, cntr = 8;
+	fseek(in, 5, SEEK_SET);
+	fread(&grbg, sizeof(char), 1, in);
+	while(fs != 0) {
+		if(!cntr) {
+			fread(&grbg, sizeof(char), 1, in);
+			dlugosc++;
+			cntr+=8;
+		}
+		if(bit(grbg, 7)){
+			grbg <<= cntr;
+			cntr--;
+			fread(&grbg, sizeof(char), 1, in);
+			dlugosc++;
+			grbg <<= 8 - cntr;
+			fs--;
+		}
+		else {
+			grbg <<= 1;
+			cntr--;
+		}
+	}
+	return dlugosc;
+}

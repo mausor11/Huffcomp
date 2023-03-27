@@ -153,14 +153,14 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 // to *powinno* stworzyć drzewo <- i tak robi :D
 // cntr od 0 do 8 - liczba ważnych bitów w temp.B
 //		(tak, żeby w temp.A zawsze był pełny char)
-d_t readTree(lista_t in, short *liscie, union eitbit *temp, char *cntr) {
+
+d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 	if(*liscie) {			// są liście do wczytania
 		d_t tree = createTree();
 		int currentBit;
 		if(*cntr == 0) {
-			if((in) == NULL){return tree;}			// skończyły się dane (liście != 0 - sprawdzaj)
-			temp->B = (in)->c;
-			(in)  = (in)->next;
+			temp->B = (*in)->c;
+			(*in)  = (*in)->next;
 			(*cntr) += 8;
 		}
 		currentBit = bit(temp->A, 7);
@@ -170,21 +170,54 @@ d_t readTree(lista_t in, short *liscie, union eitbit *temp, char *cntr) {
 			tree->left_node = readTree(in, liscie, temp, cntr);
 			tree->right_node = readTree(in, liscie, temp, cntr);
 		}
+// Wiecie, że pod nami jest zwarciownia, nie? Mój touchpad, jak 2km nad nim przesuwam ręką, zaczyna wariować.
+// więc jeżeli jakieś kolokwium wam nie pójdzie, zawsze możecie zwalić na jakiś elektromagnetyzm pod nami
+// Tłumacząc z polskiego na polski,
+// cytaty z BD
 
 		else {
-			printBits(temp->A, 8);
 			tree->znak = temp->A;
 			tree->counter = -1;
 			(*liscie)--;
 			temp->ab <<= *cntr;
-			if((in) == NULL){return tree;}
-			temp->B = (in)->c;
-			(in) = (in)->next;
+			temp->B = (*in)->c;
+			(*in) = (*in)->next;
 			temp->ab <<= (8 - *cntr);
 		}
 		return tree;
 	}
 }
+
+
+
+char decode(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
+	if(!(*cntr) ) {
+		if(in == NULL) {
+			(*cntr)--;
+			return 0;
+		}
+		temp->A = in->c;
+		in = in->next;
+		(*cntr) += 8;
+	}
+	if(tree->counter) {
+		return tree->znak;
+	}
+	else {
+		if(!bit(temp->A, 7) ) {
+			temp->A <<= 7;
+			(*cntr)--;
+			return decode(tree->left_node, in, temp, cntr);
+		}
+		else {
+			temp->A <<= 7;
+			(*cntr)--;
+			return decode(tree->right_node, in, temp, cntr);
+		}
+	}
+}
+
+
 
 /*
 // cntr to, znów, licznik, ale teraz całego ab - należy dodać 8 w mainie, jeżeli 

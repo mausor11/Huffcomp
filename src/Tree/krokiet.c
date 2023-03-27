@@ -33,14 +33,6 @@ void prepareKrokiet(krokiet_t obiad []) {
 	}
 }
 
-void emptyKrokiet(krokiet_t obiad []) {
-	for(int i = 0; i < 256; i++) {
-		obiad[i].done = 0;
-		for(int j = 0; j < 258; j++)
-			obiad[i].kod[j] = 0;
-	}
-}
-
 void printKrokiet(krokiet_t obiad[]) {
 	printf("\n==printing krokiet==\nznak - kod\n\n");
 	for(int i = 0; i < 256; i++)
