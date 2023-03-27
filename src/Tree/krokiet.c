@@ -111,16 +111,73 @@ lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
 }
 */
 
-void decodeFile() {
 
+// // // // // // // // //
+
+void decodeFile(d_t tree, FILE *in, FILE *out, char *temp, char *cntr) {
+	int liczba, whatBit, i;
+	char recieved;
+	char *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
+	d_t tremp;
+	liczba = fread(buf, sizeof(char), 100, in);
+	while((liczba = fread(buf, sizeof(char), 100, in) ) ) {
+		while(i < liczba-1) {
+			cahr = NULL;
+			tremp = tree;
+			while(cahr == NULL) {
+				if(!(*cntr)) {
+					*temp = *(buf + i++);
+					if(i < liczba-1)
+						*cntr += 8;
+					else
+						break;
+				}
+				tremp = decode(tremp, temp, cntr);
+				if((tremp->counter) ) {
+					cahr = &recieved;
+					recieved = tremp->znak;
+					fwrite(cahr, sizeof(char), 1, out);
+				}
+			}
+		}
+
+		// ostatni znak, patrz na istotne bity
+		// dorobić else
+		// ^nei
+//		if(( liczba = fread(buf, sizeof(char), 100, in) ) == 0) {
+	}
+	*temp = buf[liczba-1];
+	*cntr += 8;
+	free(buf);
 }
 
-// while fread != 0 (/sczyt do listy true) && lista->next != NULL
 
+
+d_t decode(d_t tree, char *temp, char *cntr) {
+	d_t trer = tree;
+	while(*cntr){
+		if(!bit(*temp, 7) ){
+			(*cntr)--;
+			trer = trer->left_node;
+			if(trer->counter)
+				return trer;
+		}
+		else {
+			*(cntr)--;
+			trer = trer->right_node;
+			if(trer->counter)
+				return trer;
+		}
+	}
+	return trer;
+}
+
+
+// while fread != 0 (/sczyt do listy true) && lista->next != NULL
+/*
 char decode(d_t tree, lista_t *in, union eitbit *temp, char *cntr) {
 	if(!(*cntr) ) {
-		if(in == NULL) {
-			
+		if(*(in) == NULL) {
 			(*cntr)--;
 			return 0;
 		}
@@ -144,3 +201,4 @@ char decode(d_t tree, lista_t *in, union eitbit *temp, char *cntr) {
 		}
 	}
 }
+*/

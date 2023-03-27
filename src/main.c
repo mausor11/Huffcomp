@@ -245,9 +245,13 @@ int main(int argc, char **argv) {
 														// usunąć -1 jak będzie dobra flaga
 //		fread(&temp, sizeof(char), 1, input);
 
-		dlugosc = fileToList(wagonik, input, 100);
+//		dlugosc = fileToList(wagonik, input, 100);
+
 
 		temp = trempe.B;
+		printBits(temp, 8);
+		printf("\n");
+		temp = trempe.A;
 		printBits(temp, 8);
 		printf("\n");
 
