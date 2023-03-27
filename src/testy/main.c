@@ -44,26 +44,7 @@ void printBits( unsigned int n, int b )
 
 int main(int argc, char ** argv)
 {
-//    int t = 97;
-//    for(int i=0;i<8;i++) {
-//        printf("%d", bit(t,i));
-//    }
-//    printf("\n");
-//    printBits(t,8);
-        int x = 97;
-      FILE *f = fopen(argv[1], "ab");
-      fwrite(&x,sizeof(int), 1, f );
-      int u = 98;
-    fwrite(&u,sizeof(int), 1, f );
-      int k = 99;
-    fwrite(&k,sizeof(int), 1, f );
-    fclose(f);
-    f = fopen(argv[1], "rb");
-    int y;
-    for(int i=0;i<3;i++) {
-        fread(&y, sizeof(int), 1, f);
-        printf("%d", y);
-    }
+    char x = 0b
 
 
 
