@@ -160,7 +160,7 @@ int main(int argc, char **argv) {
 
 /* deklaracje zmiennych */
 		krokiet_t obiad[256];
-		short ile = 0, ilee;
+		short ile = 0;
 		char cntr = 0, temp;
 		d_t tree = NULL;
 		lista_t zakod = NULL, beginning, pliczek = NULL;
@@ -176,17 +176,16 @@ int main(int argc, char **argv) {
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
-		ilee = ile;
+		addFlag(output, flagBit, encypt, cntr, ile);
 		prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
 
-/* zakodowanie drzewa */
+/* zakodowanie i zapisanie drzewa */
 		codeTree(tree, &zakod, &temp, &cntr);
 		beginning = zakod;
 		temp <<= (8 - cntr);
-		zakod = addToList(zakod, temp);
-		zakod = addToList(zakod, 'b');
+		listToFile(beginning, output);
 
 
 /* powrót do początku pliku */
@@ -198,34 +197,15 @@ int main(int argc, char **argv) {
 
 /* kompresja pliku input */
 		temp >>= (8 - cntr);
-		pliczek = codeFile(obiad, input, &temp, &cntr);
+		codeFile(obiad, input, output, &temp, &cntr);
+		temp <<= (8 - cntr);
+		fwrite(&temp, sizeof(char), 1, output);
 
 
-/* połączenie list zakod i pliczek, dodanie ostatniego znaku */ //(?)
-		while(zakod->next->next != NULL)
-			zakod = zakod->next;
-		freeList(zakod->next);
-		zakod->c = pliczek->c;
-		zakod->next = pliczek->next;
-		free(pliczek);
-		zakod = beginning;
-		temp <<= (8-cntr);
-		zakod = addToList(zakod, temp);
-
-
-
-
-/* w tym momencie w zakod jest drzewo oraz skompresowany plik */
-
-
-
-
-/* dodanie inicjałów oraz flag do pliku output */
+/* dodanie inicjałów oraz właściwych flag do pliku output */
+		fseek(output, 0, SEEK_SET);
 		addFlag(output,flagBit,encypt,cntr, ile);
 
-
-/* dodanie drzewa oraz skompresowanego pliku do output */
-		listToFile(zakod, output);
 
 
 /* zwolnienie alokowanej pamięci */
@@ -237,47 +217,66 @@ int main(int argc, char **argv) {
 
 
 // WORK IN PROGRESS
+
 	else {
-/*
 		union eitbit trempe;
-		trempe.A = zakod->c;
-		trempe.B = zakod->next->c;
-		zakod = zakod->next->next;
-		char abcdefg = 8;
+		int dlugosc;
+		short liscie;
+		char abcdefg = 8, Flag = 0, temp = 0;
 		d_t ntree = NULL;
-		ntree = readTree(&zakod, &ilee, &trempe, &abcdefg);
-*/
-	//	printf("\n\nNowe drzewo:\n");
-	//	writeTree(ntree, 0);
+		lista_t wagonik = createList(), lokomotywa;
+	    checkFlag(input, &Flag, &liscie);
+		fseek(input, 5, SEEK_SET);
+
+/* sczyt do 100 elem. pliku do listy */
+		dlugosc = getTreeLength(input, liscie);
+		fseek(input, 5, SEEK_SET);
+	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
+	    lokomotywa = wagonik;
+
+		trempe.A = wagonik->c;
+		trempe.B = wagonik->next->c;
+		wagonik = wagonik->next->next;
+		ntree = readTree(&wagonik, &liscie, &trempe, &abcdefg);
+//		printf("\n\nNowe drzewo:\n");
+//		writeTree(ntree, 0);
+
+		fseek(input, 5 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
+														// usunąć -1 jak będzie dobra flaga
+//		fread(&temp, sizeof(char), 1, input);
+
+		dlugosc = fileToList(wagonik, input, 100);
+
+		temp = trempe.B;
+		printBits(temp, 8);
+		printf("\n");
 
 
+//		fclose(input);
+//		input = fopen(argv[argc-2], "rb");
 
-	//	fclose(input);
-	//	input = fopen(argv[argc-2], "rb");
+//		cntr = 0;
 
-	//	cntr = 0;
 
-/*
-		printf("bits used in last: %d\n", cntr);
+//		printf("bits used in last: %d\n", cntr);
 
-	    char Flag = 0; //czytanie flagi i maski
-	    checkFlag(output, &Flag, &ile);
 
-		printf("\n\nbeginning: %c\n", beginning->c);
+//		printf("\n\nbeginning: %c\n", beginning->c);
 
 
 
 
 		freeTree(ntree);
 
-		printf("\n\n=============================================\n\n");
-		input = fopen(argv[argc-1], "rb");
-		while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
-			printBits(cntr, 8);
-			printf(" - %c\n", cntr);
-		}
-		fclose(input);
-*/
+//		printf("\n\n=============================================\n\n");
+//		input = fopen(argv[argc-1], "rb");
+//		while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
+//			printBits(cntr, 8);
+//			printf(" - %c\n", cntr);
+//		}
+//		fclose(input);
+
+		freeList(lokomotywa);
 	}
 	fclose(input);
 	fclose(output);

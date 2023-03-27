@@ -15,5 +15,7 @@ void list_size(lista_t lista);
 void freeList(lista_t);
 void listToFile(lista_t, FILE *in);
 void printList(lista_t);
+int fileToList(lista_t, FILE *, int);
+int getTreeLength(FILE *, short ile);
 
 #endif

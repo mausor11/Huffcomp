@@ -64,3 +64,21 @@ void counter(d_t tree, short *cntr) {
 	if(tree->counter != 0)
 		(*cntr)++;
 }
+
+
+/*
+d_t search(d_t tree) {
+	if(!(tree->counter) ) {
+	// jesteśmy w węźle, szukamy błędu
+		if(tree->left_node == NULL)
+			return tree
+		else
+			return search(tree->left_node);
+		if(tree->right_node == NULL)
+			return tree;
+		else
+			return search(tree->right_node);
+	}
+}
+*/
+

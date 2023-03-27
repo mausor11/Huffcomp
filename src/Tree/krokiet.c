@@ -33,14 +33,6 @@ void prepareKrokiet(krokiet_t obiad []) {
 	}
 }
 
-void emptyKrokiet(krokiet_t obiad []) {
-	for(int i = 0; i < 256; i++) {
-		obiad[i].done = 0;
-		for(int j = 0; j < 258; j++)
-			obiad[i].kod[j] = 0;
-	}
-}
-
 void printKrokiet(krokiet_t obiad[]) {
 	printf("\n==printing krokiet==\nznak - kod\n\n");
 	for(int i = 0; i < 256; i++)
@@ -52,6 +44,40 @@ void printKrokiet(krokiet_t obiad[]) {
 		}
 }
 
+
+void codeFile(krokiet_t obiad[], FILE *in, FILE *out, char *temp, char *cntr) {
+	char *buf = malloc(100 * sizeof (*buf) );
+	int liczba = bajt(buf, in, 100);
+	while(liczba != 0) {
+		for(int i = 0; i < liczba; i++) {
+			int j = 1;
+			while(obiad[*(buf+i)].kod[j+1] >= 0) {
+
+				// zapełnienie temp
+				if(*cntr == 8) {
+					fwrite(temp, sizeof(char), 1, out);
+//					printf("dodano do listy. %d, %c\n", lista->c, *temp);
+//					printList(lista);
+					*temp = 0;
+					(*cntr) -= 8;
+				}
+
+				(*temp) <<= 1;
+				(*temp) += obiad[*(buf+i)].kod[j++];
+				(*cntr)++;
+				//j++;
+			}
+		}
+
+		liczba = bajt(buf, in, 100);	// kolejna dawka danych
+	}
+	free(buf);
+}
+
+/*
+
+zostawiam zakomentarzowane jako przestrogę dla mnie z przyszłości
+taki kod jest ble fuj
 
 lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
 	lista_t lista = NULL;
@@ -70,14 +96,51 @@ lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
 					*temp = 0;
 					(*cntr) -= 8;
 				}
+
 				(*temp) <<= 1;
 				(*temp) += obiad[*(buf+i)].kod[j++];
 				(*cntr)++;
 				//j++;
 			}
 		}
+
 		liczba = bajt(buf, in, 100);	// kolejna dawka danych
 	}
 	free(buf);
 	return lista;
+}
+*/
+
+void decodeFile() {
+
+}
+
+// while fread != 0 (/sczyt do listy true) && lista->next != NULL
+
+char decode(d_t tree, lista_t *in, union eitbit *temp, char *cntr) {
+	if(!(*cntr) ) {
+		if(in == NULL) {
+			
+			(*cntr)--;
+			return 0;
+		}
+		temp->A = (*in)->c;
+		(*in) = (*in)->next;
+		(*cntr) += 8;
+	}
+	if(tree->counter) {
+		return tree->znak;
+	}
+	else {
+		if(!bit(temp->A, 7) ) {
+			temp->A <<= 7;
+			(*cntr)--;
+			return decode(tree->left_node, in, temp, cntr);
+		}
+		else {
+			temp->A <<= 7;
+			(*cntr)--;
+			return decode(tree->right_node, in, temp, cntr);
+		}
+	}
 }

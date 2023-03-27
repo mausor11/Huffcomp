@@ -61,9 +61,11 @@ int main() {
 	FILE *out = fopen("heheheha", "wb");
 	short heha = 123;
 	fwrite(&heha, sizeof(short), 1, out);
-	fclose(out);
 	heha = 0;
-	out = fopen("heheheha", "rb");
+	fseek(out, 0, SEEK_SET);
+	fwrite(&heha, sizeof(short), 1, out);
+	fclose(out);
+	out = fopen("heheheha", "rb+");
 	fread(&heha, sizeof(short), 1, out);
 	fclose(out);
 	printf("%d\n", heha);

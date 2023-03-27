@@ -3,6 +3,7 @@
 
 #include "tree.h"
 #include "list.h"
+#include "bitbajt.h"
 
 /* uwagi do struktury:
  	- kod[0] będzie zawsze równe 2
@@ -25,6 +26,11 @@ void prepareKrokiet(krokiet_t []);
 
 void emptyKrokiet(krokiet_t []);
 
-lista_t codeFile(krokiet_t [], FILE *, char *, char *);
+void codeFile(krokiet_t [], FILE *, FILE *, char *, char *);
+
+//lista_t codeFile(krokiet_t [], FILE *, char *, char *);
+
+char decode(d_t, lista_t *, union eitbit *, char *);
+
 
 #endif
