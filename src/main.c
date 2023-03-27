@@ -202,7 +202,6 @@ int main(int argc, char **argv) {
 
 
 /* połączenie list zakod i pliczek, dodanie ostatniego znaku */ //(?)
-		zakod = beginning;
 		while(zakod->next->next != NULL)
 			zakod = zakod->next;
 		freeList(zakod->next);
@@ -234,10 +233,10 @@ int main(int argc, char **argv) {
 		freeTree(tree);
 	}
 
-    // WORK IN PROGRESS
 
 
 
+// WORK IN PROGRESS
 	else {
 /*
 		union eitbit trempe;

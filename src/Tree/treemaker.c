@@ -153,14 +153,14 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 // to *powinno* stworzyć drzewo <- i tak robi :D
 // cntr od 0 do 8 - liczba ważnych bitów w temp.B
 //		(tak, żeby w temp.A zawsze był pełny char)
-d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
+d_t readTree(lista_t in, short *liscie, union eitbit *temp, char *cntr) {
 	if(*liscie) {			// są liście do wczytania
 		d_t tree = createTree();
 		int currentBit;
 		if(*cntr == 0) {
-			if((*in) == NULL){return tree;}			// skończyły się dane (liście != 0 - sprawdzaj)
-			temp->B = (*in)->c;
-			(*in)  = (*in)->next;
+			if((in) == NULL){return tree;}			// skończyły się dane (liście != 0 - sprawdzaj)
+			temp->B = (in)->c;
+			(in)  = (in)->next;
 			(*cntr) += 8;
 		}
 		currentBit = bit(temp->A, 7);
@@ -175,17 +175,18 @@ d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 			printBits(temp->A, 8);
 			tree->znak = temp->A;
 			tree->counter = -1;
-			temp->ab <<= *cntr;
-			if((*in) == NULL){return tree;}
-			temp->B = (*in)->c;
-			(*in) = (*in)->next;
-			temp->ab <<= (8 - *cntr);
 			(*liscie)--;
+			temp->ab <<= *cntr;
+			if((in) == NULL){return tree;}
+			temp->B = (in)->c;
+			(in) = (in)->next;
+			temp->ab <<= (8 - *cntr);
 		}
 		return tree;
 	}
 }
 
+/*
 // cntr to, znów, licznik, ale teraz całego ab - należy dodać 8 w mainie, jeżeli 
 char decodeFile(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
 	d_t current;
@@ -196,3 +197,4 @@ char decodeFile(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
 	}
 }
 
+*/
