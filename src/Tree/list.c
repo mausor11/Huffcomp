@@ -107,11 +107,10 @@ int fileToList(lista_t list, FILE *in, int ile) {
 int getTreeLength(FILE *in, short ile) {
 	int dlugosc = 1;
 	int whatBit;
-	int fs = ile;
 	char grbg, cntr = 8;
 	fseek(in, 5, SEEK_SET);
 	fread(&grbg, sizeof(char), 1, in);
-	while(fs != 0) {
+	while(ile != 0) {
 		if(!cntr) {
 			fread(&grbg, sizeof(char), 1, in);
 			dlugosc++;
@@ -123,7 +122,7 @@ int getTreeLength(FILE *in, short ile) {
 			fread(&grbg, sizeof(char), 1, in);
 			dlugosc++;
 			grbg <<= 8 - cntr;
-			fs--;
+			ile--;
 		}
 		else {
 			grbg <<= 1;

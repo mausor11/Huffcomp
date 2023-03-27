@@ -26,6 +26,4 @@ void codeTree(d_t, lista_t *, char *, char *);
 
 d_t readTree(lista_t *, short *, union eitbit *, char *);
 
-char decode(d_t, lista_t, union eitbit *, char *);
-
 #endif

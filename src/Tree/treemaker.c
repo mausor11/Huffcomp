@@ -69,7 +69,7 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 
 // make Huffman tree
 d_t makeHTree (d_t tree){
-    short many = 0; //byl int
+    short many = 0;
     counter(tree, &many);
     table_t tab[many];
     int i, maxi = 0;
@@ -190,32 +190,6 @@ d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 
 
 
-char decode(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
-	if(!(*cntr) ) {
-		if(in == NULL) {
-			(*cntr)--;
-			return 0;
-		}
-		temp->A = in->c;
-		in = in->next;
-		(*cntr) += 8;
-	}
-	if(tree->counter) {
-		return tree->znak;
-	}
-	else {
-		if(!bit(temp->A, 7) ) {
-			temp->A <<= 7;
-			(*cntr)--;
-			return decode(tree->left_node, in, temp, cntr);
-		}
-		else {
-			temp->A <<= 7;
-			(*cntr)--;
-			return decode(tree->right_node, in, temp, cntr);
-		}
-	}
-}
 
 
 
