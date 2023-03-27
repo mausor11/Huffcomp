@@ -75,6 +75,10 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, char *temp, char *cntr) {
 }
 
 /*
+
+zostawiam zakomentarzowane jako przestrogę dla mnie z przyszłości
+taki kod jest ble fuj
+
 lista_t codeFile(krokiet_t obiad[], FILE *in, char *temp, char *cntr) {
 	lista_t lista = NULL;
 	char *buf = malloc(100 * sizeof (*buf) );

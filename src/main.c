@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
 		fillKrokiet(tree, obiad, 0, -2);
 
 
-/* zakodowanie drzewa */
+/* zakodowanie i zapisanie drzewa */
 		codeTree(tree, &zakod, &temp, &cntr);
 		beginning = zakod;
 		temp <<= (8 - cntr);
@@ -201,22 +201,8 @@ int main(int argc, char **argv) {
 		temp <<= (8 - cntr);
 		fwrite(&temp, sizeof(char), 1, output);
 
-/* połączenie list zakod i pliczek, dodanie ostatniego znaku */ //(?)
-/*		while(zakod->next->next != NULL)
-			zakod = zakod->next;
-		freeList(zakod->next);
-		zakod->c = pliczek->c;
-		zakod->next = pliczek->next;
-		free(pliczek);
-		zakod = beginning;
-		temp <<= (8-cntr);
-		zakod = addToList(zakod, temp);
-*/
 
-
-
-
-/* dodanie inicjałów oraz flag do pliku output */
+/* dodanie inicjałów oraz właściwych flag do pliku output */
 		fseek(output, 0, SEEK_SET);
 		addFlag(output,flagBit,encypt,cntr, ile);
 
@@ -242,7 +228,7 @@ int main(int argc, char **argv) {
 	    checkFlag(input, &Flag, &liscie);
 		fseek(input, 5, SEEK_SET);
 
-/*sczyt do 100 elem. pliku do listy */
+/* sczyt do 100 elem. pliku do listy */
 		dlugosc = getTreeLength(input, liscie);
 		fseek(input, 5, SEEK_SET);
 	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
@@ -255,12 +241,16 @@ int main(int argc, char **argv) {
 //		printf("\n\nNowe drzewo:\n");
 //		writeTree(ntree, 0);
 
-		fseek(input, 6 + dlugosc, SEEK_SET);
+		fseek(input, 5 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
+														// usunąć -1 jak będzie dobra flaga
+//		fread(&temp, sizeof(char), 1, input);
+
 		dlugosc = fileToList(wagonik, input, 100);
 
 		temp = trempe.B;
+		printBits(temp, 8);
+		printf("\n");
 
-		
 
 //		fclose(input);
 //		input = fopen(argv[argc-2], "rb");
