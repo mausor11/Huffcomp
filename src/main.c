@@ -222,11 +222,15 @@ int main(int argc, char **argv) {
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
-		char abcdefg = 8, Flag = 0, temp = 0;
-		d_t ntree = NULL;
+		char cntr = 8, Flag = 0, temp = 0, last;
+		d_t ntree = NULL, lastTree;
 		lista_t wagonik = createList(), lokomotywa;
+
+
 	    checkFlag(input, &Flag, &liscie);
 		fseek(input, 5, SEEK_SET);
+		last = Flag & 0b00001111;
+		printf("%d\n", last);
 
 /* sczyt do 100 elem. pliku do listy */
 		dlugosc = getTreeLength(input, liscie);
@@ -237,25 +241,35 @@ int main(int argc, char **argv) {
 		trempe.A = wagonik->c;
 		trempe.B = wagonik->next->c;
 		wagonik = wagonik->next->next;
-		ntree = readTree(&wagonik, &liscie, &trempe, &abcdefg);
+		ntree = readTree(&wagonik, &liscie, &trempe, &cntr);
 //		printf("\n\nNowe drzewo:\n");
 //		writeTree(ntree, 0);
 
-		fseek(input, 5 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
+		fseek(input, 6 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
 														// usunąć -1 jak będzie dobra flaga
 //		fread(&temp, sizeof(char), 1, input);
-
+//		printBits(temp, 8);
+//		printf("\n");
 //		dlugosc = fileToList(wagonik, input, 100);
 
-
-		temp = trempe.B;
-		printBits(temp, 8);
-		printf("\n");
-		temp = trempe.A;
-		printBits(temp, 8);
-		printf("\n");
+		lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
 
 
+		if(last != 8) {
+			while(last) {
+				if(!bit(trempe.A, 7) ) {
+					trempe.ab <<=1;
+					last--;
+					lastTree = lastTree->left_node;
+				}
+				else {
+					trempe.ab <<=1;
+					last--;
+					lastTree = lastTree->right_node;
+				}
+			}
+			fwrite(&(lastTree->znak), sizeof(char), 1, output);
+		}
 //		fclose(input);
 //		input = fopen(argv[argc-2], "rb");
 

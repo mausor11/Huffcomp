@@ -170,10 +170,6 @@ d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 			tree->left_node = readTree(in, liscie, temp, cntr);
 			tree->right_node = readTree(in, liscie, temp, cntr);
 		}
-// Wiecie, że pod nami jest zwarciownia, nie? Mój touchpad, jak 2km nad nim przesuwam ręką, zaczyna wariować.
-// więc jeżeli jakieś kolokwium wam nie pójdzie, zawsze możecie zwalić na jakiś elektromagnetyzm pod nami
-// Tłumacząc z polskiego na polski,
-// cytaty z BD
 
 		else {
 			tree->znak = temp->A;
