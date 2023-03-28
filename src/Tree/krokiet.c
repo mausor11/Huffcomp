@@ -121,26 +121,33 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 	char recieved;
 	char *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
 	d_t tremp;
-	liczba = fread(buf, sizeof(char), 100, in);
+//	liczba = fread(buf, sizeof(char), 100, in);
 	while((liczba = fread(buf, sizeof(char), 100, in) ) ) {
 		i = 0;
-		while(i <= liczba-1) {
+		while(i < liczba) {
 			cahr = NULL;
 			tremp = tree;
 			while(cahr == NULL) {
-				if(!(*cntr)) {
-					if(i <= liczba-1) {
+				if((*cntr) == 0) {
+					if(i < liczba) {
 						temp->B = *(buf + i++);
-						*cntr += 8;
+//						printf("\t");
+//						printBits(temp->A, 8);
+//						printf(" ");
+//						printBits(temp->B, 8);
+//						printf("\n");
+						(*cntr) += 8;
 					}
 					else
 						break;		// jeżeli to, to ostatni bajt jest w temp->A
 				}
 				tremp = decode(tremp, temp, cntr);
+//				writeTree(tremp, 0);
+//				printf("\n\n");
 				if((tremp->counter) ) {
-					printf("got a char!\n");
 					cahr = &recieved;
 					recieved = tremp->znak;
+//					printf("got a char! %c\n", recieved);
 					fwrite(cahr, sizeof(char), 1, out);
 				}
 			}
@@ -154,7 +161,7 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 //	*temp = buf[liczba-1];
 	if(cahr != NULL)
 		tremp = tree;
-	*cntr += 8;
+//	*cntr += 8;
 	free(buf);
 	return tremp;
 }
@@ -173,13 +180,14 @@ d_t decode(d_t tree, union eitbit *temp, char *cntr) {
 		}
 		else {
 			temp->ab <<= 1;
-			*(cntr)--;
+			(*cntr)--;
 			trer = trer->right_node;
 			if(trer->counter)
 				return trer;
 		}
 	}
-	writeTree(trer, 0);
+//	writeTree(trer, 0);
+//	printf("\n");
 	return trer;
 }
 

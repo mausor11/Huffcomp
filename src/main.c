@@ -16,7 +16,7 @@
 
 
 char *usage =
-	"Usage: %s [options] input_file output_file\n"
+    "Usage: %s [options] input_file output_file\n"
 	"	List of options:\n"
 	"		* -z - force compressoion;\n"
 	"		* -x - force decompression;\n"
@@ -203,14 +203,17 @@ int main(int argc, char **argv) {
 		fwrite(&temp, sizeof(char), 1, output);
 
 /* dodanie inicjałów, sumy kontrolnej, oraz właściwych flag do pliku output */
-        addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
-        printf("magicNumber: %d\n", magicNumber);
-        magicNumber = MagicNum(output,magicNumber);
-        printf("magicNumber: %d\n", magicNumber);
-        fseek(output,2,SEEK_SET);
-        fwrite(&magicNumber, sizeof(char), 1, output);
-        magicNumber = MagicNum(output,magicNumber);
-        printf("magicNumber: %d\n", magicNumber);
+		fseek(output, 0, SEEK_SET);
+		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
+//		printf("magicNumber: %d\n", magicNumber);
+		magicNumber = MagicNum(output,magicNumber);
+//		printf("magicNumber: %d\n", magicNumber);
+		fseek(output,2,SEEK_SET);
+		fwrite(&magicNumber, sizeof(char), 1, output);
+//		checkFlagfromFile(output);
+//		magicNumber = MagicNum(output,magicNumber);
+
+
 /* zwolnienie alokowanej pamięci */
 		freeList(beginning);
 		freeTree(tree);
@@ -225,21 +228,25 @@ int main(int argc, char **argv) {
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
-		char cntr = 8, Flag = 0, temp = 0, last;
+		char cntr = 8, Flag = 0, crc = 0, temp = 0, last;
 		d_t ntree = NULL, lastTree;
 		lista_t wagonik = createList(), lokomotywa;
+		krokiet_t obiad[256];
 
-
-	    checkFlag(input, &Flag, &liscie);
-		fseek(input, 5, SEEK_SET);
+	    checkFlag(input, &crc, &Flag, &liscie);
+		fseek(input, 6, SEEK_SET);
 		last = Flag & 0b00001111;
-		printf("%d\n", last);
+//		printf("%d\n", last);
 
 /* sczyt do 100 elem. pliku do listy */
+//		fread(&Flag, sizeof(char), 1, input);
+//		printBits(Flag, 8);
+//		printf("\n");
 		dlugosc = getTreeLength(input, liscie);
-		fseek(input, 5, SEEK_SET);
+		fseek(input, 6, SEEK_SET);
 	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
 	    lokomotywa = wagonik;
+
 
 		trempe.A = wagonik->c;
 		trempe.B = wagonik->next->c;
@@ -248,7 +255,9 @@ int main(int argc, char **argv) {
 //		printf("\n\nNowe drzewo:\n");
 //		writeTree(ntree, 0);
 
-		fseek(input, 6 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
+
+
+//		fseek(input, 6 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
 														// usunąć -1 jak będzie dobra flaga
 //		fread(&temp, sizeof(char), 1, input);
 //		printBits(temp, 8);
@@ -257,22 +266,29 @@ int main(int argc, char **argv) {
 
 		lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
 
+//		printBits(trempe.A, 8);
+//		printf("\n");
 
-		if(last != 8) {
-			while(last) {
-				if(!bit(trempe.A, 7) ) {
-					trempe.ab <<=1;
-					last--;
-					lastTree = lastTree->left_node;
-				}
-				else {
-					trempe.ab <<=1;
-					last--;
-					lastTree = lastTree->right_node;
-				}
+// ta sama
+		last+=cntr;
+		while(last) {
+			if(lastTree->counter) {
+				fwrite( &(lastTree->znak), sizeof(char), 1, output);
+				lastTree = ntree;
 			}
-			fwrite(&(lastTree->znak), sizeof(char), 1, output);
+			if(!bit(trempe.A, 7) ) {
+				trempe.ab <<=1;
+				last--;
+				lastTree = lastTree->left_node;
+			}
+			else {
+				trempe.ab <<=1;
+				last--;
+				lastTree = lastTree->right_node;
+			}
 		}
+		fwrite(&(lastTree->znak), sizeof(char), 1, output);
+
 //		fclose(input);
 //		input = fopen(argv[argc-2], "rb");
 

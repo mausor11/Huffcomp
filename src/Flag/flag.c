@@ -71,9 +71,10 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, short cntr,
     fwrite(&cntr, sizeof(short), 1, output);
 }
 
-void checkFlag(FILE *output, char *flag, short *lisc) {
-    unsigned char Flag = 0;
-    unsigned short Liscie = 0;
+void checkFlag(FILE *output, char *sum, char *flag, short *lisc) {
+	unsigned char Flag = 0;
+	unsigned short Liscie = 0;
+	unsigned char Sum = 0;
     char maskSzyfr = 0b00100000;
     char maskMask =  0b00001111;
     char maskComp =  0b11000000;
@@ -83,17 +84,19 @@ void checkFlag(FILE *output, char *flag, short *lisc) {
         fprintf(stderr, "Error with fseek\n");
         return;
     }
+	fread(&Sum, sizeof(char), 1, output);
 //    check = fseek(output, 3, SEEK_SET);
-	fread(&Flag, sizeof(char), 1, output);
 //	printf("Flaga: ");
 //	printBits2(Flag, 8);
 //	printf("\n");
-	*flag = Flag;
+	*sum = Sum;
 //	if(Flag & maskSzyfr) {
 //		printf("1. Encypting: true\n");
 //	} else {
 //		printf("1. Encypting: false\n");
 //	}
+	fread(&Flag, sizeof(char), 1, output);
+	*flag = Flag;
     unsigned char tmp = Flag;
     tmp = tmp & maskComp;
     tmp >>= 6;
@@ -104,13 +107,15 @@ void checkFlag(FILE *output, char *flag, short *lisc) {
 //	printf("3. Mask: %d (", tmp);
 //	printBits2(tmp,4);
 //	printf(")\n");
-    check = fseek(output, 3, SEEK_SET);
+    check = fseek(output, 4, SEEK_SET);
     fread(&Liscie, sizeof(short), 1, output);
     *lisc = Liscie;
 //	printf("4. Leaves: %d (", Liscie);
 //	printBits2(Liscie, 16);
 //	printf(")\n");
 }
+
+
 
 void checkFlagfromFile(FILE *output) {
     unsigned char Flag = 0;

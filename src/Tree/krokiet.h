@@ -13,6 +13,9 @@
 	  oraz długością kodu
 	- reszta tablicy to śmieci
 */
+
+
+// komentarz
 typedef struct {
 	int kod[258];
 	int done;

@@ -108,7 +108,7 @@ int getTreeLength(FILE *in, short ile) {
 	int dlugosc = 1;
 	int whatBit;
 	char grbg, cntr = 8;
-	fseek(in, 5, SEEK_SET);
+	fseek(in, 6, SEEK_SET);
 	fread(&grbg, sizeof(char), 1, in);
 	while(ile != 0) {
 		if(!cntr) {
