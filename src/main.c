@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 	int i;
 	char *password;
 	char flagComp = 'c', flagCrypt = 'n', flagVerb = 'n';
+    unsigned char magicNumber = 69;
 	bool encypt = false;
 	FILE *input;
 	FILE *output;
@@ -176,8 +177,8 @@ int main(int argc, char **argv) {
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
-		addFlag(output, flagBit, encypt, cntr, ile);
-		prepareKrokiet(obiad);
+		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
+        prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
 
@@ -201,13 +202,15 @@ int main(int argc, char **argv) {
 		temp <<= (8 - cntr);
 		fwrite(&temp, sizeof(char), 1, output);
 
-
-/* dodanie inicjałów oraz właściwych flag do pliku output */
-		fseek(output, 0, SEEK_SET);
-		addFlag(output,flagBit,encypt,cntr, ile);
-
-
-
+/* dodanie inicjałów, sumy kontrolnej, oraz właściwych flag do pliku output */
+        addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
+        printf("magicNumber: %d\n", magicNumber);
+        magicNumber = MagicNum(output,magicNumber);
+        printf("magicNumber: %d\n", magicNumber);
+        fseek(output,2,SEEK_SET);
+        fwrite(&magicNumber, sizeof(char), 1, output);
+        magicNumber = MagicNum(output,magicNumber);
+        printf("magicNumber: %d\n", magicNumber);
 /* zwolnienie alokowanej pamięci */
 		freeList(beginning);
 		freeTree(tree);
@@ -296,6 +299,7 @@ int main(int argc, char **argv) {
 
 		freeList(lokomotywa);
 	}
+
 	fclose(input);
 	fclose(output);
 	return 0;

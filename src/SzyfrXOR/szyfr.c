@@ -56,7 +56,7 @@ void XOR(FILE *input, FILE *output, int char_number, bool Verbose, char *pass )
         printf("==DEBUG==\n");
     }
 
-    unsigned char x;
+    unsigned char x = 0;
 
     while(fread(&x, sizeof(char), 1, input) == 1) {
         if(Verbose == true) {
@@ -100,3 +100,27 @@ void print_files(FILE *input, FILE *output)
         printf("%d", tmp - '0');
     printf("]\n");
 }
+
+char MagicNum(FILE *input, unsigned char magicNumber) {
+    unsigned char x = 0;
+    int check = fseek(input, 0, SEEK_SET);
+    for(int i=0;i<2;i++) {
+        if(fread(&x, sizeof(char), 1, input)) {
+            magicNumber = x^magicNumber;
+        } else {
+            fprintf(stderr,"There was an error while reading the file. Aborting.\n");
+            return EXIT_FAILURE;
+        }
+    }
+    check = fseek(input, 1, SEEK_CUR);
+    if(check != 0 ) {
+            fprintf(stderr, "Error with fseek\n");
+            return EXIT_FAILURE;
+    }
+    while((fread(&x, sizeof(char), 1, input)) == 1) {
+        magicNumber = x^magicNumber;
+    }
+    return magicNumber;
+}
+
+
