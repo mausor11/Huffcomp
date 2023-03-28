@@ -27,9 +27,9 @@ void freeTree(d_t tree) {
 void writeTree(d_t tree, int i) {
 	if(tree != NULL) {
 		i++;
+		printf("poziom %d | %c ascii:%d -> %d\n", i, tree->znak, tree->znak, tree->counter);
 		writeTree( tree->left_node, i);
 		writeTree( tree->right_node, i);
-		printf("poziom %d | %c ascii:%d -> %d\n", i, tree->znak, tree->znak, tree->counter);
 	}
 }
 

@@ -28,9 +28,11 @@ void emptyKrokiet(krokiet_t []);
 
 void codeFile(krokiet_t [], FILE *, FILE *, char *, char *);
 
+d_t decodeFile(d_t, FILE *, FILE *, union eitbit *, char *);
+
 //lista_t codeFile(krokiet_t [], FILE *, char *, char *);
 
-char decode(d_t, lista_t *, union eitbit *, char *);
+d_t decode(d_t, union eitbit *, char *);
 
 
 #endif
