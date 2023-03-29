@@ -204,18 +204,19 @@ int main(int argc, char **argv) {
 		temp <<= (8 - cntr);
 		fwrite(&temp, sizeof(char), 1, output);
 
-/* dodanie inicjałów, sumy kontrolnej, oraz właściwych flag do pliku output */
+/* dodanie inicjałów oraz właściwych flag do pliku output */
 		fseek(output, 0, SEEK_SET);
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
-		magicNumber = MagicNum(output,magicNumber);
-		fseek(output,2,SEEK_SET);
-		fwrite(&magicNumber, sizeof(char), 1, output);
 /* xorowanie */
         if(encypt == true) {
             fseek(output, 6, SEEK_SET);
             XOR2(output, char_number,Verbose, password);
         }
 
+/* dodanie sumy kontrolnej */
+		magicNumber = MagicNum(output,magicNumber);
+		fseek(output,2,SEEK_SET);
+		fwrite(&magicNumber, sizeof(char), 1, output);
 
 /* zwolnienie alokowanej pamięci */
 		freeList(beginning);
@@ -238,37 +239,53 @@ int main(int argc, char **argv) {
 
         checkFlag(input, &crc, &Flag, &liscie);
 
-        if(Flag & 0b00100000) {
-            unsigned char tre = Flag;
-            tre = tre & 0b11000000;
-            tre >>= 6;
-            switch(tre) {
-                case 2:
-                    btFlag = 12;
-                    break;
-                case 3:
-                    btFlag = 16;
-                    break;
-                default:
-                    btFlag = 8;
-                    break;
+        fseek(input, 0, SEEK_SET);
+            if(MagicNum(input,crc) == checkmagicNumber) {
+                if(Verbose) {
+                    printf("==DEBUG== CHECKSUM\n");
+                    printf("==DEBUG==   Everythig is fine\n");
+                }
+            } else {
+                fprintf(stderr, "File failure\n");
+                return -1;
             }
-            fseek(input, 6, SEEK_SET);
-            XOR2(input, btFlag,Verbose, password);
+        if(Flag & 0b00100000) {
+            if(flagCrypt == 'y') {
+                unsigned char tre = Flag;
+                tre = tre & 0b11000000;
+                tre >>= 6;
+                switch(tre) {
+                    case 2:
+                        btFlag = 12;
+                        break;
+                    case 3:
+                        btFlag = 16;
+                        break;
+                    default:
+                        btFlag = 8;
+                        break;
+                }
+                fseek(input, 6, SEEK_SET);
+                XOR2(input, btFlag,Verbose, password);
+            } else {
+                printf("Password required!\n");
+            }
         }
 
-        fseek(input, 0, SEEK_SET);
+
+
+//        fseek(input, 0, SEEK_SET);
         /* Sprawdzenie czy plik nie uległ awarii */
-        if(Verbose) {
-            if(MagicNum(input,crc) == checkmagicNumber) {
-                printf("==DEBUG== CHECKSUM\n");
-                printf("==DEBUG==   Everythig is fine\n");
-            } else {
-                printf("==DEBUG== CHECKSUM\n");
-                printf("==DEBUG== Something went wrong!\n");
-                printf("==DEBUG==     File failure\n");
-            }
-        }
+//        if(Verbose) {
+//            if(MagicNum(input,crc) == checkmagicNumber) {
+//                printf("==DEBUG== CHECKSUM\n");
+//                printf("==DEBUG==   Everythig is fine\n");
+//            } else {
+//                printf("==DEBUG== CHECKSUM\n");
+//                printf("==DEBUG== Something went wrong!\n");
+//                printf("==DEBUG==     File failure\n");
+//            }
+//        }
 
 
 
