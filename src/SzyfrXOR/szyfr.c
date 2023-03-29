@@ -20,18 +20,9 @@ void dec_to_binary (int num) {
 
 void XOR(FILE *input, FILE *output, int char_number, bool Verbose, char *pass )
 {
-    srand(time(NULL));
-    if(Verbose == true) {
-        printf("==DEBUG==\n");
-        printf("==DEBUG== XOR CIPHER\n");
-    }
-    unsigned short password;
-
+    unsigned short password = 0;
 
     for(int i=0;i<strlen(pass);i++) {
-//        printf(">%c -> ", pass[i]);
-//        dec_to_binary((int)pass[i]);
-//        printf("\n");
         password ^= pass[i];
     }
     switch (char_number) {
@@ -48,35 +39,43 @@ void XOR(FILE *input, FILE *output, int char_number, bool Verbose, char *pass )
             break;
     }
 
-    //fprintf(pass, "%d", password);
-    if(Verbose == true) {
-        printf("==DEBUG==   password: [%d: ", password);
-        dec_to_binary(password);
-        printf("]\n");
-        printf("==DEBUG==\n");
+    unsigned char x = 0;
+
+    while(fread(&x, sizeof(char), 1, input) == 1) {
+        x = x^password;
+        fwrite(&x, sizeof(char), 1, output);
+    }
+}
+
+void XOR2(FILE *output, int char_number, bool Verbose, char *pass )
+{
+    unsigned short password = 0;
+
+    for(int i=0;i<strlen(pass);i++) {
+        password ^= pass[i];
+    }
+    switch (char_number) {
+        case 8:
+            password >> 8;
+            break;
+        case 12:
+            password >> 4;
+            break;
+        case 16:
+            break;
+        default:
+            fprintf(stderr, "Wrong char number!\n");
+            break;
     }
 
     unsigned char x = 0;
 
-    while(fread(&x, sizeof(char), 1, input) == 1) {
-        if(Verbose == true) {
-            fprintf(stdout, "==DEBUG== in: %d -> '%c' [", x, x);
-            dec_to_binary(x);
-            printf("]\n");
-        }
+    while(fread(&x, sizeof(char), 1, output) == 1) {
 
         x = x^password;
-
-       if(Verbose == true) {
-           fprintf(stdout, "==DEBUG== ot: %d -> '%c' [", x, x);
-           dec_to_binary(x);
-           printf("]\n");
-       }
+        fseek(output, -1, SEEK_CUR);
         fwrite(&x, sizeof(char), 1, output);
     }
-
-    fclose(input);
-    fclose(output);
 }
 
 int algorithm (int A, int B)

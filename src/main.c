@@ -43,10 +43,12 @@ int main(int argc, char **argv) {
 	int char_number = 8;
 	int flagBit = 0;
 	int opt;
+
 	int i;
 	char *password;
 	char flagComp = 'c', flagCrypt = 'n', flagVerb = 'n';
     unsigned char magicNumber = 69;
+    unsigned char checkmagicNumber = 69;
 	bool encypt = false;
 	FILE *input;
 	FILE *output;
@@ -60,7 +62,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	input = fopen(argv[argc-2], "rb");
+	input = fopen(argv[argc-2], "rb+");
 	output = fopen(argv[argc-1], "wb+");
 
 	//sprawdzanie czy jest flaga -v i włączanie verbose
@@ -70,6 +72,7 @@ int main(int argc, char **argv) {
 			break;
 		}
 	}
+
 	if(Verbose) {
 		printf("==DEBUG== Huffman coding\n");
 		printf("==DEBUG== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
@@ -131,6 +134,7 @@ int main(int argc, char **argv) {
 				break;
 
 			case 'v':
+                setVerbose();
 				break;
 
 			case 'z':
@@ -181,13 +185,11 @@ int main(int argc, char **argv) {
         prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
-
 /* zakodowanie i zapisanie drzewa */
 		codeTree(tree, &zakod, &temp, &cntr);
 		beginning = zakod;
 		temp <<= (8 - cntr);
 		listToFile(beginning, output);
-
 
 /* powrót do początku pliku */
 		if(fseek(input, 0, SEEK_SET) ){
@@ -205,13 +207,14 @@ int main(int argc, char **argv) {
 /* dodanie inicjałów, sumy kontrolnej, oraz właściwych flag do pliku output */
 		fseek(output, 0, SEEK_SET);
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
-//		printf("magicNumber: %d\n", magicNumber);
 		magicNumber = MagicNum(output,magicNumber);
-//		printf("magicNumber: %d\n", magicNumber);
 		fseek(output,2,SEEK_SET);
 		fwrite(&magicNumber, sizeof(char), 1, output);
-//		checkFlagfromFile(output);
-//		magicNumber = MagicNum(output,magicNumber);
+/* xorowanie */
+        if(encypt == true) {
+            fseek(output, 6, SEEK_SET);
+            XOR2(output, char_number,Verbose, password);
+        }
 
 
 /* zwolnienie alokowanej pamięci */
@@ -228,20 +231,52 @@ int main(int argc, char **argv) {
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
-		char cntr = 8, Flag = 0, crc = 0, temp = 0, last;
+		char cntr = 8, Flag = 0, crc = 0, temp = 0, last, btFlag = 0;
 		d_t ntree = NULL, lastTree;
 		lista_t wagonik = createList(), lokomotywa;
 		krokiet_t obiad[256];
 
-	    checkFlag(input, &crc, &Flag, &liscie);
+        checkFlag(input, &crc, &Flag, &liscie);
+
+        if(Flag & 0b00100000) {
+            unsigned char tre = Flag;
+            tre = tre & 0b11000000;
+            tre >>= 6;
+            switch(tre) {
+                case 2:
+                    btFlag = 12;
+                    break;
+                case 3:
+                    btFlag = 16;
+                    break;
+                default:
+                    btFlag = 8;
+                    break;
+            }
+            fseek(input, 6, SEEK_SET);
+            XOR2(input, btFlag,Verbose, password);
+        }
+
+        fseek(input, 0, SEEK_SET);
+        /* Sprawdzenie czy plik nie uległ awarii */
+        if(Verbose) {
+            if(MagicNum(input,crc) == checkmagicNumber) {
+                printf("==DEBUG== CHECKSUM\n");
+                printf("==DEBUG==   Everythig is fine\n");
+            } else {
+                printf("==DEBUG== CHECKSUM\n");
+                printf("==DEBUG== Something went wrong!\n");
+                printf("==DEBUG==     File failure\n");
+            }
+        }
+
+
+
 		fseek(input, 6, SEEK_SET);
 		last = Flag & 0b00001111;
-//		printf("%d\n", last);
 
-/* sczyt do 100 elem. pliku do listy */
-//		fread(&Flag, sizeof(char), 1, input);
-//		printBits(Flag, 8);
-//		printf("\n");
+        /* sczyt do 100 elem. pliku do listy */
+
 		dlugosc = getTreeLength(input, liscie);
 		fseek(input, 6, SEEK_SET);
 	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
