@@ -115,11 +115,12 @@ d_t makeHTree (d_t tree){
 }
 
 
-void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
+void codeTree(d_t tree, FILE *output, char *temp, char *cntr) {
 	//printf("codeTree: entered\n");
 	if(*cntr == 8) {
 	// potrzebny wskaźnik na początek w programie wywołującym
-		*output = addToList(*output, *temp);
+//		*output = addToList(*output, *temp);
+		fwrite(temp, sizeof(char), 1, output);
 		*temp = 0;
 		*(cntr)-=8;
 	}
@@ -139,7 +140,8 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 		saas.ab <<= (8 - *cntr);
 //        printBits(saas.A,8);
 //		*output = expandList( *output, saas.A);
-        *output = addToList( *output, saas.A);
+//        *output = addToList( *output, saas.A);
+		fwrite(&(saas.A), sizeof(char), 1, output);
 		saas.ab <<= *cntr;
 		*temp = saas.A;
 
@@ -150,10 +152,49 @@ void codeTree(d_t tree, lista_t *output, char *temp, char *cntr) {
 		codeTree(tree->right_node, output, temp, cntr);
 }
 
+
+
+
 // to *powinno* stworzyć drzewo <- i tak robi :D
 // cntr od 0 do 8 - liczba ważnych bitów w temp.B
 //		(tak, żeby w temp.A zawsze był pełny char)
 
+d_t readTree(FILE *in, short *liscie, union eitbit *temp, char *cntr) {
+	if(*liscie) {			// są liście do wczytania
+		d_t tree = createTree();
+		int currentBit;
+		if(*cntr == 0) {
+			fread( &(temp->B), sizeof(char), 1 ,in);
+//			temp->B = (*in)->c;
+//			(*in)  = (*in)->next;
+			(*cntr) += 8;
+		}
+		currentBit = bit(temp->A, 7);
+		temp->ab <<= 1;
+		(*cntr)--;
+		if(currentBit == 0) {
+			tree->left_node = readTree(in, liscie, temp, cntr);
+			tree->right_node = readTree(in, liscie, temp, cntr);
+		}
+
+		else {
+			tree->znak = temp->A;
+			tree->counter = -1;
+			(*liscie)--;
+			temp->ab <<= *cntr;
+			fread( &(temp->B), sizeof(char), 1 ,in);
+//			temp->B = (*in)->c;
+//			(*in) = (*in)->next;
+			temp->ab <<= (8 - *cntr);
+		}
+		return tree;
+	}
+}
+
+
+
+
+/*
 d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 	if(*liscie) {			// są liście do wczytania
 		d_t tree = createTree();
@@ -184,6 +225,7 @@ d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
 	}
 }
 
+*/
 
 
 

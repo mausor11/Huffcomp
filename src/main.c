@@ -181,15 +181,18 @@ int main(int argc, char **argv) {
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
+		writeTree(tree, 0);
+
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
+
         prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
 /* zakodowanie i zapisanie drzewa */
-		codeTree(tree, &zakod, &temp, &cntr);
-		beginning = zakod;
+		codeTree(tree, output, &temp, &cntr);
+//		beginning = zakod;
 		temp <<= (8 - cntr);
-		listToFile(beginning, output);
+//		listToFile(beginning, output);
 
 /* powrót do początku pliku */
 		if(fseek(input, 0, SEEK_SET) ){
@@ -207,19 +210,23 @@ int main(int argc, char **argv) {
 /* dodanie inicjałów oraz właściwych flag do pliku output */
 		fseek(output, 0, SEEK_SET);
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
+
+
 /* xorowanie */
         if(encypt == true) {
             fseek(output, 6, SEEK_SET);
             XOR2(output, char_number,Verbose, password);
         }
 
+
 /* dodanie sumy kontrolnej */
 		magicNumber = MagicNum(output,magicNumber);
 		fseek(output,2,SEEK_SET);
 		fwrite(&magicNumber, sizeof(char), 1, output);
 
+
 /* zwolnienie alokowanej pamięci */
-		freeList(beginning);
+//		freeList(beginning);
 		freeTree(tree);
 	}
 
@@ -294,16 +301,19 @@ int main(int argc, char **argv) {
 
         /* sczyt do 100 elem. pliku do listy */
 
-		dlugosc = getTreeLength(input, liscie);
+//		dlugosc = getTreeLength(input, liscie);
 		fseek(input, 6, SEEK_SET);
-	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
-	    lokomotywa = wagonik;
+//	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
+//	    lokomotywa = wagonik;
 
 
-		trempe.A = wagonik->c;
-		trempe.B = wagonik->next->c;
-		wagonik = wagonik->next->next;
-		ntree = readTree(&wagonik, &liscie, &trempe, &cntr);
+		fread(&(trempe.A), sizeof(char), 1, input);
+		fread(&(trempe.B), sizeof(char), 1, input);
+//		trempe.A = wagonik->c;
+//		trempe.B = wagonik->next->c;
+//		wagonik = wagonik->next->next;
+
+		ntree = readTree(input, &liscie, &trempe, &cntr);
 //		printf("\n\nNowe drzewo:\n");
 //		writeTree(ntree, 0);
 
@@ -317,6 +327,8 @@ int main(int argc, char **argv) {
 //		dlugosc = fileToList(wagonik, input, 100);
 
 		lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
+
+
 
 //		printBits(trempe.A, 8);
 //		printf("\n");
@@ -365,7 +377,7 @@ int main(int argc, char **argv) {
 //		}
 //		fclose(input);
 
-		freeList(lokomotywa);
+//		freeList(lokomotywa);
 	}
 
 	fclose(input);

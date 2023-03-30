@@ -1,4 +1,4 @@
-libtree: tree.o treemaker.o bitbajt.o list.o krokiet.o
+libtree: tree.o treemaker.o bitbajt.o krokiet.o
 	ar rvs libtree.a $^
 
 main: main.o tree.o bitbajt.o
@@ -8,7 +8,7 @@ tree: tree.c tree.h
 	$(CC) -c tree.c tree.h
 
 list: list.c list.h bitbajt.h
-	$(CC) -c list.c list.h
+	$(CC) -c $^
 
 treemaker: treemaker.c treemaker.h tree.h list.h bitbajt.h
 	$(CC) -c treemaker.c treemaker.h tree.h list.h bitbajt.h
