@@ -1,6 +1,3 @@
-libtree: tree.o treemaker.o bitbajt.o krokiet.o
-	ar rvs libtree.a $^
-
 main: main.o tree.o bitbajt.o
 	$(CC) -o main main.o tree.o bitbajt.o
 
