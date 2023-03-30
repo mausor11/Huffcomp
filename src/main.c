@@ -10,7 +10,6 @@
 #include "Tree/tree.h"
 #include "Tree/treemaker.h"
 #include "Tree/bitbajt.h"
-#include "Tree/list.h"
 #include "Tree/krokiet.h"
 #include "Flag/flag.h"
 
@@ -46,7 +45,7 @@ int main(int argc, char **argv) {
 
 	int i;
 	char *password;
-	char flagComp = 'c', flagCrypt = 'n', flagVerb = 'n';
+	char flagCmprs = 'c', flagCrypt = 'n', flagVerb = 'n';
     unsigned char magicNumber = 69;
     unsigned char checkmagicNumber = 69;
 	bool encypt = false;
@@ -138,13 +137,13 @@ int main(int argc, char **argv) {
 				break;
 
 			case 'z':
-				flagComp = 'c';
+				flagCmprs = 'c';
 				if(Verbose == true)
 					printf("==DEBUG== getopt: Chosen force compression\n");
 				break;
 
 			case 'x':
-				flagComp = 'd';
+				flagCmprs = 'd';
 				if(Verbose == true)
 					printf("==DEBUG== getopt: Chosen force decompression\n");
 				break;
@@ -159,8 +158,12 @@ int main(int argc, char **argv) {
 		}
 	}
 
+
+
+
+
 // kompresja
-	if(flagComp == 'c') {
+	if(flagCmprs == 'c') {
 
 
 /* deklaracje zmiennych */
