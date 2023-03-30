@@ -38,7 +38,7 @@ void printKrokiet(krokiet_t obiad[]) {
 	for(int i = 0; i < 256; i++)
 		if(obiad[i].done == 1) {
 			printf("%c - ", i);
-			for(int j = 1; obiad[i].kod[j+1] >= 0; j++)
+			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
 				printf("%d", obiad[i].kod[j]);
 			printf("\n");
 		}
@@ -51,7 +51,7 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, char *temp, char *cntr) {
 	while(liczba != 0) {
 		for(int i = 0; i < liczba; i++) {
 			int j = 1;
-			while(obiad[*(buf+i)].kod[j+1] >= 0) {
+			while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1) && obiad[*(buf+i)].kod[j+1] >= 0 ) {
 
 				// zapełnienie temp
 				if(*cntr == 8) {

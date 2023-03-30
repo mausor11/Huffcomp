@@ -168,7 +168,6 @@ int main(int argc, char **argv) {
 		short ile = 0;
 		char cntr = 0, temp;
 		d_t tree = NULL;
-		lista_t zakod = NULL, beginning, pliczek = NULL;
 
 
 /* liczenie wszystkich znaków w input */
@@ -181,18 +180,16 @@ int main(int argc, char **argv) {
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
-		writeTree(tree, 0);
 
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
 
         prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
+
 /* zakodowanie i zapisanie drzewa */
 		codeTree(tree, output, &temp, &cntr);
-//		beginning = zakod;
 		temp <<= (8 - cntr);
-//		listToFile(beginning, output);
 
 /* powrót do początku pliku */
 		if(fseek(input, 0, SEEK_SET) ){
@@ -226,23 +223,25 @@ int main(int argc, char **argv) {
 
 
 /* zwolnienie alokowanej pamięci */
-//		freeList(beginning);
 		freeTree(tree);
 	}
 
 
 
 
-// WORK IN PROGRESS
-
 	else {
+
+/* deklaracje zmiennych */
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
 		char cntr = 8, Flag = 0, crc = 0, temp = 0, last, btFlag = 0;
 		d_t ntree = NULL, lastTree;
-		lista_t wagonik = createList(), lokomotywa;
 		krokiet_t obiad[256];
+
+
+
+/* sprawdzanie flagi, sumy kontrolnej i <hasła> pliku */
 
         checkFlag(input, &crc, &Flag, &liscie);
 
@@ -281,59 +280,27 @@ int main(int argc, char **argv) {
 
 
 
-//        fseek(input, 0, SEEK_SET);
-        /* Sprawdzenie czy plik nie uległ awarii */
-//        if(Verbose) {
-//            if(MagicNum(input,crc) == checkmagicNumber) {
-//                printf("==DEBUG== CHECKSUM\n");
-//                printf("==DEBUG==   Everythig is fine\n");
-//            } else {
-//                printf("==DEBUG== CHECKSUM\n");
-//                printf("==DEBUG== Something went wrong!\n");
-//                printf("==DEBUG==     File failure\n");
-//            }
-//        }
-
-
+/* odtworzenie drzewa z pliku */
 
 		fseek(input, 6, SEEK_SET);
 		last = Flag & 0b00001111;
 
-        /* sczyt do 100 elem. pliku do listy */
-
-//		dlugosc = getTreeLength(input, liscie);
-		fseek(input, 6, SEEK_SET);
-//	    dlugosc = fileToList(wagonik, input, dlugosc + 1);
-//	    lokomotywa = wagonik;
-
-
 		fread(&(trempe.A), sizeof(char), 1, input);
 		fread(&(trempe.B), sizeof(char), 1, input);
-//		trempe.A = wagonik->c;
-//		trempe.B = wagonik->next->c;
-//		wagonik = wagonik->next->next;
 
 		ntree = readTree(input, &liscie, &trempe, &cntr);
-//		printf("\n\nNowe drzewo:\n");
-//		writeTree(ntree, 0);
 
 
-
-//		fseek(input, 6 + dlugosc - 1, SEEK_SET);		// na wszelki wypadek,
-														// usunąć -1 jak będzie dobra flaga
-//		fread(&temp, sizeof(char), 1, input);
-//		printBits(temp, 8);
-//		printf("\n");
-//		dlugosc = fileToList(wagonik, input, 100);
+/* dekodowanie pozostałych bajtów pliku -
+   faktycznej zawartości pliku pierwotnego */
 
 		lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
 
 
 
-//		printBits(trempe.A, 8);
-//		printf("\n");
+/* dekodowanie ostatniego bitu,
+   który może być częściowo wykorzystany */
 
-// ta sama
 		last+=cntr;
 		while(last) {
 			if(lastTree->counter) {
@@ -353,32 +320,13 @@ int main(int argc, char **argv) {
 		}
 		fwrite(&(lastTree->znak), sizeof(char), 1, output);
 
-//		fclose(input);
-//		input = fopen(argv[argc-2], "rb");
 
-//		cntr = 0;
-
-
-//		printf("bits used in last: %d\n", cntr);
-
-
-//		printf("\n\nbeginning: %c\n", beginning->c);
-
-
-
+/* zwalnianie pamięci */
 
 		freeTree(ntree);
 
-//		printf("\n\n=============================================\n\n");
-//		input = fopen(argv[argc-1], "rb");
-//		while( (fread(&cntr, sizeof(char), 1, input) ) == 1 ) {
-//			printBits(cntr, 8);
-//			printf(" - %c\n", cntr);
-//		}
-//		fclose(input);
-
-//		freeList(lokomotywa);
 	}
+
 
 	fclose(input);
 	fclose(output);
