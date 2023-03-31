@@ -184,7 +184,6 @@ int main(int argc, char **argv) {
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
-		writeTree(tree, 0);
 
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
 
