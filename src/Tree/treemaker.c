@@ -4,7 +4,6 @@
 
 #include "treemaker.h"
 #include "bitbajt.h"
-#include "list.h"
 
 // używane do odtworzenia (sposób 'patrz na brata')
 d_t extend(d_t tree, char what, char where, int whether) {
@@ -40,7 +39,7 @@ d_t extend(d_t tree, char what, char where, int whether) {
 }
 
 // używane do zbierania i liczenia wystąpień znaków
-d_t add(d_t tree, char znak) {
+d_t add(d_t tree, unsigned char znak) {
 
     if(tree == NULL) {
         d_t n_tree = createTree();
@@ -60,7 +59,7 @@ d_t add(d_t tree, char znak) {
 }
 
 d_t charCounter (FILE *input, d_t tree, bool Verbose) {
-    char x;
+	char x;
     while((x = fgetc(input)) != EOF) {
         tree = add(tree, x);
     }
@@ -190,56 +189,3 @@ d_t readTree(FILE *in, short *liscie, union eitbit *temp, char *cntr) {
 		return tree;
 	}
 }
-
-
-
-
-/*
-d_t readTree(lista_t *in, short *liscie, union eitbit *temp, char *cntr) {
-	if(*liscie) {			// są liście do wczytania
-		d_t tree = createTree();
-		int currentBit;
-		if(*cntr == 0) {
-			temp->B = (*in)->c;
-			(*in)  = (*in)->next;
-			(*cntr) += 8;
-		}
-		currentBit = bit(temp->A, 7);
-		temp->ab <<= 1;
-		(*cntr)--;
-		if(currentBit == 0) {
-			tree->left_node = readTree(in, liscie, temp, cntr);
-			tree->right_node = readTree(in, liscie, temp, cntr);
-		}
-
-		else {
-			tree->znak = temp->A;
-			tree->counter = -1;
-			(*liscie)--;
-			temp->ab <<= *cntr;
-			temp->B = (*in)->c;
-			(*in) = (*in)->next;
-			temp->ab <<= (8 - *cntr);
-		}
-		return tree;
-	}
-}
-
-*/
-
-
-
-
-
-/*
-// cntr to, znów, licznik, ale teraz całego ab - należy dodać 8 w mainie, jeżeli 
-char decodeFile(d_t tree, lista_t in, union eitbit *temp, char *cntr) {
-	d_t current;
-	int b;
-	while(in != NULL) {
-		current = tree;
-		b = bit(temp->A, 7);
-	}
-}
-
-*/

@@ -169,7 +169,8 @@ int main(int argc, char **argv) {
 /* deklaracje zmiennych */
 		krokiet_t obiad[256];
 		short ile = 0;
-		char cntr = 0, temp;
+		char cntr = 0;
+		unsigned char temp;
 		d_t tree = NULL;
 
 
@@ -183,16 +184,19 @@ int main(int argc, char **argv) {
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
+		writeTree(tree, 0);
 
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
+
 
         prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
 
+
 /* zakodowanie i zapisanie drzewa */
 		codeTree(tree, output, &temp, &cntr);
-		temp <<= (8 - cntr);
+
 
 /* powrót do początku pliku */
 		if(fseek(input, 0, SEEK_SET) ){
@@ -202,10 +206,10 @@ int main(int argc, char **argv) {
 
 
 /* kompresja pliku input */
-		temp >>= (8 - cntr);
 		codeFile(obiad, input, output, &temp, &cntr);
 		temp <<= (8 - cntr);
 		fwrite(&temp, sizeof(char), 1, output);
+
 
 /* dodanie inicjałów oraz właściwych flag do pliku output */
 		fseek(output, 0, SEEK_SET);
@@ -227,6 +231,7 @@ int main(int argc, char **argv) {
 
 /* zwolnienie alokowanej pamięci */
 		freeTree(tree);
+
 	}
 
 
@@ -238,7 +243,8 @@ int main(int argc, char **argv) {
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
-		char cntr = 8, Flag = 0, crc = 0, temp = 0, last, btFlag = 0;
+		char cntr = 8, last, flag, btFlag = 0, Flag = 0;
+		char crc = 0, temp = 0;
 		d_t ntree = NULL, lastTree;
 		krokiet_t obiad[256];
 

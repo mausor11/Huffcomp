@@ -1,3 +1,4 @@
+
 #ifndef _BITBAJT_H_
 #define _BITBAJT_H_
 
@@ -7,7 +8,7 @@
 
 union eitbit {
 	short ab;
-	struct {char B; char A;};
+	struct {unsigned char B; unsigned char A;};
 };
 
 #pragma pack(pop)

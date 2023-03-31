@@ -6,7 +6,7 @@
 
 typedef struct e {
     int counter;
-    char znak;
+	unsigned char znak;
     struct e *right_node;
     struct e *left_node;
 
