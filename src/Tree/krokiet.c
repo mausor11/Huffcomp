@@ -77,21 +77,19 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char 
 
 // // // // // // // // //
 
-// spójrz na tremp, bo nie działa
 
 d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 	int liczba, whatBit, i;
 	unsigned char recieved;
 	unsigned char *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
-	d_t tremp;
+	d_t tremp = tree;
 //	liczba = fread(buf, sizeof(char), 100, in);
-	while((liczba = fread(buf, sizeof(char), 100, in) ) ) {
+	while(liczba = fread(buf, sizeof(char), 100, in) ) {
 		i = 0;
 		while(i < liczba) {
 			cahr = NULL;
-			tremp = tree;
 			while(cahr == NULL) {
-				if((*cntr) == 0) {
+				if(!(*cntr)) {
 					if(i < liczba) {
 						temp->B = *(buf + i++);
 //						printf("\t");
@@ -108,10 +106,11 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 //				writeTree(tremp, 0);
 //				printf("\n\n");
 				if((tremp->counter) ) {
-					cahr = &recieved;
 					recieved = tremp->znak;
+					cahr = &recieved;
 //					printf("got a char! %c\n", recieved);
 					fwrite(cahr, sizeof(char), 1, out);
+					tremp = tree;
 				}
 			}
 		}
@@ -133,7 +132,7 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 
 d_t decode(d_t tree, union eitbit *temp, char *cntr) {
 	d_t trer = tree;
-	while(*cntr){
+	while((*cntr)){
 		if(!bit(temp->A, 7) ){
 			temp->ab <<= 1;
 			(*cntr)--;

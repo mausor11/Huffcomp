@@ -5,12 +5,12 @@
 
 // credit to  zlog for the idea (code written myself)
 
-int bit(char resource, int which){	//which od 0 do 7
+int bit(unsigned char resource, int which){	//which od 0 do 7
 	int mask = 1 << which;
 	return (resource & mask) ? 1 : 0;
 }
 
-int bajt(char *ret, FILE *input, int many) {
+int bajt(unsigned char *ret, FILE *input, int many) {
 	return fread(ret, sizeof(char), many, input);
 }
 

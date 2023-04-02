@@ -13,8 +13,8 @@ union eitbit {
 
 #pragma pack(pop)
 
-int bit(char, int );
-int bajt(char *,FILE *, int );
+int bit(unsigned char, int );
+int bajt(unsigned char *, FILE *, int );
 void secwet();
 void printBits( unsigned int n, int b );
 

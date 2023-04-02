@@ -13,15 +13,13 @@ typedef struct {
 } table_t;
 
 
-//d_t extend(d_t tree, char what, char where, int);
-
 d_t add(d_t tree, unsigned char znak);
 
 d_t charCounter (FILE *input, d_t tree, bool Verbose);
 
 d_t makeHTree(d_t);
 
-void codeTree(d_t, FILE *, char *, char *);
+void codeTree(d_t, FILE *, unsigned char *, char *);
 
 d_t readTree(FILE *, short *, union eitbit *, char *);
 

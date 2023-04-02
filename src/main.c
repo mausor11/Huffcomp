@@ -242,10 +242,9 @@ int main(int argc, char **argv) {
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
-		char cntr = 8, last, flag, btFlag = 0, Flag = 0;
-		char crc = 0, temp = 0;
+		char cntr = 8, last, flag, btFlag = 0, Flag = 0, crc = 0;
+		unsigned char temp = 0;
 		d_t ntree = NULL, lastTree;
-		krokiet_t obiad[256];
 
 
 

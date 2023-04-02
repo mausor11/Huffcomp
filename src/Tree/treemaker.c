@@ -5,38 +5,6 @@
 #include "treemaker.h"
 #include "bitbajt.h"
 
-// używane do odtworzenia (sposób 'patrz na brata')
-d_t extend(d_t tree, char what, char where, int whether) {
-    d_t bab = createTree();
-    if(!whether)
-        bab->counter = 0;
-    else {
-        bab->znak = what;
-        bab->counter = 1;
-    }
-    switch(where) {
-        case 'r':
-            bab->right_node = tree;
-            break;
-        case 'l':
-            bab->left_node = tree;
-            break;
-        case 'p':
-            if(tree->right_node == NULL) {
-                tree->right_node = bab;
-                bab = tree;
-            }
-            break;
-        default:
-            if(tree->left_node == NULL) {
-                tree->left_node = bab;
-                bab = tree;
-            }
-            break;
-
-    }
-    return bab;
-}
 
 // używane do zbierania i liczenia wystąpień znaków
 d_t add(d_t tree, unsigned char znak) {
@@ -58,6 +26,8 @@ d_t add(d_t tree, unsigned char znak) {
     return tree;
 }
 
+
+
 d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 	char x;
     while((x = fgetc(input)) != EOF) {
@@ -65,6 +35,8 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
     }
     return tree;
 }
+
+
 
 // make Huffman tree
 d_t makeHTree (d_t tree){
@@ -83,7 +55,6 @@ d_t makeHTree (d_t tree){
         tab[i].tree->right_node = NULL;
         tab[i].tree->left_node = NULL;
     }
-    // at this moment we've got a priority queueueueueueue as tab
     for(i = 0; tab[1].tree != NULL; i++) {
         int j = many-i-1, temp;
         tree = createTree();
@@ -93,7 +64,6 @@ d_t makeHTree (d_t tree){
         tab[j].tree = NULL;
         tab[j-1].tree = tree;
         tab[j-1].priority += tab[j].priority;
-        //printf("tab: %d\n", tab[j-1].priority);
         tab[j].priority = 0;
         j--;
         while(j > 0 && ( tab[j].priority >= tab[j-1].priority ) ) {
@@ -114,32 +84,23 @@ d_t makeHTree (d_t tree){
 }
 
 
-void codeTree(d_t tree, FILE *output, char *temp, char *cntr) {
-	//printf("codeTree: entered\n");
+void codeTree(d_t tree, FILE *output, unsigned char *temp, char *cntr) {
 	if(*cntr == 8) {
-	// potrzebny wskaźnik na początek w programie wywołującym
-//		*output = addToList(*output, *temp);
 		fwrite(temp, sizeof(char), 1, output);
 		*temp = 0;
 		*(cntr)-=8;
 	}
-	*temp <<= 1;
+	(*temp) <<= 1;
 	(*cntr)++;
-	//fprintf(stdout, "counter: %d\n\n", *cntr);
 	if(tree->counter == 0) {
-		*temp += 0;
+		(*temp) += 0;
 	}
 	else {
-		*temp += 1;
+		(*temp) += 1;
 		union eitbit saas;
 		saas.A = *temp;
-//        printBits(saas.A,6);
 		saas.B = tree->znak;
-//        printBits(saas.B,8);
 		saas.ab <<= (8 - *cntr);
-//        printBits(saas.A,8);
-//		*output = expandList( *output, saas.A);
-//        *output = addToList( *output, saas.A);
 		fwrite(&(saas.A), sizeof(char), 1, output);
 		saas.ab <<= *cntr;
 		*temp = saas.A;
@@ -164,8 +125,6 @@ d_t readTree(FILE *in, short *liscie, union eitbit *temp, char *cntr) {
 		int currentBit;
 		if(*cntr == 0) {
 			fread( &(temp->B), sizeof(char), 1 ,in);
-//			temp->B = (*in)->c;
-//			(*in)  = (*in)->next;
 			(*cntr) += 8;
 		}
 		currentBit = bit(temp->A, 7);
@@ -182,8 +141,6 @@ d_t readTree(FILE *in, short *liscie, union eitbit *temp, char *cntr) {
 			(*liscie)--;
 			temp->ab <<= *cntr;
 			fread( &(temp->B), sizeof(char), 1 ,in);
-//			temp->B = (*in)->c;
-//			(*in) = (*in)->next;
 			temp->ab <<= (8 - *cntr);
 		}
 		return tree;
