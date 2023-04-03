@@ -3,7 +3,7 @@
 
 #include "bitbajt.h"
 
-// credit to  zlog for the idea (code written myself)
+
 
 int bit(unsigned char resource, int which){	//which od 0 do 7
 	int mask = 1 << which;

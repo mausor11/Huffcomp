@@ -78,14 +78,6 @@ void XOR2(FILE *output, int char_number, bool Verbose, char *pass )
     }
 }
 
-int algorithm (int A, int B)
-{
-    if(A == B) {
-        return 0;
-    } else {
-        return 1;
-    }
-}
 
 void print_files(FILE *input, FILE *output)
 {

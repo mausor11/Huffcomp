@@ -5,6 +5,8 @@
 #include "tree.h"
 #include "bitbajt.h"
 
+// czym jest krokiet? -> krokiet.h
+
 void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 	// jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
 	if(tree->counter == 0) {
@@ -33,10 +35,9 @@ void prepareKrokiet(krokiet_t obiad []) {
 }
 
 void printKrokiet(krokiet_t obiad[]) {
-	printf("\n==printing krokiet==\nznak - kod\n\n");
 	for(int i = 0; i < 256; i++)
 		if(obiad[i].done == 1) {
-			printf("%c - ", i);
+			printf("==DEBUG==\t%c - ", i);
 			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
 				printf("%d", obiad[i].kod[j]);
 			printf("\n");
@@ -55,8 +56,6 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char 
 				// zapełnienie temp
 				if(*cntr == 8) {
 					fwrite(temp, sizeof(char), 1, out);
-//					printf("dodano do listy. %d, %c\n", lista->c, *temp);
-//					printList(lista);
 					*temp = 0;
 					(*cntr) -= 8;
 				}
@@ -64,7 +63,6 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char 
 				(*temp) <<= 1;
 				(*temp) += obiad[*(buf+i)].kod[j++];
 				(*cntr)++;
-				//j++;
 			}
 		}
 
@@ -75,15 +73,12 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char 
 
 
 
-// // // // // // // // //
-
 
 d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 	int liczba, whatBit, i;
 	unsigned char recieved;
 	unsigned char *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
 	d_t tremp = tree;
-//	liczba = fread(buf, sizeof(char), 100, in);
 	while(liczba = fread(buf, sizeof(char), 100, in) ) {
 		i = 0;
 		while(i < liczba) {
@@ -92,44 +87,29 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 				if(!(*cntr)) {
 					if(i < liczba) {
 						temp->B = *(buf + i++);
-//						printf("\t");
-//						printBits(temp->A, 8);
-//						printf(" ");
-//						printBits(temp->B, 8);
-//						printf("\n");
 						(*cntr) += 8;
 					}
 					else
 						break;		// jeżeli to, to ostatni bajt jest w temp->A
 				}
 				tremp = decode(tremp, temp, cntr);
-//				writeTree(tremp, 0);
-//				printf("\n\n");
 				if((tremp->counter) ) {
 					recieved = tremp->znak;
 					cahr = &recieved;
-//					printf("got a char! %c\n", recieved);
 					fwrite(cahr, sizeof(char), 1, out);
 					tremp = tree;
 				}
 			}
 		}
-
-		// ostatni znak, patrz na istotne bity
-		// dorobić else
-		// ^nei
-//		if(( liczba = fread(buf, sizeof(char), 100, in) ) == 0) {
 	}
-//	*temp = buf[liczba-1];
 	if(cahr != NULL)
 		tremp = tree;
-//	*cntr += 8;
 	free(buf);
 	return tremp;
 }
 
 
-
+// dekodowanie znaku
 d_t decode(d_t tree, union eitbit *temp, char *cntr) {
 	d_t trer = tree;
 	while((*cntr)){
@@ -148,8 +128,6 @@ d_t decode(d_t tree, union eitbit *temp, char *cntr) {
 				return trer;
 		}
 	}
-//	writeTree(trer, 0);
-//	printf("\n");
 	return trer;
 }
 

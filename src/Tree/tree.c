@@ -27,7 +27,7 @@ void freeTree(d_t tree) {
 void writeTree(d_t tree, int i) {
 	if(tree != NULL) {
 		i++;
-		printf("poziom %d | %c ascii:%d -> %d\n", i, tree->znak, tree->znak, tree->counter);
+		printf("==DEBUG==\tlevel %d | ascii num:%c; ascii char:%d; count:%d\n", i, tree->znak, tree->znak, tree->counter);
 		writeTree( tree->left_node, i);
 		writeTree( tree->right_node, i);
 	}
@@ -64,21 +64,3 @@ void counter(d_t tree, short *cntr) {
 	if(tree->counter != 0)
 		(*cntr)++;
 }
-
-
-/*
-d_t search(d_t tree) {
-	if(!(tree->counter) ) {
-	// jesteśmy w węźle, szukamy błędu
-		if(tree->left_node == NULL)
-			return tree
-		else
-			return search(tree->left_node);
-		if(tree->right_node == NULL)
-			return tree;
-		else
-			return search(tree->right_node);
-	}
-}
-*/
-

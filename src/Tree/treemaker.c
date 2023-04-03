@@ -8,7 +8,6 @@
 
 // używane do zbierania i liczenia wystąpień znaków
 d_t add(d_t tree, unsigned char znak) {
-
     if(tree == NULL) {
         d_t n_tree = createTree();
         n_tree->znak = znak;
@@ -45,16 +44,19 @@ d_t makeHTree (d_t tree){
     table_t tab[many];
     int i, maxi = 0;
     d_t root = NULL;
-    commonest(tree, &maxi);
+    commonest(tree, &maxi);		// znajdujemy znak, który występuje najczęściej
     for(i = 0; i < many; i++) {
         tab[many-1-i].priority = maxi;
         rarestt(tree, &(tab[many-1-i].tree), &(tab[many-1-i].priority));
         tab[many-1-i].tree->counter = -1;
     }
+    // usuwamy połączenia między drzewem liczącym wystąpnienia
     for(i = 0; i < many; i++) {
         tab[i].tree->right_node = NULL;
         tab[i].tree->left_node = NULL;
     }
+
+    // łączymy od dołu (najrzadszych) węzły w jedno drzewo
     for(i = 0; tab[1].tree != NULL; i++) {
         int j = many-i-1, temp;
         tree = createTree();
@@ -66,6 +68,7 @@ d_t makeHTree (d_t tree){
         tab[j-1].priority += tab[j].priority;
         tab[j].priority = 0;
         j--;
+        // przesuwamy w odpowiednie miejsce w tabeli
         while(j > 0 && ( tab[j].priority >= tab[j-1].priority ) ) {
             tree = tab[j].tree;
             temp = tab[j].priority;
@@ -92,10 +95,10 @@ void codeTree(d_t tree, FILE *output, unsigned char *temp, char *cntr) {
 	}
 	(*temp) <<= 1;
 	(*cntr)++;
-	if(tree->counter == 0) {
+	if(tree->counter == 0) { 		// węzeł
 		(*temp) += 0;
 	}
-	else {
+	else {		// liść - trzeba użyć unii
 		(*temp) += 1;
 		union eitbit saas;
 		saas.A = *temp;
@@ -115,10 +118,7 @@ void codeTree(d_t tree, FILE *output, unsigned char *temp, char *cntr) {
 
 
 
-// to *powinno* stworzyć drzewo <- i tak robi :D
-// cntr od 0 do 8 - liczba ważnych bitów w temp.B
-//		(tak, żeby w temp.A zawsze był pełny char)
-
+// odczyt zakodowanego drzewa
 d_t readTree(FILE *in, short *liscie, union eitbit *temp, char *cntr) {
 	if(*liscie) {			// są liście do wczytania
 		d_t tree = createTree();

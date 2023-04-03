@@ -39,13 +39,13 @@ void setVerbose () {
 int main(int argc, char **argv) {
 
 	srand(time(NULL));
-	int char_number = 8;
+	int charNumber = 8;
 	int flagBit = 0;
 	int opt;
 
 	int i;
 	char *password;
-	char flagCmprs = 'c', flagCrypt = 'n', flagVerb = 'n';
+	char flagCmprs = 'n', flagCrypt = 'n', flagVerb = 'n';
     unsigned char magicNumber = 69;
     unsigned char checkmagicNumber = 69;
 	bool encypt = false;
@@ -95,6 +95,7 @@ int main(int argc, char **argv) {
 		printf("==DEBUG==   %s -> %s\n",argv[argc-2], argv[argc-1]);
 	}
 
+	// forsowane opcje
 	while ( (opt = getopt (argc, argv, "o:c:vhxz") ) != -1 ) {
 		switch(opt) {
 
@@ -107,16 +108,16 @@ int main(int argc, char **argv) {
 				}
 				switch(flagBit) {
 					case 2:
-						char_number = 16;
+						charNumber = 16;
 						break;
 					case 3:
-						char_number = 32;
+						charNumber = 32;
 						break;
 					default:	// 1 albo inne
-						char_number = 8;
+						charNumber = 8;
 						break;
 				}
-				if(Verbose){ printf("==DEBUG== Bit number: %d\n", char_number); };
+				if(Verbose){ printf("==DEBUG== Bit number: %d\n", charNumber); };
 				break;
 
 			case 'c':
@@ -129,7 +130,7 @@ int main(int argc, char **argv) {
 					printf("==DEBUG==\n");
 				}
                 //zaraz na dol
-				//XOR(input, output, char_number, Verbose, password);
+				//XOR(input, output, charNumber, Verbose, password);
 				break;
 
 			case 'v':
@@ -137,13 +138,13 @@ int main(int argc, char **argv) {
 				break;
 
 			case 'z':
-				flagCmprs = 'c';
+				flagCmprs = 'z';
 				if(Verbose == true)
 					printf("==DEBUG== getopt: Chosen force compression\n");
 				break;
 
 			case 'x':
-				flagCmprs = 'd';
+				flagCmprs = 'x';
 				if(Verbose == true)
 					printf("==DEBUG== getopt: Chosen force decompression\n");
 				break;
@@ -158,12 +159,75 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	if(flagCmprs == 'x') {	// forced decomp, sprawdamy czy można
+		fseek(input, 0, SEEK_SET);
+		printf("checking");
+		if(MagicNum(input, magicNumber) != checkmagicNumber) {
+			fprintf(stderr, "%s:\tThere was an error reading the file,\n\tit is possibly corrupted.\n\tTry a different file", argv[0]);
+		}
+	}
 
+// sprawdzamy plik wejściowy, jeżeli nie wybrano -x lub -z
+	if(flagCmprs == 'n') {
+		unsigned char init1, init2, crc;
+		fseek(input, 0, SEEK_SET);
 
+		if(	fread(&init1, sizeof(char), 1, input) == 0 ||
+			fread(&init2, sizeof(char), 1, input) == 0 ||
+			fread(&crc, sizeof(char), 1, input) == 0) {
+			flagCmprs = 'z';
+			if(Verbose){
+				printf(
+				"==DEBUG==\n==DEBUG== CHECKSUM\n"
+				"==DEBUG== Input file analized, it's not a compressed file.\n"
+				"==DEBUG== Chosen compression.\n");
+			}
+		}
+		if(init1 != 'B' || init2 != 'J') {
+			flagCmprs = 'z';
+			if(Verbose){
+				printf(
+				"==DEBUG==\n==DEBUG== CHECKSUM\n"
+				"==DEBUG== Input file analized, it's not a compressed file.\n"
+				"==DEBUG== Chosen compression.\n");
+			}
+		}
+		else {
+			if(MagicNum(input, crc) == checkmagicNumber) {
+				flagCmprs = 'x';
+				if(Verbose){
+					printf(
+					"==DEBUG==\n==DEBUG== CHECKSUM\n"
+					"==DEBUG== Input file analized, it's a compressed file.\n"
+					"==DEBUG== Chosen decompression.\n");
+				}
+			}
+			else {
+				flagCmprs = 'z';
+				if(Verbose){
+					printf(
+					"==DEBUG==\n"
+					"==DEBUG== CHECKSUM\n"
+					"==DEBUG== Input file analized, it's a non-compressed/corrupted file.\n"
+					"==DEBUG== Chosen compression.\n");
+				}
+			}
+		}
+	}
 
 
 // kompresja
-	if(flagCmprs == 'c') {
+	if(flagCmprs == 'z') {
+
+		if(Verbose){
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== COMPRESSION\n"
+			"==DEBUG==\n"
+			"==DEBUG== %d-bit compression\n"
+			, charNumber
+			);
+		}
 
 
 /* deklaracje zmiennych */
@@ -179,11 +243,28 @@ int main(int argc, char **argv) {
 			tree = add(tree, temp);
 		}
 
-
+		if(Verbose){
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== File read.\n"
+			"==DEBUG== Current 'heap', with numerical values;\n"
+			);
+			writeTree(tree, 0);
+		}
 /* tworzenie drzewa huffmana i tablicy alfabetowej*/
+
+
 		tree = makeHTree(tree);
 		temp = 0;
 		counter(tree, &ile);
+
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== Created Huffman tree:\n"
+			);
+			writeTree(tree, 0);
+		}
 
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
 
@@ -191,15 +272,28 @@ int main(int argc, char **argv) {
         prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== Created a dictionary:\n"
+			);
+			printKrokiet(obiad);
+		}
 
 
 /* zakodowanie i zapisanie drzewa */
 		codeTree(tree, output, &temp, &cntr);
 
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== Huffman tree has been coded and written in output file.\n"
+			);
+		}
 
 /* powrót do początku pliku */
 		if(fseek(input, 0, SEEK_SET) ){
-			fprintf(stderr, "%s: There was an error while reading the file. Aborting.\n", argv[0]);
+			fprintf(stderr, "%s:\tThere was an error while reading the file.\n\tAborting.\n", argv[0]);
 			return EXIT_FAILURE;
 		}
 
@@ -208,6 +302,13 @@ int main(int argc, char **argv) {
 		codeFile(obiad, input, output, &temp, &cntr);
 		temp <<= (8 - cntr);
 		fwrite(&temp, sizeof(char), 1, output);
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== COMPRESSING FILE\n"
+			"==DEBUG== File has been correctly compressed.\n"
+			);
+		}
 
 
 /* dodanie inicjałów oraz właściwych flag do pliku output */
@@ -218,15 +319,29 @@ int main(int argc, char **argv) {
 /* xorowanie */
         if(encypt == true) {
             fseek(output, 6, SEEK_SET);
-            XOR2(output, char_number,Verbose, password);
-        }
+            XOR2(output, charNumber,Verbose, password);
+			if(Verbose) {
+				printf(
+				"==DEBUG==\n"
+				"==DEBUG== ENCRYPTING FILE\n"
+				"==DEBUG== File has been encrypted.\n"
+				);
+			}
+		}
 
 
 /* dodanie sumy kontrolnej */
 		magicNumber = MagicNum(output,magicNumber);
 		fseek(output,2,SEEK_SET);
 		fwrite(&magicNumber, sizeof(char), 1, output);
-
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== Control sum has been added: "
+			);
+			printBits(magicNumber, 8);
+			printf("\n");
+		}
 
 /* zwolnienie alokowanej pamięci */
 		freeTree(tree);
@@ -235,8 +350,15 @@ int main(int argc, char **argv) {
 
 
 
-
+// dekompresja
 	else {
+
+		if(Verbose){
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== DECOMPRESSION\n"
+			);
+		}
 
 /* deklaracje zmiennych */
 		union eitbit trempe;
@@ -252,16 +374,6 @@ int main(int argc, char **argv) {
 
         checkFlag(input, &crc, &Flag, &liscie);
 
-        fseek(input, 0, SEEK_SET);
-            if(MagicNum(input,crc) == checkmagicNumber) {
-                if(Verbose) {
-                    printf("==DEBUG== CHECKSUM\n");
-                    printf("==DEBUG==   Everythig is fine\n");
-                }
-            } else {
-                fprintf(stderr, "File failure\n");
-                return -1;
-            }
         if(Flag & 0b00100000) {
             if(flagCrypt == 'y') {
                 unsigned char tre = Flag;
@@ -285,7 +397,13 @@ int main(int argc, char **argv) {
             }
         }
 
-
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== %d-bit decompression\n"
+			, btFlag
+			);
+		}
 
 /* odtworzenie drzewa z pliku */
 
@@ -297,6 +415,13 @@ int main(int argc, char **argv) {
 
 		ntree = readTree(input, &liscie, &trempe, &cntr);
 
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== Huffman tree has been remade from code:\n"
+			);
+			writeTree(ntree, 0);
+		}
 
 /* dekodowanie pozostałych bajtów pliku -
    faktycznej zawartości pliku pierwotnego */
@@ -327,6 +452,12 @@ int main(int argc, char **argv) {
 		}
 		fwrite(&(lastTree->znak), sizeof(char), 1, output);
 
+		if(Verbose) {
+			printf(
+			"==DEBUG==\n"
+			"==DEBUG== Input file has been successfully decompressed into output file.\n"
+			);
+		}
 
 /* zwalnianie pamięci */
 
@@ -337,5 +468,11 @@ int main(int argc, char **argv) {
 
 	fclose(input);
 	fclose(output);
+	if(Verbose) {
+		printf(
+			"==DEBUG==\n"
+			"==DEBUG== Program exited correctly.\n"
+		);
+	}
 	return 0;
 }
