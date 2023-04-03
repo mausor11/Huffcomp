@@ -14,4 +14,4 @@ Flag/libflag.a: Flag/flag.o
 	ar rvs Flag/libflag.a $^
 
 clean:
-	rm */*.o *.o main */lib*.a
+	rm */*.o *.o main */lib*.a debug*

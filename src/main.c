@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 		printf("==DEBUG==   %s -> %s\n",argv[argc-2], argv[argc-1]);
 	}
 
-	// forsowane opcje
+	// opcje
 	while ( (opt = getopt (argc, argv, "o:c:vhxz") ) != -1 ) {
 		switch(opt) {
 
@@ -107,6 +107,10 @@ int main(int argc, char **argv) {
 					printf("==DEBUG==   getopt: Chosen option -o %d\n", flagBit);
 				}
 				switch(flagBit) {
+// dorobić 0
+					case 0:
+						charNumber = 0;
+						break;
 					case 2:
 						charNumber = 16;
 						break;
@@ -129,8 +133,6 @@ int main(int argc, char **argv) {
 					printf("==DEBUG== getopt: Chosen option -c. Changes to %c\n", flagCrypt);
 					printf("==DEBUG==\n");
 				}
-                //zaraz na dol
-				//XOR(input, output, charNumber, Verbose, password);
 				break;
 
 			case 'v':
@@ -161,9 +163,9 @@ int main(int argc, char **argv) {
 
 	if(flagCmprs == 'x') {	// forced decomp, sprawdamy czy można
 		fseek(input, 0, SEEK_SET);
-		printf("checking");
-		if(MagicNum(input, magicNumber) != checkmagicNumber) {
-			fprintf(stderr, "%s:\tThere was an error reading the file,\n\tit is possibly corrupted.\n\tTry a different file", argv[0]);
+		if(MagicNum(input, magicNumber, Verbose) != checkmagicNumber) {
+			fprintf(stderr, "%s:\tThere was an error reading the file,\n\tit is possibly corrupted.\n\tTry a different file.\n", argv[0]);
+			return -1;
 		}
 	}
 
@@ -193,7 +195,7 @@ int main(int argc, char **argv) {
 			}
 		}
 		else {
-			if(MagicNum(input, crc) == checkmagicNumber) {
+			if(MagicNum(input, crc, Verbose) == checkmagicNumber) {
 				flagCmprs = 'x';
 				if(Verbose){
 					printf(
@@ -208,7 +210,7 @@ int main(int argc, char **argv) {
 					printf(
 					"==DEBUG==\n"
 					"==DEBUG== CHECKSUM\n"
-					"==DEBUG== Input file analized, it's a non-compressed/corrupted file.\n"
+					"==DEBUG== Input file analized, it's a decompressed or a corrupted compressed file.\n"
 					"==DEBUG== Chosen compression.\n");
 				}
 			}
@@ -223,7 +225,6 @@ int main(int argc, char **argv) {
 			printf(
 			"==DEBUG==\n"
 			"==DEBUG== COMPRESSION\n"
-			"==DEBUG==\n"
 			"==DEBUG== %d-bit compression\n"
 			, charNumber
 			);
@@ -239,6 +240,7 @@ int main(int argc, char **argv) {
 
 
 /* liczenie wszystkich znaków w input */
+		fseek(input, 0, SEEK_SET);
 		while((fread(&temp,sizeof(char),1,input)) == 1) {
 			tree = add(tree, temp);
 		}
@@ -331,7 +333,7 @@ int main(int argc, char **argv) {
 
 
 /* dodanie sumy kontrolnej */
-		magicNumber = MagicNum(output,magicNumber);
+		magicNumber = MagicNum(output,magicNumber, Verbose);
 		fseek(output,2,SEEK_SET);
 		fwrite(&magicNumber, sizeof(char), 1, output);
 		if(Verbose) {
@@ -369,9 +371,9 @@ int main(int argc, char **argv) {
 		d_t ntree = NULL, lastTree;
 
 
-
 /* sprawdzanie flagi, sumy kontrolnej i <hasła> pliku */
 
+		
         checkFlag(input, &crc, &Flag, &liscie);
 
         if(Flag & 0b00100000) {
