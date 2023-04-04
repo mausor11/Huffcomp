@@ -46,24 +46,31 @@ int main(int argc, char **argv) {
 	int i;
 	unsigned char empty;
 	char *password;
+	char sameName = 0;
 	char flagCmprs = 'n', flagCrypt = 'n', flagVerb = 'n';
     unsigned char magicNumber = 69;
     unsigned char checkmagicNumber = 69;
 	bool encypt = false;
-	FILE *input;
-	FILE *output;
+	FILE *input = NULL;
+	FILE *output = NULL;
 
 	if(argc < 2){
 		fprintf(stderr, "%s: Not enough arguments!\n\n%s\n", argv[0], usage);
 		return 1;
 	}
 	if(argc < 3){
-		fprintf(stderr, "%s: Not enough arguments to open file!\n\n%s\n", argv[0], usage);
+		fprintf(stderr, "%s:\tNot enough arguments to open file!\n\n%s\n", argv[0], usage);
 		return 1;
 	}
 
-	input = fopen(argv[argc-2], "rb+");
-	output = fopen(argv[argc-1], "wb+");
+	if((strcmp(argv[argc-1], argv[argc-2]) )) {
+		input = fopen(argv[argc-2], "rb+");
+		output = fopen(argv[argc-1], "wb+");
+	}
+	else {
+		fprintf(stderr, "%s\t: Cannot operate on the same file.\n", argv[0]);
+		return -1;
+	}
 
 	//sprawdzanie czy jest flaga -v i włączanie verbose
 	for(i=1;i<argc;i++) {
@@ -74,9 +81,9 @@ int main(int argc, char **argv) {
 	}
 
 	if(Verbose) {
-		printf("==DEBUG== Huffman coding\n");
-		printf("==DEBUG== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
-		printf("==DEBUG== Command: ");
+		printf("==== Huffman coding\n");
+		printf("==== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
+		printf("==== Command: ");
 		for(i=0;i<argc;i++)
 			printf("%s ", argv[i]);
 		printf("\n");
@@ -91,9 +98,9 @@ int main(int argc, char **argv) {
 	}
 
 	if(Verbose) {
-		printf("==DEBUG==\n");
-		printf("==DEBUG== INPUT-OUTPUT FILES\n");
-		printf("==DEBUG==   %s -> %s\n",argv[argc-2], argv[argc-1]);
+		printf("====\n");
+		printf("==== INPUT-OUTPUT FILES\n");
+		printf("====   %s -> %s\n",argv[argc-2], argv[argc-1]);
 	}
 
 	// opcje
@@ -103,12 +110,11 @@ int main(int argc, char **argv) {
 			case 'o':
 				flagBit = atoi (optarg);
 				if(Verbose == true) {
-					printf("==DEBUG==\n");
-					printf("==DEBUG== COMPRESSION LEVEL\n");
-					printf("==DEBUG==   getopt: Chosen option -o %d\n", flagBit);
+					printf("====\n");
+					printf("==== COMPRESSION LEVEL\n");
+					printf("====   getopt: Chosen option -o %d\n", flagBit);
 				}
 				switch(flagBit) {
-// dorobić 0
 					case 0:
 						charNumber = 0;
 						break;
@@ -123,7 +129,7 @@ int main(int argc, char **argv) {
 						flagBit = 1;
 						break;
 				}
-				if(Verbose){ printf("==DEBUG== Bit number: %d\n", charNumber); };
+				if(Verbose){ printf("==== Bit number: %d\n", charNumber); };
 				break;
 
 			case 'c':
@@ -131,9 +137,9 @@ int main(int argc, char **argv) {
                 encypt = true;
 				flagCrypt = 'y';
 				if(Verbose) {
-					printf("==DEBUG==\n");
-					printf("==DEBUG== getopt: Chosen option -c. Changes to %c\n", flagCrypt);
-					printf("==DEBUG==\n");
+					printf("====\n");
+					printf("==== getopt: Chosen option -c. Changes to %c\n", flagCrypt);
+					printf("====\n");
 				}
 				break;
 
@@ -144,13 +150,13 @@ int main(int argc, char **argv) {
 			case 'z':
 				flagCmprs = 'z';
 				if(Verbose == true)
-					printf("==DEBUG== getopt: Chosen force compression\n");
+					printf("==== getopt: Chosen force compression\n");
 				break;
 
 			case 'x':
 				flagCmprs = 'x';
 				if(Verbose == true)
-					printf("==DEBUG== getopt: Chosen force decompression\n");
+					printf("==== getopt: Chosen force decompression\n");
 				break;
 
 			case 'h':
@@ -162,6 +168,7 @@ int main(int argc, char **argv) {
 				exit(EXIT_FAILURE);
 		}
 	}
+
 // sprawdź, czy input pusty
 	if(!fread(&empty, sizeof(char), 1, input) ) {
 		fprintf(stderr, "%s:\tCannot operate on an empty file.\n", argv[0]);
@@ -171,6 +178,16 @@ int main(int argc, char **argv) {
 	}
 	else
 		fseek(input, 0, SEEK_SET);
+
+
+// zerowy stopień kompresji = przekopiowanie pliku
+	if(!charNumber) {
+		while(fread(&empty, sizeof(char), 1, input) )
+			fwrite(&empty, sizeof(char), 1, output);
+		fclose(input);
+		fclose(output);
+		return 0;
+	}
 
 	if(flagCmprs == 'x') {	// forced decomp, sprawdamy czy można
 		fseek(input, 2, SEEK_SET);
@@ -208,18 +225,18 @@ int main(int argc, char **argv) {
 			flagCmprs = 'z';
 			if(Verbose){
 				printf(
-				"==DEBUG==\n==DEBUG== CHECKSUM\n"
-				"==DEBUG== Input file analized, it's not a compressed file.\n"
-				"==DEBUG== Chosen compression.\n");
+				"====\n==== CHECKSUM\n"
+				"==== Input file analized, it's not a compressed file.\n"
+				"==== Chosen compression.\n");
 			}
 		}
 		if(init1 != 'B' || init2 != 'J') {
 			flagCmprs = 'z';
 			if(Verbose){
 				printf(
-				"==DEBUG==\n==DEBUG== CHECKSUM\n"
-				"==DEBUG== Input file analized, it's not a compressed file.\n"
-				"==DEBUG== Chosen compression.\n");
+				"====\n==== CHECKSUM\n"
+				"==== Input file analized, it's not a compressed file.\n"
+				"==== Chosen compression.\n");
 			}
 		}
 		else {
@@ -227,19 +244,19 @@ int main(int argc, char **argv) {
 				flagCmprs = 'x';
 				if(Verbose){
 					printf(
-					"==DEBUG==\n==DEBUG== CHECKSUM\n"
-					"==DEBUG== Input file analized, it's a compressed file.\n"
-					"==DEBUG== Chosen decompression.\n");
+					"====\n==== CHECKSUM\n"
+					"==== Input file analized, it's a compressed file.\n"
+					"==== Chosen decompression.\n");
 				}
 			}
 			else {
 				flagCmprs = 'z';
 				if(Verbose){
 					printf(
-					"==DEBUG==\n"
-					"==DEBUG== CHECKSUM\n"
-					"==DEBUG== Input file analized, it's a decompressed or a corrupted compressed file.\n"
-					"==DEBUG== Chosen compression.\n");
+					"====\n"
+					"==== CHECKSUM\n"
+					"==== Input file analized, it's a decompressed or a corrupted compressed file.\n"
+					"==== Chosen compression.\n");
 				}
 			}
 		}
@@ -251,9 +268,9 @@ int main(int argc, char **argv) {
 
 		if(Verbose){
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== COMPRESSION\n"
-			"==DEBUG== %d-bit compression\n"
+			"====\n"
+			"==== COMPRESSION\n"
+			"==== %d-bit compression\n"
 			, charNumber
 			);
 		}
@@ -275,9 +292,9 @@ int main(int argc, char **argv) {
 
 		if(Verbose){
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== File read.\n"
-			"==DEBUG== Current 'heap', with numerical values;\n"
+			"====\n"
+			"==== File read.\n"
+			"==== Current 'heap', with numerical values;\n"
 			);
 			writeTree(tree, 0);
 		}
@@ -290,22 +307,21 @@ int main(int argc, char **argv) {
 
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== Created Huffman tree:\n"
+			"====\n"
+			"==== Created Huffman tree:\n"
 			);
 			writeTree(tree, 0);
 		}
 
 		addFlag(output, flagBit, encypt, cntr, ile, magicNumber);
 
-
         prepareKrokiet(obiad);
 		fillKrokiet(tree, obiad, 0, -2);
 
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== Created a dictionary:\n"
+			"====\n"
+			"==== Created a dictionary:\n"
 			);
 			printKrokiet(obiad);
 		}
@@ -316,8 +332,8 @@ int main(int argc, char **argv) {
 
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== Huffman tree has been coded and written in output file.\n"
+			"====\n"
+			"==== Huffman tree has been coded and written in output file.\n"
 			);
 		}
 
@@ -334,9 +350,9 @@ int main(int argc, char **argv) {
 		fwrite(&temp, sizeof(char), 1, output);
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== COMPRESSING FILE\n"
-			"==DEBUG== File has been correctly compressed.\n"
+			"====\n"
+			"==== COMPRESSING FILE\n"
+			"==== File has been correctly compressed.\n"
 			);
 		}
 
@@ -352,9 +368,9 @@ int main(int argc, char **argv) {
             XOR2(output, charNumber,Verbose, password);
 			if(Verbose) {
 				printf(
-				"==DEBUG==\n"
-				"==DEBUG== ENCRYPTING FILE\n"
-				"==DEBUG== File has been encrypted.\n"
+				"====\n"
+				"==== ENCRYPTING FILE\n"
+				"==== File has been encrypted.\n"
 				);
 			}
 		}
@@ -366,8 +382,8 @@ int main(int argc, char **argv) {
 		fwrite(&magicNumber, sizeof(char), 1, output);
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== Control sum has been added: "
+			"====\n"
+			"==== Control sum has been added: "
 			);
 			printBits(magicNumber, 8);
 			printf("\n");
@@ -375,6 +391,7 @@ int main(int argc, char **argv) {
 
 /* zwolnienie alokowanej pamięci */
 		freeTree(tree);
+
 
 	}
 
@@ -385,8 +402,8 @@ int main(int argc, char **argv) {
 
 		if(Verbose){
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== DECOMPRESSION\n"
+			"====\n"
+			"==== DECOMPRESSION\n"
 			);
 		}
 
@@ -431,8 +448,8 @@ int main(int argc, char **argv) {
 
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== %d-bit decompression\n"
+			"====\n"
+			"==== %d-bit decompression\n"
 			, charNumber
 			);
 		}
@@ -449,8 +466,8 @@ int main(int argc, char **argv) {
 
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== Huffman tree has been remade from code:\n"
+			"====\n"
+			"==== Huffman tree has been remade from code:\n"
 			);
 			writeTree(ntree, 0);
 		}
@@ -486,8 +503,8 @@ int main(int argc, char **argv) {
 
 		if(Verbose) {
 			printf(
-			"==DEBUG==\n"
-			"==DEBUG== Input file has been successfully decompressed into output file.\n"
+			"====\n"
+			"==== Input file has been successfully decompressed into output file.\n"
 			);
 		}
 
@@ -502,8 +519,8 @@ int main(int argc, char **argv) {
 	fclose(output);
 	if(Verbose) {
 		printf(
-			"==DEBUG==\n"
-			"==DEBUG== Program exited correctly.\n"
+			"====\n"
+			"==== Program exited correctly.\n"
 		);
 	}
 	return 0;
