@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 
 	srand(time(NULL));
 	int charNumber = 8;
-	int flagBit = 0;
+	int flagBit = 1;		// default 8-bit
 	int opt;
 
 	int i;
@@ -119,6 +119,7 @@ int main(int argc, char **argv) {
 						break;
 					default:	// 1 albo inne
 						charNumber = 8;
+						flagBit = 1;
 						break;
 				}
 				if(Verbose){ printf("==DEBUG== Bit number: %d\n", charNumber); };
@@ -377,7 +378,7 @@ int main(int argc, char **argv) {
 /* sprawdzanie flagi, sumy kontrolnej i <hasła> pliku */
 
 		
-        checkFlag(input, &crc, &Flag, &liscie);
+        checkFlag(input, &crc, &Flag, &liscie, Verbose);
 
         if(Flag & 0b00100000) {
             if(flagCrypt == 'y') {
