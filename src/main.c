@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
 	int opt;
 
 	int i;
+	unsigned char empty;
 	char *password;
 	char flagCmprs = 'n', flagCrypt = 'n', flagVerb = 'n';
     unsigned char magicNumber = 69;
@@ -112,10 +113,10 @@ int main(int argc, char **argv) {
 						charNumber = 0;
 						break;
 					case 2:
-						charNumber = 16;
+						charNumber = 12;
 						break;
 					case 3:
-						charNumber = 32;
+						charNumber = 16;
 						break;
 					default:	// 1 albo inne
 						charNumber = 8;
@@ -161,6 +162,15 @@ int main(int argc, char **argv) {
 				exit(EXIT_FAILURE);
 		}
 	}
+// sprawdź, czy input pusty
+	if(!fread(&empty, sizeof(char), 1, input) ) {
+		fprintf(stderr, "%s:\tCannot operate on an empty file.\n", argv[0]);
+		fclose(input);
+		fclose(output);
+		return -1;
+	}
+	else
+		fseek(input, 0, SEEK_SET);
 
 	if(flagCmprs == 'x') {	// forced decomp, sprawdamy czy można
 		fseek(input, 2, SEEK_SET);
@@ -170,6 +180,20 @@ int main(int argc, char **argv) {
 			fclose(input);
 			fclose(output);
 			return -1;
+		}
+
+
+		if(charNumber != -1) { 			//ręcznie wybrano poziom dekompresji
+			fseek(input, 3, SEEK_SET);
+			fread(&empty, sizeof(char), 1, input);
+			empty >>= 6;
+			empty = empty & 0b11;
+			if(empty != flagBit) {
+				fprintf(stderr, "%s:\tCan't decompress file using %d-bit decompression. Aborting.\n", argv[0], charNumber);
+				fclose(input);
+				fclose(output);
+				return -1;
+			}
 		}
 	}
 
