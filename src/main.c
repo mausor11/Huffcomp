@@ -162,9 +162,12 @@ int main(int argc, char **argv) {
 	}
 
 	if(flagCmprs == 'x') {	// forced decomp, sprawdamy czy można
-		fseek(input, 0, SEEK_SET);
+		fseek(input, 2, SEEK_SET);
+		fread(&magicNumber, sizeof(char), 1, input);
 		if(MagicNum(input, magicNumber, Verbose) != checkmagicNumber) {
 			fprintf(stderr, "%s:\tThere was an error reading the file,\n\tit is possibly corrupted.\n\tTry a different file.\n", argv[0]);
+			fclose(input);
+			fclose(output);
 			return -1;
 		}
 	}
