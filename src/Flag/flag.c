@@ -95,21 +95,20 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
     }
 	fread(&Sum, sizeof(char), 1, output);
 //    check = fseek(output, 3, SEEK_SET);
+
+	*sum = Sum;
+	fread(&Flag, sizeof(char), 1, output);
+	*flag = Flag;
 	if(Verbose) {
 		printf("==DEBUG== Flag: ");
 		printBits2(Flag, 8);
 		printf("\n");
-	}
-	*sum = Sum;
-	if(Verbose){
 		if(Flag & maskSzyfr) {
 			printf("==DEBUG== Encypting: true\n");
 		} else {
 			printf("==DEBUG== Encypting: false\n");
 		}
 	}
-	fread(&Flag, sizeof(char), 1, output);
-	*flag = Flag;
 	tmp = Flag;
     tmp = tmp & maskComp;
     tmp >>= 6;

@@ -39,7 +39,7 @@ void setVerbose () {
 int main(int argc, char **argv) {
 
 	srand(time(NULL));
-	int charNumber = 8;
+	int charNumber = -1;
 	int flagBit = 1;		// default 8-bit
 	int opt;
 
@@ -370,14 +370,14 @@ int main(int argc, char **argv) {
 		union eitbit trempe;
 		int dlugosc;
 		short liscie;
-		char cntr = 8, last, flag, btFlag = 0, Flag = 0, crc = 0;
+		char cntr = 8, last, flag, charNumber = 0, Flag = 0, crc = 0;
 		unsigned char temp = 0;
 		d_t ntree = NULL, lastTree;
 
 
 /* sprawdzanie flagi, sumy kontrolnej i <hasła> pliku */
 
-		
+
         checkFlag(input, &crc, &Flag, &liscie, Verbose);
 
         if(Flag & 0b00100000) {
@@ -386,18 +386,20 @@ int main(int argc, char **argv) {
                 tre = tre & 0b11000000;
                 tre >>= 6;
                 switch(tre) {
+					case 1:
+						charNumber = 8;
                     case 2:
-                        btFlag = 12;
+						charNumber = 12;
                         break;
                     case 3:
-                        btFlag = 16;
+                        charNumber = 16;
                         break;
                     default:
-                        btFlag = 8;
+                        charNumber = 8;
                         break;
                 }
                 fseek(input, 6, SEEK_SET);
-                XOR2(input, btFlag,Verbose, password);
+                XOR2(input, charNumber,Verbose, password);
             } else {
                 printf("Password required!\n");
             }
@@ -407,7 +409,7 @@ int main(int argc, char **argv) {
 			printf(
 			"==DEBUG==\n"
 			"==DEBUG== %d-bit decompression\n"
-			, btFlag
+			, charNumber
 			);
 		}
 
