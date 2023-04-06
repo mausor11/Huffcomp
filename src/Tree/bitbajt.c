@@ -10,8 +10,17 @@ int bit(unsigned char resource, int which){	//which od 0 do 7
 	return (resource & mask) ? 1 : 0;
 }
 
+int bit2(unsigned short resource, int which){	//which od 0 do 7
+    int mask = 1 << which;
+    return (resource & mask) ? 1 : 0;
+}
+
 int bajt(unsigned char *ret, FILE *input, int many) {
 	return fread(ret, sizeof(char), many, input);
+}
+
+int bajt2(unsigned short *ret, FILE *input, int many) {
+    return fread(ret, sizeof(short), many, input);
 }
 
 void secwet() {

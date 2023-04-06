@@ -16,11 +16,28 @@ d_t createTree() {
     return neww;
 }
 
+d_t16 createTree16() {
+    d_t16 neww = malloc(sizeof *neww);
+    neww->right_node = NULL;
+    neww->left_node = NULL;
+    neww->counter = 0;
+    neww->znak = 0; //dodane
+    return neww;
+}
+
 void freeTree(d_t tree) {
     if(tree->left_node != NULL)
         freeTree(tree->left_node);
     if(tree->right_node != NULL)
         freeTree(tree->right_node);
+    free(tree);
+}
+
+void freeTree16(d_t16 tree) {
+    if(tree->left_node != NULL)
+        freeTree16(tree->left_node);
+    if(tree->right_node != NULL)
+        freeTree16(tree->right_node);
     free(tree);
 }
 
@@ -45,6 +62,17 @@ void rarestt(d_t tree, d_t *temp, int *mini) {
 	}
 }
 
+void rarestt16(d_t16 tree, d_t16 *temp, int *mini) {
+    if(tree->right_node != NULL)
+        rarestt16(tree->right_node, temp, mini);
+    if(tree->left_node != NULL)
+        rarestt16(tree->left_node, temp, mini);
+    if( (tree->counter != -1 ) && ( tree->counter <= *mini) ) {
+        *mini = tree->counter;
+        *temp = tree;
+    }
+}
+
 
 void commonest(d_t tree, int *maxi) {
 	if(tree->right_node != NULL)
@@ -55,6 +83,15 @@ void commonest(d_t tree, int *maxi) {
 		*maxi = tree->counter;
 }
 
+void commonest16(d_t16 tree, int *maxi) {
+    if(tree->right_node != NULL)
+        commonest16(tree->right_node, maxi);
+    if(tree->left_node != NULL)
+        commonest16(tree->left_node, maxi);
+    if( tree->counter > *maxi )
+        *maxi = tree->counter;
+}
+
 
 void counter(d_t tree, short *cntr) {
 	if(tree->right_node != NULL)
@@ -63,4 +100,13 @@ void counter(d_t tree, short *cntr) {
 		counter(tree->left_node, cntr);
 	if(tree->counter != 0)
 		(*cntr)++;
+}
+
+void counter16(d_t16 tree, short *cntr) {
+    if(tree->right_node != NULL)
+        counter16(tree->right_node, cntr);
+    if(tree->left_node != NULL)
+        counter16(tree->left_node, cntr);
+    if(tree->counter != 0)
+        (*cntr)++;
 }
