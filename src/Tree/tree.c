@@ -33,6 +33,8 @@ void freeTree(d_t tree) {
     free(tree);
 }
 
+
+// potrzeba?
 void freeTree16(d_t16 tree) {
     if(tree->left_node != NULL)
         freeTree16(tree->left_node);
@@ -44,12 +46,21 @@ void freeTree16(d_t16 tree) {
 void writeTree(d_t tree, int i) {
 	if(tree != NULL) {
 		i++;
-		printf("==DEBUG==\tlevel %d | ascii num:%c; ascii char:%d; count:%d\n", i, tree->znak, tree->znak, tree->counter);
+		printf("====\tlevel %d | ascii num:%c; ascii char:%d; count:%d\n", i, tree->znak, tree->znak, tree->counter);
 		writeTree( tree->left_node, i);
 		writeTree( tree->right_node, i);
 	}
 }
 
+
+void writeTree16(d_t16 tree, int i) {
+	if(tree != NULL) {
+		i++;
+		printf("====\tlevel %d | number: %d; count:%d\n", i, tree->znak, tree->counter);
+		writeTree16( tree->left_node, i);
+		writeTree16( tree->right_node, i);
+	}
+}
 
 void rarestt(d_t tree, d_t *temp, int *mini) {
 	if(tree->right_node != NULL)

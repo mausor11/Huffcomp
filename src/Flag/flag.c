@@ -20,7 +20,7 @@ void printBits2( unsigned char n, int b )
 
 }
 
-void addFlag(FILE *output, int compression, bool encrypt, char mask, short cntr, unsigned char magicNumber) {
+void addFlag(FILE *output, int compression, bool encrypt, char mask, short cntr, unsigned char magicNumber, char isLast) {
     unsigned char Flag = 0;
 
     switch(compression) {
@@ -59,7 +59,11 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, short cntr,
     }
 
     Flag <<= 1;
-    Flag += 0b0; //jedno dodatkowe miejsce na informacje
+    Flag += isLast;
+    // jedno dodatkowe miejsce na informacje
+    // w przypadku 16-bit kompresji, tutaj przetrzymywana
+    // jest informacja czy oryginalny plik miał
+    // parzystą (0) czy nieparzystą (1) liczbę bajtów
 
     Flag <<= 4;
     Flag += mask;
@@ -76,6 +80,7 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
 	unsigned char Flag = 0;
 	unsigned char Sum = 0;
 	unsigned char tmp = 0;
+	char maskLast = 0b00010000;
     char maskSzyfr = 0b00100000;
     char maskMask =  0b00001111;
     char maskComp =  0b11000000;
@@ -83,8 +88,8 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
 
 	if(Verbose){
 		printf(
-			"==DEBUG==\n"
-			"==DEBUG== CHECKING FLAG\n"
+			"====\n"
+			"==== CHECKING FLAG\n"
 		);
 	}
 
@@ -100,25 +105,30 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
 	fread(&Flag, sizeof(char), 1, output);
 	*flag = Flag;
 	if(Verbose) {
-		printf("==DEBUG== Flag: ");
+		printf("==== Flag: ");
 		printBits2(Flag, 8);
 		printf("\n");
 		if(Flag & maskSzyfr) {
-			printf("==DEBUG== Encypting: true\n");
+			printf("==== Encypting: true\n");
 		} else {
-			printf("==DEBUG== Encypting: false\n");
+			printf("==== Encypting: false\n");
 		}
-	}
-	tmp = Flag;
-    tmp = tmp & maskComp;
-    tmp >>= 6;
-    if(Verbose)
-		printf("==DEBUG== Compression level: %d\n", tmp);
+		tmp = Flag;
+	    tmp = tmp & maskComp;
+	    tmp >>= 6;
+		printf("==== Compression level: %d\n", tmp);
 
-    tmp = Flag;
-    tmp = tmp & maskMask;
-    if(Verbose) {
-		printf("==DEBUG== Mask: %d (", tmp);
+		tmp = Flag;
+		tmp = tmp & maskLast;
+		printf("==== Origin file byte count: ");
+		if(tmp)
+			printf("odd\n");
+		else
+			printf("even\n");
+
+	    tmp = Flag;
+	    tmp = tmp & maskMask;
+		printf("==== Mask: %d (", tmp);
 		printBits2(tmp,4);
 		printf(")\n");
 	}
@@ -126,7 +136,7 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
     fread(&Liscie, sizeof(short), 1, output);
     *lisc = Liscie;
     if(Verbose){
-		printf("==DEBUG== Tree leaves: %d (", Liscie);
+		printf("==== Tree leaves: %d (", Liscie);
 		printBits2(Liscie, 16);
 		printf(")\n");
 	}

@@ -13,7 +13,7 @@ union eitbit {
 
 union sixtbit {
     int cd;
-    struct {unsigned short D; unsigned char C;};
+    struct {unsigned short D; unsigned short C;};
 };
 
 #pragma pack(pop)
@@ -23,6 +23,7 @@ int bit2(unsigned short, int );
 
 int bajt(unsigned char *, FILE *, int );
 int bajt2(unsigned short *, FILE *, int);
+int bajt3(unsigned short *, FILE *, int);
 void secwet();
 void printBits( unsigned int n, int b );
 

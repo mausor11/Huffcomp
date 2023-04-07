@@ -7,6 +7,8 @@
 
 // czym jest krokiet? -> krokiet.h
 
+
+
 void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 	// jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
 	if(tree->counter == 0) {
@@ -26,24 +28,51 @@ void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 		fillKrokiet(tree->right_node, obiad, poziom+1, 1);
 }
 
-void fillKrokiet16(d_t16 tree, krokiet_t16 obiad[], int poziom, int what) {
+
+void fillKrokiet12(d_t16 tree, krokiet_t12 obiad[], int poziom, int what) {
+	// jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
+	if(tree->counter == 0) {
+		for(int i = 0; i < 4096; i++)
+			if(obiad[i].done != 1)
+				obiad[i].kod[poziom] = what;
+	}
+	// znaleźliśmy liść - zakończyć dla tego znaku
+	else {
+		obiad[tree->znak].kod[poziom] = what;
+		obiad[tree->znak].kod[poziom+1] = poziom;
+		obiad[tree->znak].done = 1;
+	}
+	if(tree->left_node != NULL)
+		fillKrokiet12(tree->left_node, obiad, poziom+1, 0);
+	if(tree->right_node != NULL)
+		fillKrokiet12(tree->right_node, obiad, poziom+1, 1);
+}
+
+
+void fillKrokiet16(d_t16 tree, krokiet_t16 *obiad, int poziom, int what, short ile, short *whichDone) {
     // jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
     if(tree->counter == 0) {
-        for(int i = 0; i < 65536; i++)
-            if(obiad[i].done != 1)
-                obiad[i].kod[poziom] = what;
+        for(int i = 0; i < ile; i++)
+            if((obiad+i)->done != 1)
+                (obiad+i)->kod[poziom] = what;
     }
         // znaleźliśmy liść - zakończyć dla tego znaku
     else {
-        obiad[tree->znak].kod[poziom] = what;
-        obiad[tree->znak].kod[poziom+1] = poziom;
-        obiad[tree->znak].done = 1;
+        (obiad + (*whichDone))->kod[poziom] = what;
+        (obiad + (*whichDone))->kod[poziom+1] = poziom;
+        (obiad + (*whichDone))->done = 1;
+		(obiad + (*whichDone))->znak = tree->znak;
+        (*whichDone)++;
     }
     if(tree->left_node != NULL)
-        fillKrokiet16(tree->left_node, obiad, poziom+1, 0);
+        fillKrokiet16(tree->left_node, obiad, poziom+1, 0, ile, whichDone);
     if(tree->right_node != NULL)
-        fillKrokiet16(tree->right_node, obiad, poziom+1, 1);
+        fillKrokiet16(tree->right_node, obiad, poziom+1, 1, ile, whichDone);
 }
+
+
+////////////////////////////////////////////////////////////////////
+
 
 void prepareKrokiet(krokiet_t obiad []) {
 	for(int i = 0; i < 256; i++) {
@@ -53,34 +82,63 @@ void prepareKrokiet(krokiet_t obiad []) {
 	}
 }
 
-void prepareKrokiet16(krokiet_t16 obiad [], int ile) {
-    for(int i = 0; i < 65536; i++) {
-        obiad[i].done = -1;
+
+void prepareKrokiet12(krokiet_t12 obiad []) {
+	for(int i = 0; i < 4096; i++) {
+		obiad[i].done = -1;
+		for(int j = 0; j < 4098; j++)
+			obiad[i].kod[j] = -1;
+	}
+}
+
+void prepareKrokiet16(krokiet_t16 *obiad, short ile) {
+    for(int i = 0; i < ile; i++) {
+        (obiad+i)->done = -1;
         for(int j = 0; j < 65538; j++)
-            obiad[i].kod[j] = -1;
+            (obiad+i)->kod[j] = -1;
     }
 }
+
+
+////////////////////////////////////////////////////////////////
 
 
 void printKrokiet(krokiet_t obiad[]) {
 	for(int i = 0; i < 256; i++)
 		if(obiad[i].done == 1) {
-			printf("==DEBUG==\t%c - ", i);
+			printf("====\t%c - ", i);
 			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
 				printf("%d", obiad[i].kod[j]);
 			printf("\n");
 		}
 }
 
-void printKrokiet16(krokiet_t16 obiad[]) {
-    for(int i = 0; i < 65536; i++)
-        if(obiad[i].done == 1) {
-            printf("==DEBUG==\t%c - ", i);
-            for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
-                printf("%d", obiad[i].kod[j]);
+
+
+void printKrokiet12(krokiet_t12 obiad[]) {
+	for(int i = 0; i < 4096; i++)
+		if(obiad[i].done == 1) {
+			printf("====\t%c - ", i);
+			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
+				printf("%d", obiad[i].kod[j]);
+			printf("\n");
+		}
+}
+
+
+void printKrokiet16(krokiet_t16 obiad[], short ile) {
+    for(int i = 0; i < ile; i++)
+        if((obiad +i)->done == 1) {
+        // patrz tu
+            printf("====\tshort: %d - ", (obiad + i)->znak);
+            for(int j = 1; ( ((obiad +i)->kod[j] == 0) || ((obiad +i)->kod[j] == 1) ) && (obiad +i)->kod[j+1] >= 0; j++)
+                printf("%d", (obiad +i)->kod[j]);
             printf("\n");
         }
 }
+
+
+///////////////////////////////////////////////////////////////////////
 
 
 void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char *cntr) {
@@ -109,14 +167,56 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char 
 	free(buf);
 }
 
-void codeFile16(krokiet_t16 obiad[], FILE *in, FILE *out, unsigned short *temp, char *cntr) {
+
+void codeFile12(krokiet_t12 obiad[], FILE *in, FILE *out, unsigned short *temp, char *cntr) {
+	unsigned short *buf = malloc(100 * sizeof (*buf) );
+	unsigned short lastCheck = 0;
+	int liczba = bajt2(buf, in, 100);			// bajt2 - wczytuje 100 shortów do bufora
+	lastCheck = *(buf+liczba-1);
+	while(liczba != 0) {
+		for(int i = 0; i < liczba; i++) {
+			int j = 1;
+			while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1) && obiad[*(buf+i)].kod[j+1] >= 0 ) {
+
+				// zapełnienie temp
+				if(*cntr == 8) {
+					fwrite(temp, sizeof(char), 1, out);
+					*temp = 0;
+					(*cntr) -= 8;
+				}
+
+				(*temp) <<= 1;
+				(*temp) += obiad[*(buf+i)].kod[j++];
+				(*cntr)++;
+			}
+		}
+
+		liczba = bajt2(buf, in, 100);	// kolejna dawka danych
+
+		if(liczba > 0 &&  ( *(buf+liczba-1) != lastCheck ) ) {
+			lastCheck = *(buf+liczba-1);
+		}
+		// ^ nie wykona tego, jeżeli wczytało niepełny short na koniec
+
+	}
+	if( !(bajt2(buf, in, 1) ) ) {
+		
+	}
+	free(buf);
+}
+
+
+void codeFile16(krokiet_t16 *obiad, FILE *in, FILE *out, unsigned short *temp, char *cntr) {
     unsigned short *buf = malloc(100 * sizeof (*buf) );
-    //buf = NULL;
-    int liczba = bajt2(buf, in, 100);
+    int liczba = bajt3(buf, in, 100);
     while(liczba != 0) {
         for(int i = 0; i < liczba; i++) {
+			int k = 0;
+			while( *(buf+i) != (obiad + k)->znak) {		// mało prawdopodobne, że nie ma tu znalezionego znaku
+				k++;
+			}
             int j = 1;
-            while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1) && obiad[*(buf+i)].kod[j+1] >= 0 ) {
+			while( ( (obiad+k)->kod[j] == 0) || ( (obiad+k)->kod[j] == 1) && (obiad+k)->kod[j+1] >= 0 ) {
 
                 // zapełnienie temp
                 if(*cntr == 16) {
@@ -126,17 +226,18 @@ void codeFile16(krokiet_t16 obiad[], FILE *in, FILE *out, unsigned short *temp, 
                 }
 
                 (*temp) <<= 1;
-                (*temp) += obiad[*(buf+i)].kod[j++];
+                (*temp) += (obiad+k)->kod[j++];
                 (*cntr)++;
             }
         }
 
-        liczba = bajt2(buf, in, 100);	// kolejna dawka danych
+        liczba = bajt3(buf, in, 100);	// kolejna dawka danych
     }
     free(buf);
 }
 
 
+/////////////////////////////////////////////////////////////////////////
 
 
 d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
@@ -173,15 +274,41 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 	return tremp;
 }
 
+
+// dekodowanie znaku
+d_t decode(d_t tree, union eitbit *temp, char *cntr) {
+	d_t trer = tree;
+	while((*cntr)){
+		if(!bit(temp->A, 7) ){
+			temp->ab <<= 1;
+			(*cntr)--;
+			trer = trer->left_node;
+			if(trer->counter)
+				return trer;
+		}
+		else {
+			temp->ab <<= 1;
+			(*cntr)--;
+			trer = trer->right_node;
+			if(trer->counter)
+				return trer;
+		}
+	}
+	return trer;
+}
+
+
+
+
 d_t16 decodeFile16(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *cntr) {
-    int liczba, whatBit, i;
-    unsigned short recieved;
-    unsigned short *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
-    d_t16 tremp = tree;
-    while(liczba = fread(buf, sizeof(short), 100, in) ) {
-        i = 0;
-        while(i < liczba) {
-            cahr = NULL;
+	int liczba, whatBit, i;
+	unsigned short recieved;
+	unsigned short *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
+	d_t16 tremp = tree;
+	while(liczba = fread(buf, sizeof(short), 100, in) ) {
+		i = 0;
+		while(i < liczba) {
+		cahr = NULL;
             while(cahr == NULL) {
                 if(!(*cntr)) {
                     if(i < liczba) {
@@ -208,32 +335,12 @@ d_t16 decodeFile16(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *c
 }
 
 
-// dekodowanie znaku
-d_t decode(d_t tree, union eitbit *temp, char *cntr) {
-	d_t trer = tree;
-	while((*cntr)){
-		if(!bit(temp->A, 7) ){
-			temp->ab <<= 1;
-			(*cntr)--;
-			trer = trer->left_node;
-			if(trer->counter)
-				return trer;
-		}
-		else {
-			temp->ab <<= 1;
-			(*cntr)--;
-			trer = trer->right_node;
-			if(trer->counter)
-				return trer;
-		}
-	}
-	return trer;
-}
+
 
 d_t16 decode16(d_t16 tree, union sixtbit *temp, char *cntr) {
     d_t16 trer = tree;
     while((*cntr)){
-        if(!bit(temp->C, 7) ){
+        if(!bit2(temp->C, 15) ){
             temp->cd <<= 1;
             (*cntr)--;
             trer = trer->left_node;

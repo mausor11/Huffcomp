@@ -154,7 +154,7 @@ void codeTree(d_t tree, FILE *output, unsigned char *temp, char *cntr) {
 	if(*cntr == 8) {
 		fwrite(temp, sizeof(char), 1, output);
 		*temp = 0;
-		*(cntr)-=8;
+		(*cntr)-=8;
 	}
 	(*temp) <<= 1;
 	(*cntr)++;
@@ -182,7 +182,7 @@ void codeTree16(d_t16 tree, FILE *output, unsigned short *temp, char *cntr) {
     if(*cntr == 16) {
         fwrite(temp, sizeof(short), 1, output);
         *temp = 0;
-        *(cntr)-=16;
+        (*cntr)-=16;
     }
     (*temp) <<= 1;
     (*cntr)++;
@@ -198,7 +198,6 @@ void codeTree16(d_t16 tree, FILE *output, unsigned short *temp, char *cntr) {
         fwrite(&(saas.C), sizeof(short), 1, output);
         saas.cd <<= *cntr;
         *temp = saas.C;
-
     }
     if(tree->left_node != NULL)
         codeTree16(tree->left_node, output, temp, cntr);
@@ -243,7 +242,6 @@ d_t16 readTree16(FILE *in, short *liscie, union sixtbit *temp, char *cntr) {
         int currentBit;
         if(*cntr == 0) {
             fread( &(temp->D), sizeof(short), 1 ,in);
-            printf("%d\n", temp->D);
             (*cntr) += 16;
         }
         currentBit = bit2(temp->C, 15);
