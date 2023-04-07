@@ -32,6 +32,8 @@ char *usage =
 
 bool Verbose = false;
 
+bool Comp = false, Decomp = false;
+
 void setVerbose () {
     Verbose = true;
 }
@@ -149,12 +151,14 @@ int main(int argc, char **argv) {
 
 			case 'z':
 				flagCmprs = 'z';
+                Comp = true;
 				if(Verbose == true)
 					printf("==== getopt: Chosen force compression\n");
 				break;
 
 			case 'x':
 				flagCmprs = 'x';
+                Decomp = true;
 				if(Verbose == true)
 					printf("==== getopt: Chosen force decompression\n");
 				break;
@@ -168,6 +172,14 @@ int main(int argc, char **argv) {
 				exit(EXIT_FAILURE);
 		}
 	}
+
+// sprawdzamy czy ktoś nie wybrał jednocześnie kompresji i dekompresji
+    if((Comp == true) && (Decomp == true)) {
+        fprintf(stderr, "%s:\tCan't compress and decompress at the same time. Aborting.\n", argv[0]);
+        fclose(input);
+        fclose(output);
+        return -1;
+    }
 
 // sprawdź, czy input pusty
 	if(!fread(&empty, sizeof(char), 1, input) ) {
@@ -498,13 +510,7 @@ int main(int argc, char **argv) {
             freeTree(tree);
                 break;
         }
-
-
-
-
 	}
-
-
 
 // dekompresja
 	else {
@@ -559,7 +565,6 @@ int main(int argc, char **argv) {
 
         if(Flag & 0b00100000) {
             if(flagCrypt == 'y') {
-
                 fseek(input, 6, SEEK_SET);
                 XOR2(input, charNumber,Verbose, password);
             } else {
@@ -577,7 +582,6 @@ int main(int argc, char **argv) {
             case 12:
                 break;
             case 16:
-                /* W BUDOWIE */
                 break;
             default:
 /* odtworzenie drzewa z pliku */
