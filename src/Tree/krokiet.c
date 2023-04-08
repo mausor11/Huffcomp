@@ -103,37 +103,37 @@ void prepareKrokiet16(krokiet_t16 *obiad, short ile) {
 ////////////////////////////////////////////////////////////////
 
 
-void printKrokiet(krokiet_t obiad[]) {
+void printKrokiet(FILE *in, krokiet_t obiad[]) {
 	for(int i = 0; i < 256; i++)
 		if(obiad[i].done == 1) {
-			printf("====\t%c - ", i);
+			fprintf(in, "====\t%c - ", i);
 			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
-				printf("%d", obiad[i].kod[j]);
-			printf("\n");
+				fprintf(in, "%d", obiad[i].kod[j]);
+			fprintf(in, "\n");
 		}
 }
 
 
 
-void printKrokiet12(krokiet_t12 obiad[]) {
+void printKrokiet12(FILE *in, krokiet_t12 obiad[]) {
 	for(int i = 0; i < 4096; i++)
 		if(obiad[i].done == 1) {
-			printf("====\t%c - ", i);
+			fprintf(in, "====\t%c - ", i);
 			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
-				printf("%d", obiad[i].kod[j]);
-			printf("\n");
+				fprintf(in, "%d", obiad[i].kod[j]);
+			fprintf(in, "\n");
 		}
 }
 
 
-void printKrokiet16(krokiet_t16 obiad[], short ile) {
+void printKrokiet16(FILE *in, krokiet_t16 obiad[], short ile) {
     for(int i = 0; i < ile; i++)
         if((obiad +i)->done == 1) {
         // patrz tu
-            printf("====\tshort: %d - ", (obiad + i)->znak);
+            fprintf(in, "====\tshort: %d - ", (obiad + i)->znak);
             for(int j = 1; ( ((obiad +i)->kod[j] == 0) || ((obiad +i)->kod[j] == 1) ) && (obiad +i)->kod[j+1] >= 0; j++)
-                printf("%d", (obiad +i)->kod[j]);
-            printf("\n");
+                fprintf(in, "%d", (obiad +i)->kod[j]);
+            fprintf(in, "\n");
         }
 }
 
@@ -172,6 +172,7 @@ void codeFile12(krokiet_t12 obiad[], FILE *in, FILE *out, unsigned short *temp, 
 	unsigned short *buf = malloc(100 * sizeof (*buf) );
 	unsigned short lastCheck = 0;
 	int liczba = bajt2(buf, in, 100);			// bajt2 - wczytuje 100 shortów do bufora
+	// patrz tu
 	lastCheck = *(buf+liczba-1);
 	while(liczba != 0) {
 		for(int i = 0; i < liczba; i++) {

@@ -49,9 +49,9 @@ void fillKrokiet12(d_t16, krokiet_t12 [], int, int);
 void fillKrokiet16(d_t16, krokiet_t16 *, int, int, short, short *);
 
 
-void printKrokiet(krokiet_t []);
-void printKrokiet12(krokiet_t12 []);
-void printKrokiet16(krokiet_t16 *, short);
+void printKrokiet(FILE *, krokiet_t []);
+void printKrokiet12(FILE *, krokiet_t12 []);
+void printKrokiet16(FILE *, krokiet_t16 *, short);
 
 
 void prepareKrokiet(krokiet_t []);

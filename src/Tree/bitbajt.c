@@ -23,19 +23,19 @@ int bajt2(unsigned short *ret, FILE *input, int many) {
 //	int i = 0;
 	int how = many;
 	char *aaa = malloc(3 * sizeof( *aaa) );
-	while(many && (fread(aaa, sizeof(char), 3, input) == 3 ) ) {
-		*(ret + how - many) += *aaa;
-		*(ret + how - many) <<= 8;
-		*(ret + how - many) += *(aaa+1);
-		*(ret + how - many) >>= 4;
-		*(ret + how - many) &= 0b0000111111111111;		// wszelki wypadek
+	while(how && (fread(aaa, sizeof(char), 3, input) == 3 ) ) {
+		*(ret - how + many) += *aaa;
+		*(ret - how + many) <<= 8;
+		*(ret - how + many) += *(aaa+1);
+		*(ret - how + many) >>= 4;
+		*(ret - how + many) &= 0b0000111111111111;		// wszelki wypadek
 
-		*(ret + how - many + 1) += *(aaa+1);
-		*(ret + how - many + 1) <<= 8;
-		*(ret + how - many + 1) += *(aaa+2);
-		*(ret + how - many + 1) &= 0b0000111111111111;		// wszelki wypadek
+		*(ret - how + many + 1) += *(aaa+1);
+		*(ret - how + many + 1) <<= 8;
+		*(ret - how + many + 1) += *(aaa+2);
+		*(ret - how + many + 1) &= 0b0000111111111111;		// wszelki wypadek
 
-		many -= 2;
+		how -= 2;
 	}
 	free(aaa);
     return how - many;

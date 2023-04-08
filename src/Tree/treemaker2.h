@@ -1,5 +1,5 @@
-#ifndef TREEMAKER_H_INCLUDED
-#define TREEMAKER_H_INCLUDED
+#ifndef _TREEMAKER2_H_
+#define _TREEMAKER2_H_
 
 #include <stdio.h>
 #include <stdbool.h>

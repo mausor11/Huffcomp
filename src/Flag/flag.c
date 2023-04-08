@@ -21,54 +21,76 @@ void printBits2( unsigned char n, int b )
 }
 
 void addFlag(FILE *output, int compression, bool encrypt, char mask, short cntr, unsigned char magicNumber, char isLast) {
-    unsigned char Flag = 0;
+	unsigned char Flag = 0;
+	char *signature = malloc(2*sizeof(char));
+	signature[0] = 'B';
+	signature[1] = 'J';
 
-    switch(compression) {
-        case 0:
-            Flag <<= 2;
-            Flag += 0b00;
-            break;
-        case 1:
-            Flag <<= 2;
-            Flag += 0b01;
-            break;
-        case 2:
-            Flag <<= 2;
-            Flag += 0b10;
-            break;
-        case 3:
-            Flag <<= 2;
-            Flag += 0b11;
-            break;
-        default:
-            fprintf(stderr, "Wrong compression parametr!\n");
-            break;
-    }
 
-    switch((int)encrypt) {
-        case true:
-            Flag <<= 1;
-            Flag += 0b1;
-            break;
-        case false:
-            Flag <<= 1;
-            Flag += 0b0;
-            break;
-        default:
-            fprintf(stderr, "Wrong encryption parametr!\n");
-    }
+	switch(compression) {
+		case 0:
+			Flag <<= 2;
+			Flag += 0b00;
+			break;
+		case 1:
+			Flag <<= 2;
+			Flag += 0b01;
+			break;
+		case 2:
+			Flag <<= 2;
+			Flag += 0b10;
+			break;
+		case 3:
+			Flag <<= 2;
+			Flag += 0b11;
+			break;
+		default:
+			fprintf(stderr, "Wrong compression parametr!\n");
+			break;
+	}
+
+	switch((int)encrypt) {
+		case true:
+			Flag <<= 1;
+			Flag += 0b1;
+			break;
+		case false:
+			Flag <<= 1;
+			Flag += 0b0;
+			break;
+		default:
+			fprintf(stderr, "Wrong encryption parametr!\n");
+	}
+
+	/*	przypadek 12-bit, kiedy możemy mieć zero, jeden lub dwa
+		'niepełne' (do 3) bajty - wykorzystano drugi znak inicjałów
+		do przechowania informacji, czy są dwa 'niepełne' bajty;
+		inicjały niezmienione, gdy jest jeden lub zero 'niepełnych'.
+
+		Wyjaśnienie 'niepełnych' bajtów:
+		załóżmy, że kompresujemy 12-bit kompresją plik o rozmiarze
+		95B. Jako że dwa znaki 12-bitowej kompresji to 24 bity,
+		czyli 3 * sizeof(char), to plik ma 2 'niepełne' bajty:
+		95 % 3 = 2
+	*/
+	if(isLast == 2) {
+		(*(signature+1))++;
+		isLast--;
+	}
 
     Flag <<= 1;
     Flag += isLast;
-    // jedno dodatkowe miejsce na informacje
-    // w przypadku 16-bit kompresji, tutaj przetrzymywana
-    // jest informacja czy oryginalny plik miał
-    // parzystą (0) czy nieparzystą (1) liczbę bajtów
+    /*	jedno dodatkowe miejsce na informacje
+    	w przypadku 16-bit kompresji, tutaj przetrzymywana
+    	jest informacja czy oryginalny plik miał
+    	parzystą (0) czy nieparzystą (1) liczbę bajtów
 
+		w przypadku 12-bit kompresji, (0) oznacza zero 'niepełnych'
+		bajtów, a (1) oznacza albo 1 albo 2 'niepełne' bajty
+	*/
     Flag <<= 4;
     Flag += mask;
 
-    char *signature = "BJ";
     fwrite(signature, sizeof(char), 2, output);
     fwrite(&magicNumber, sizeof(char), 1, output);
     fwrite(&Flag, sizeof(unsigned char), 1, output);

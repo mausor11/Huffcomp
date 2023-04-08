@@ -26,7 +26,18 @@ int main(){
 
 	printf("%d %d %d %d\n", abc->a, abc->b, abc[1].a, abc[1].b);
 
+	char *ccc = malloc(3 * sizeof(char) );
+
+	*ccc = 'a';
+	*(ccc+1) = 'b';
+	*(ccc+2) = 'c';
+
+	(*(ccc+1))++;
+	printf("%s\n", ccc);
+
+
 	free(abc);
+	free(ccc);
 	fclose(in);
 	return 0;
 }

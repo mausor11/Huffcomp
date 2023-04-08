@@ -43,22 +43,22 @@ void freeTree16(d_t16 tree) {
     free(tree);
 }
 
-void writeTree(d_t tree, int i) {
+void writeTree(FILE *in, d_t tree, int i) {
 	if(tree != NULL) {
 		i++;
-		printf("====\tlevel %d | ascii num:%c; ascii char:%d; count:%d\n", i, tree->znak, tree->znak, tree->counter);
-		writeTree( tree->left_node, i);
-		writeTree( tree->right_node, i);
+		fprintf(in, "====\tlevel %d | ascii num:%c; ascii char:%d; count:%d\n", i, tree->znak, tree->znak, tree->counter);
+		writeTree(in, tree->left_node, i);
+		writeTree(in, tree->right_node, i);
 	}
 }
 
 
-void writeTree16(d_t16 tree, int i) {
+void writeTree16(FILE *in, d_t16 tree, int i) {
 	if(tree != NULL) {
 		i++;
-		printf("====\tlevel %d | number: %d; count:%d\n", i, tree->znak, tree->counter);
-		writeTree16( tree->left_node, i);
-		writeTree16( tree->right_node, i);
+		fprintf(in, "====\tlevel %d | number: %d; count:%d\n", i, tree->znak, tree->counter);
+		writeTree16(in, tree->left_node, i);
+		writeTree16(in, tree->right_node, i);
 	}
 }
 

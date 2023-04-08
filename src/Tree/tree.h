@@ -28,8 +28,8 @@ d_t16 createTree16();
 void freeTree(d_t tree);
 void freeTree16(d_t16 tree);
 
-void writeTree(d_t tree, int i);
-void writeTree16(d_t16 tree, int i);
+void writeTree(FILE *, d_t tree, int i);
+void writeTree16(FILE *, d_t16 tree, int i);
 
 void rarestt(d_t, d_t*, int *);
 void rarestt16(d_t16, d_t16*, int *);
