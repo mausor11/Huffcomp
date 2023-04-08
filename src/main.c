@@ -963,7 +963,7 @@ int main(int argc, char **argv) {
 // 12bit dekompresja
 			case 12:
 				printf("work in progress\n");
-/*				union sixtbit twlv;
+				union sixtbit twlv;
 				char cntr12 = 0;
 				d_t16 ntree12 = NULL, lastTree12;
 
@@ -972,10 +972,10 @@ int main(int argc, char **argv) {
 
 				fread(&(twlv.C), sizeof(short), 1, input);
 				fread(&(twlv.D), sizeof(short), 1, input);
-				twlv.cd <<= 4;
 				cntr12 = 8;
 
-				ntree12 = readTree12(input, &liscie, &twlv, &cntr12);
+				printf("huh %d\n", liscie);
+/*				ntree12 = readTree12(input, &liscie, &twlv, &cntr12);
 
 
 				if(Verbose) {
@@ -1058,7 +1058,7 @@ int main(int argc, char **argv) {
 					fclose(additional);
 				}
 */
-				freeTree16(ntree12);
+//				freeTree16(ntree12);
 			break;
 
 

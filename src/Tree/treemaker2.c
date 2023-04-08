@@ -62,8 +62,7 @@ d_t16 readTree12(FILE *in, short *liscie, union sixtbit *temp, char *cntr) {
 		int currentBit;
 		if(!(*cntr) ) {
 			fread( &(temp->D), sizeof(short), 1 ,in);
-			temp->D <<= 4;
-			(*cntr) += 12;
+			(*cntr) += 16;
 		}
 		currentBit = bit(temp->C, 15);
 		temp->cd <<= 1;
@@ -86,7 +85,6 @@ d_t16 readTree12(FILE *in, short *liscie, union sixtbit *temp, char *cntr) {
 			}
 
 
-// \/ to de facto nie może się wydarzyć?
 			else {			// pozostaje co najmniej 1 istotny bit
 							// w temp->D, nie możemy go stracić
 				temp->cd <<= 12;
