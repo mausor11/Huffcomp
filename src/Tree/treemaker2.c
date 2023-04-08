@@ -60,10 +60,10 @@ d_t16 readTree12(FILE *in, short *liscie, union sixtbit *temp, char *cntr) {
 	if(*liscie) {			// są liście do wczytania
 		d_t16 tree = createTree16();
 		int currentBit;
-		// przyczyna 16bit a)
-		if(*cntr < 1) {
+		if(!(*cntr) ) {
 			fread( &(temp->D), sizeof(short), 1 ,in);
-			(*cntr) += 16;
+			temp->D <<= 4;
+			(*cntr) += 12;
 		}
 		currentBit = bit(temp->C, 15);
 		temp->cd <<= 1;
@@ -79,13 +79,14 @@ d_t16 readTree12(FILE *in, short *liscie, union sixtbit *temp, char *cntr) {
 			tree->znak = tree->znak & 0b0000111111111111;	// na wszelki
 			tree->counter = -1;
 			(*liscie)--;
-			// przyczyna 16bit b)
 			if((*cntr) < 13) {
 				temp->cd <<= *cntr;
 				fread( &(temp->D), sizeof(short), 1 ,in);
 				temp->cd <<= (12 - *cntr);
 			}
 
+
+// \/ to de facto nie może się wydarzyć?
 			else {			// pozostaje co najmniej 1 istotny bit
 							// w temp->D, nie możemy go stracić
 				temp->cd <<= 12;

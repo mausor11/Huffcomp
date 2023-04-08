@@ -95,6 +95,7 @@ void addFlag(FILE *output, int compression, bool encrypt, char mask, short cntr,
     fwrite(&magicNumber, sizeof(char), 1, output);
     fwrite(&Flag, sizeof(unsigned char), 1, output);
     fwrite(&cntr, sizeof(short), 1, output);
+	free(signature);
 }
 
 void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
@@ -106,7 +107,6 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
     char maskSzyfr = 0b00100000;
     char maskMask =  0b00001111;
     char maskComp =  0b11000000;
-//	FILE *dump;
 
 	if(Verbose){
 		printf(

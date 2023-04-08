@@ -38,7 +38,7 @@ int bajt2(unsigned short *ret, FILE *input, int many) {
 		how -= 2;
 	}
 	free(aaa);
-    return how - many;
+    return many - how;
 }
 
 int bajt3(unsigned short *ret, FILE *input, int many) {

@@ -16,4 +16,4 @@ Flag/libflag.a: Flag/flag.o
 
 
 clean:
-	rm */*.o *.o main */lib*.a
+	rm */*.o *.o main */lib*.a verboseDump

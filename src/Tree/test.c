@@ -35,6 +35,13 @@ int main(){
 	(*(ccc+1))++;
 	printf("%s\n", ccc);
 
+	if(!fseek(in, -2, SEEK_END) ) {
+		printf("returned?\n");
+	}
+
+	y = 0;
+	printf("%ld\n", fread(&y, sizeof(char), 1, in) );
+	printf("%d\n", y);
 
 	free(abc);
 	free(ccc);

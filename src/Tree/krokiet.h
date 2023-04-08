@@ -26,19 +26,19 @@ jest tablica wielkości 256 struktur zaiwerających:
 */
 
 typedef struct {
-	int kod[258];
+	char kod[258];
 	int done;
 } krokiet_t;
 
 
 typedef struct {
-    short kod[4098];
+    char kod[4098];
     char done;
 } krokiet_t12;
 
 
 typedef struct {
-    short kod[65538];
+    char kod[65538];
     char done;
 	unsigned short znak;
 } krokiet_t16;
