@@ -310,76 +310,110 @@ int main(int argc, char **argv) {
 				while((fread(&temp,sizeof(char),1,input)) == 1) {
 					tree = add(tree, temp);
 				}
-				if(Verbose){
-					printf(
-						"====\n"
-						"==== File read.\n"
-						"==== Current 'heap', with numerical values,\n"
-						"==== has been written to verboseDump.\n"
-					);
-					fprintf(dump, "\nHeap:\n");
-					writeTree(dump, tree, 0);
-					fprintf(dump, "\n\n");
-				}
 
-/* tworzenie drzewa huffmana i tablicy alfabetowej*/
-				tree = makeHTree(tree);
-				temp = 0;
 				counter(tree, &ile);
-				if(Verbose) {
-					printf(
-						"====\n"
-						"==== Created Huffman tree, written to verboseDump\n"
-					);
-					fprintf(dump, "\nHuffman tree:\n");
-					writeTree(dump, tree, 0);
-					fprintf(dump, "\n\n");
+				temp = 0;
+
+/* tylko jeden znak w pliku (nieistotnie, czy występuje wielokrotnie) */
+				if(ile == 1) {
+					addFlag(output, flagBit, encypt, cntr, ile, magicNumber, isLast);
+
+					fwrite(&(tree->znak), sizeof(char), 1, output);
+					fseek(input, 0, SEEK_SET);
+					while(fread(&temp, sizeof(char), 1, input) ) {
+						if(cntr == 8) {
+							fwrite(&temp, sizeof(char), 1, output);
+							temp = 0;
+							cntr -= 8;
+						}
+						temp <<= 1;
+						temp += 1;
+						cntr++;
+					}
+					temp <<= 8 - cntr;
+					fwrite(&temp, sizeof(char), 1, output);
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Detected one character in file: number %d.\n"
+							"==== Ouput file has been compressed accordingly.\n"
+						, temp
+						);
+					}
 				}
 
-				addFlag(output, flagBit, encypt, cntr, ile, magicNumber, isLast);
+/* co najmniej 2 różne znaki w pliku - standardowa procedura */
+				else {
+					if(Verbose){
+						printf(
+							"====\n"
+							"==== File read.\n"
+							"==== Current 'heap', with numerical values,\n"
+							"==== has been written to verboseDump.\n"
+						);
+						fprintf(dump, "\nHeap:\n");
+						writeTree(dump, tree, 0);
+						fprintf(dump, "\n\n");
+					}
 
-				prepareKrokiet(obiad);
-				fillKrokiet(tree, obiad, 0, -2);
 
-				if(Verbose) {
-					printf(
-						"====\n"
-						"==== Created a dictionary, written to verboseDump.\n"
-					);
-					fprintf(dump, "\nDictionary:\n");
-					printKrokiet(dump, obiad);
-					fprintf(dump, "\n\n");
+/* tworzenie drzewa Huffmana i tablicy alfabetowej */
+					tree = makeHTree(tree);
+
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Created Huffman tree, written to verboseDump\n"
+						);
+						fprintf(dump, "\nHuffman tree:\n");
+						writeTree(dump, tree, 0);
+						fprintf(dump, "\n\n");
+					}
+
+					addFlag(output, flagBit, encypt, cntr, ile, magicNumber, isLast);
+
+					prepareKrokiet(obiad);
+					fillKrokiet(tree, obiad, 0, -2);
+
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Created a dictionary, written to verboseDump.\n"
+						);
+						fprintf(dump, "\nDictionary:\n");
+						printKrokiet(dump, obiad);
+						fprintf(dump, "\n\n");
+					}
+
+	/* zakodowanie i zapisanie drzewa */
+					codeTree(tree, output, &temp, &cntr);
+
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Huffman tree has been coded and written in output file.\n"
+						);
+					}
+
+	/* powrót do początku pliku */
+					if(fseek(input, 0, SEEK_SET) ){
+						fprintf(stderr, "%s:\tThere was an error while reading the file.\n\tAborting.\n", argv[0]);
+						return EXIT_FAILURE;
+					}
+
+
+	/* kompresja pliku input */
+					codeFile(obiad, input, output, &temp, &cntr);
+					temp <<= (8 - cntr);
+					fwrite(&temp, sizeof(char), 1, output);
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== COMPRESSING FILE\n"
+							"==== File has been correctly compressed.\n"
+						);
+					}
 				}
-
-/* zakodowanie i zapisanie drzewa */
-				codeTree(tree, output, &temp, &cntr);
-
-				if(Verbose) {
-					printf(
-						"====\n"
-						"==== Huffman tree has been coded and written in output file.\n"
-					);
-				}
-
-/* powrót do początku pliku */
-				if(fseek(input, 0, SEEK_SET) ){
-					fprintf(stderr, "%s:\tThere was an error while reading the file.\n\tAborting.\n", argv[0]);
-					return EXIT_FAILURE;
-				}
-
-
-/* kompresja pliku input */
-				codeFile(obiad, input, output, &temp, &cntr);
-				temp <<= (8 - cntr);
-				fwrite(&temp, sizeof(char), 1, output);
-				if(Verbose) {
-					printf(
-						"====\n"
-						"==== COMPRESSING FILE\n"
-						"==== File has been correctly compressed.\n"
-					);
-				}
-
 
 /* dodanie inicjałów oraz właściwych flag do pliku output */
 				fseek(output, 0, SEEK_SET);
@@ -515,6 +549,7 @@ int main(int argc, char **argv) {
 				}
 
 				temp12 = 0;
+				cntr12 = 0;
 				codeTree12(tree12, output, &temp12, &cntr12);
 
 				if(Verbose) {
@@ -817,14 +852,11 @@ int main(int argc, char **argv) {
 /* deklaracje paru zmiennych */
 
 		int dlugosc;
-		unsigned short temp16 = 0;
 		short liscie;
 		unsigned char temp = 0;
-		char cntr = 8, last, flag, charNumber = 0, Flag = 0, crc = 0;
+		char last, charNumber = 0, Flag = 0, crc = 0;
 		char isLast = 0;
-		char cntr16 = 16;
 
-		d_t16 ntree16 = NULL, lastTree16;
 
 
 /* sprawdzanie flagi, sumy kontrolnej i <hasła> pliku */
@@ -879,60 +911,92 @@ int main(int argc, char **argv) {
  		switch (charNumber) {
 
 
-// 8bit dekompresja
+// 8-bit dekompresja
 			case 8:
 
 /* deklaracja zmiennych */
-				union eitbit trempe;
-				d_t ntree = NULL, lastTree;
+				if(liscie == 1) {
+					int i, j, liczba;
+					unsigned char tremp;
+					unsigned char *buf = malloc(100 * sizeof(*buf) );
+					char cntr = 8;
+					last = Flag & 0b00001111;
+					fseek(input, 6, SEEK_SET);
+					fread(&tremp, sizeof(char), 1, input);
+					liczba = fread(buf, sizeof(char), 100, input);
+					while(liczba) {
+						for( i = 0; i < liczba-1; i++ ){
+							for(j = 0; j < 8; j++)
+								fwrite(&tremp, sizeof(char), 1, output);
+						}
 
-				fseek(input, 6, SEEK_SET);
-				last = Flag & 0b00001111;
-
-				fread(&(trempe.A), sizeof(char), 1, input);
-				fread(&(trempe.B), sizeof(char), 1, input);
-
-/* odtworzenie drzewa z pliku */
-
-				ntree = readTree(input, &liscie, &trempe, &cntr);
-
-				if(Verbose) {
-					printf(
-						"====\n"
-						"==== Huffman tree has been remade from code,\n"
-						"==== written to verboseDump\n"
-					);
-					fprintf(dump, "\nHuffman tree:\n");
-					writeTree(dump, ntree, 0);
-					fprintf(dump, "\n\n");
+						if(liczba = fread(buf, sizeof(char), 100, input) ) {		// są dalsze dane - nie ostatni bajt
+							for(j = 0; j < 8; j++)
+								fwrite(&tremp, sizeof(char), 1, output);
+						}
+						else {
+							while(last) {
+								fwrite(&tremp, sizeof(char), 1, output);
+								last--;
+							}
+						}
+					}
+					free(buf);
 				}
+				else {
+					union eitbit trempe;
+					char cntr = 8;
+					d_t ntree = NULL, lastTree;
 
-/* dekodowanie pozostałych bajtów pliku -
-   faktycznej zawartości pliku pierwotnego */
+					fseek(input, 6, SEEK_SET);
+					last = Flag & 0b00001111;
 
-				lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
+					fread(&(trempe.A), sizeof(char), 1, input);
+					fread(&(trempe.B), sizeof(char), 1, input);
 
-/* dekodowanie ostatniego bitu,
-   który może być tylko częściowo wykorzystany */
+	/* odtworzenie drzewa z pliku */
 
-				last+=cntr;
-				while(last) {
-					if(lastTree->counter) {
-						fwrite( &(lastTree->znak), sizeof(char), 1, output);
-						lastTree = ntree;
+					ntree = readTree(input, &liscie, &trempe, &cntr);
+
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Huffman tree has been remade from code,\n"
+							"==== written to verboseDump\n"
+						);
+						fprintf(dump, "\nHuffman tree:\n");
+						writeTree(dump, ntree, 0);
+						fprintf(dump, "\n\n");
 					}
-					if(!bit(trempe.A, 7) ) {
-						trempe.ab <<=1;
-						last--;
-						lastTree = lastTree->left_node;
+
+	/* dekodowanie pozostałych bajtów pliku -
+	   faktycznej zawartości pliku pierwotnego */
+
+					lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
+
+	/* dekodowanie ostatniego bitu,
+	   który może być tylko częściowo wykorzystany */
+
+					last+=cntr;
+					while(last) {
+						if(lastTree->counter) {
+							fwrite( &(lastTree->znak), sizeof(char), 1, output);
+							lastTree = ntree;
+						}
+						if(!bit(trempe.A, 7) ) {
+							trempe.ab <<=1;
+							last--;
+							lastTree = lastTree->left_node;
+						}
+						else {
+							trempe.ab <<=1;
+							last--;
+							lastTree = lastTree->right_node;
+						}
 					}
-					else {
-						trempe.ab <<=1;
-						last--;
-						lastTree = lastTree->right_node;
-					}
+					fwrite(&(lastTree->znak), sizeof(char), 1, output);
+					freeTree(ntree);
 				}
-				fwrite(&(lastTree->znak), sizeof(char), 1, output);
 
 				if(Verbose) {
 					printf(
@@ -942,7 +1006,6 @@ int main(int argc, char **argv) {
 				}
 
 /* zwalnianie pamięci */
-				freeTree(ntree);
 
 				break;
 
@@ -952,7 +1015,7 @@ int main(int argc, char **argv) {
 */
 
 
-// 12bit dekompresja
+// 12-bit dekompresja
 			case 12:
 				printf("work in progress\n");
 				union sixtbit twlv;
@@ -967,7 +1030,7 @@ int main(int argc, char **argv) {
 				cntr12 = 8;
 
 				printf("huh %d\n", liscie);
-/*				ntree12 = readTree12(input, &liscie, &twlv, &cntr12);
+				ntree12 = readTree12(input, &liscie, &twlv, &cntr12);
 
 
 				if(Verbose) {
@@ -980,11 +1043,11 @@ int main(int argc, char **argv) {
 					writeTree16(dump, ntree12, 0);
 					fprintf(dump, "\n\n");
 				}
-
+/*
 /* dekodowanie pozostałych bajtów pliku -
    faktycznej zawartości pliku pierwotnego */
 /*
-				lastTree16 = decodeFile12(ntree12, input, output, &twlv, &cntr12);
+				lastTree12 = decodeFile12(ntree12, input, output, &twlv, &cntr12);
 
 /* dekodowanie ostatniego bitu,
    który może być częściowo wykorzystany */
@@ -1050,18 +1113,23 @@ int main(int argc, char **argv) {
 					fclose(additional);
 				}
 */
-//				freeTree16(ntree12);
+				freeTree16(ntree12);
 			break;
 
 
 
-// 16bit dekompresja
+// 16-bit dekompresja
 			case 16:
 				union sixtbit sixsaas;
+				unsigned short temp16 = 0;
+				char cntr16 = 16;
 				d_t16 ntree16 = NULL, lastTree16;
 
+				isLast = 0;
 				fseek(input, 6, SEEK_SET);
 				last = Flag & 0b00001111;
+
+				isLast = Flag & 0b00010000;
 
 				fread(&(sixsaas.C), sizeof(short), 1, input);
 				fread(&(sixsaas.D), sizeof(short), 1, input);

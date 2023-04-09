@@ -26,7 +26,8 @@ void codeTree12(d_t16 tree, FILE *output, unsigned short *temp, char *cntr) {
 		union sixtbit saas;
 		saas.C = *temp;
 		saas.D = tree->znak;
-		saas.D <<= 4;			// pierwsze cztery bity znaku nieznaczne
+		saas.D <<= 4;			// pierwsze cztery bity znaku drzewa nieistotne
+
 		if((*cntr) > 3) {			// mamy co najmniej short danych
 			saas.cd <<= (16 - *cntr);
 			fwrite(&(saas.C), sizeof(short), 1, output);
@@ -64,7 +65,7 @@ d_t16 readTree12(FILE *in, short *liscie, union sixtbit *temp, char *cntr) {
 			fread( &(temp->D), sizeof(short), 1 ,in);
 			(*cntr) += 16;
 		}
-		currentBit = bit(temp->C, 15);
+		currentBit = bit2(temp->C, 15);
 		temp->cd <<= 1;
 		(*cntr)--;
 		if(currentBit == 0) {

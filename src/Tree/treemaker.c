@@ -66,13 +66,12 @@ d_t makeHTree (d_t tree){
         rarestt(tree, &(tab[many-1-i].tree), &(tab[many-1-i].priority));
         tab[many-1-i].tree->counter = -1;
     }
-    // usuwamy połączenia między drzewem liczącym wystąpnienia
+	// usuwamy połączenia między drzewem liczącym wystąpnienia
     for(i = 0; i < many; i++) {
         tab[i].tree->right_node = NULL;
         tab[i].tree->left_node = NULL;
     }
-
-    // łączymy od dołu (najrzadszych) węzły w jedno drzewo
+	    // łączymy od dołu (najrzadszych) węzły w jedno drzewo
     for(i = 0; tab[1].tree != NULL; i++) {
         int j = many-i-1, temp;
         tree = createTree();
@@ -95,10 +94,8 @@ d_t makeHTree (d_t tree){
             j--;
         }
     }
-
     tree = tab[0].tree;
     tab[0].tree = NULL;
-
     return tree;
 }
 
