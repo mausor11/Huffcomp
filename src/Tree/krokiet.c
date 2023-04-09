@@ -241,7 +241,6 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 	unsigned char *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
 	d_t tremp = tree;
 	while(liczba = fread(buf, sizeof(char), 100, in) ) {
-		printf("humu: %d\n", liczba);
 		i = 0;
 		while(i < liczba) {
 			cahr = NULL;
@@ -256,7 +255,6 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 				}
 				tremp = decode(tremp, temp, cntr);
 				if((tremp->counter) ) {
-					printf("got one!\n");
 					recieved = tremp->znak;
 					cahr = &recieved;
 					fwrite(cahr, sizeof(char), 1, out);
@@ -265,7 +263,6 @@ d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
 			}
 		}
 	}
-	printf("humu\n");
 	if(cahr != NULL)
 		tremp = tree;
 	free(buf);
@@ -342,15 +339,17 @@ d_t16 decode16(d_t16 tree, union sixtbit *temp, char *cntr) {
             temp->cd <<= 1;
             (*cntr)--;
             trer = trer->left_node;
-            if(trer->counter)
+            if(trer->counter) {
                 return trer;
+            }
         }
         else {
             temp->cd <<= 1;
             (*cntr)--;
             trer = trer->right_node;
-            if(trer->counter)
+            if(trer->counter) {
                 return trer;
+			}
         }
     }
     return trer;

@@ -99,6 +99,7 @@ d_t makeHTree (d_t tree){
     return tree;
 }
 
+
 d_t16 makeHTree16 (d_t16 tree){
     unsigned short many = 0;
     counter16(tree, &many);
