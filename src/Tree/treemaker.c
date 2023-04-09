@@ -55,7 +55,7 @@ d_t charCounter (FILE *input, d_t tree, bool Verbose) {
 
 // make Huffman tree
 d_t makeHTree (d_t tree){
-    short many = 0;
+    unsigned short many = 0;
     counter(tree, &many);
     table_t tab[many];
     int i, maxi = 0;
@@ -103,7 +103,7 @@ d_t makeHTree (d_t tree){
 }
 
 d_t16 makeHTree16 (d_t16 tree){
-    short many = 0;
+    unsigned short many = 0;
     counter16(tree, &many);
     table_t16 tab[many];
     int i, maxi = 0;
@@ -115,6 +115,7 @@ d_t16 makeHTree16 (d_t16 tree){
         tab[many-1-i].tree->counter = -1;
     }
     // usuwamy połączenia między drzewem liczącym wystąpnienia
+
     for(i = 0; i < many; i++) {
         tab[i].tree->right_node = NULL;
         tab[i].tree->left_node = NULL;
@@ -154,7 +155,7 @@ void codeTree(d_t tree, FILE *output, unsigned char *temp, char *cntr) {
 	if(*cntr == 8) {
 		fwrite(temp, sizeof(char), 1, output);
 		*temp = 0;
-		(*cntr)-=8;
+		*(cntr)-=8;
 	}
 	(*temp) <<= 1;
 	(*cntr)++;
@@ -182,7 +183,7 @@ void codeTree16(d_t16 tree, FILE *output, unsigned short *temp, char *cntr) {
     if(*cntr == 16) {
         fwrite(temp, sizeof(short), 1, output);
         *temp = 0;
-        (*cntr)-=16;
+        *(cntr)-=16;
     }
     (*temp) <<= 1;
     (*cntr)++;
@@ -198,6 +199,7 @@ void codeTree16(d_t16 tree, FILE *output, unsigned short *temp, char *cntr) {
         fwrite(&(saas.C), sizeof(short), 1, output);
         saas.cd <<= *cntr;
         *temp = saas.C;
+
     }
     if(tree->left_node != NULL)
         codeTree16(tree->left_node, output, temp, cntr);

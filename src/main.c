@@ -295,7 +295,7 @@ int main(int argc, char **argv) {
 
 /* deklaracje zmiennych */
 				krokiet_t obiad[256];
-				short ile = 0;
+				unsigned short ile = 0;
 				char cntr = 0;
 				unsigned char temp;
 				d_t tree = NULL;
@@ -351,7 +351,6 @@ int main(int argc, char **argv) {
 					fprintf(dump, "\n\n");
 				}
 
-
 /* zakodowanie i zapisanie drzewa */
 				codeTree(tree, output, &temp, &cntr);
 
@@ -386,7 +385,6 @@ int main(int argc, char **argv) {
 				fseek(output, 0, SEEK_SET);
 				addFlag(output, flagBit, encypt, cntr, ile, magicNumber, isLast);
 
-
 /* xorowanie */
 				if(encypt == true) {
 					fseek(output, 6, SEEK_SET);
@@ -399,7 +397,6 @@ int main(int argc, char **argv) {
 						);
 					}
 				}
-
 
 /* dodanie sumy kontrolnej */
 				magicNumber = MagicNum(output,magicNumber, Verbose);
@@ -634,7 +631,7 @@ int main(int argc, char **argv) {
 
 // 16-bit kompresja
 			case 3:
-				short ile16 = 0;
+				unsigned short ile16 = 0;
 				char cntr16 = 0;
 				unsigned short temp16;
 				unsigned short checkForLast;
@@ -675,9 +672,8 @@ int main(int argc, char **argv) {
 					writeTree16(dump, tree16, 0);
 					fprintf(dump, "\n\n");
 				}
-
-				tree16 = makeHTree16(tree16);
-				temp16 = 0;
+				tree16 = makeHTree16(tree16); //tu jest seg fault
+                temp16 = 0;
 				counter16(tree16, &ile16);
 				if(Verbose) {
 					printf(
@@ -689,11 +685,9 @@ int main(int argc, char **argv) {
 					fprintf(dump, "\n\n");
 				}
 				addFlag(output, flagBit, encypt, cntr16, ile16, magicNumber, isLast);
-
-				bigObiad = malloc(ile16 * sizeof(krokiet_t16));
-				prepareKrokiet16(bigObiad, ile16);
-
-				short whichDone = 0;		// aby nie alokować 4GB pamięci(2^24 char + 2^12 char)
+                bigObiad = malloc(ile16 * sizeof(krokiet_t16));
+                prepareKrokiet16(bigObiad, ile16);
+				unsigned short whichDone = 0;		// aby nie alokować 4GB pamięci(2^24 char + 2^12 char)
 				fillKrokiet16(tree16, bigObiad, 0, -2, ile16, &whichDone);
 				if(Verbose) {
 					printf(
@@ -705,9 +699,7 @@ int main(int argc, char **argv) {
 					fprintf(dump, "\n\n");
 				}
 
-
 				codeTree16(tree16, output, &temp16, &cntr16);
-
 				if(Verbose) {
 					printf(
 						"====\n"

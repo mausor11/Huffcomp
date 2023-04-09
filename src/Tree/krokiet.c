@@ -49,7 +49,7 @@ void fillKrokiet12(d_t16 tree, krokiet_t12 obiad[], int poziom, int what) {
 }
 
 
-void fillKrokiet16(d_t16 tree, krokiet_t16 *obiad, int poziom, int what, short ile, short *whichDone) {
+void fillKrokiet16(d_t16 tree, krokiet_t16 *obiad, int poziom, int what, unsigned short ile, unsigned short *whichDone) {
     // jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
     if(tree->counter == 0) {
         for(int i = 0; i < ile; i++)
@@ -91,7 +91,7 @@ void prepareKrokiet12(krokiet_t12 obiad []) {
 	}
 }
 
-void prepareKrokiet16(krokiet_t16 *obiad, short ile) {
+void prepareKrokiet16(krokiet_t16 *obiad, unsigned short ile) {
     for(int i = 0; i < ile; i++) {
         (obiad+i)->done = -1;
         for(int j = 0; j < 65538; j++)

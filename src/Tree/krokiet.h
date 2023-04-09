@@ -46,7 +46,7 @@ typedef struct {
 
 void fillKrokiet(d_t, krokiet_t [], int, int);
 void fillKrokiet12(d_t16, krokiet_t12 [], int, int);
-void fillKrokiet16(d_t16, krokiet_t16 *, int, int, short, short *);
+void fillKrokiet16(d_t16, krokiet_t16 *, int, int, unsigned short, unsigned short *);
 
 
 void printKrokiet(FILE *, krokiet_t []);
@@ -56,7 +56,7 @@ void printKrokiet16(FILE *, krokiet_t16 *, short);
 
 void prepareKrokiet(krokiet_t []);
 void prepareKrokiet12(krokiet_t12 []);
-void prepareKrokiet16(krokiet_t16 *, short);
+void prepareKrokiet16(krokiet_t16 *, unsigned short);
 
 
 void emptyKrokiet(krokiet_t []);
