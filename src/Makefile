@@ -1,10 +1,10 @@
 all: main.o Tree/libtree.a SzyfrXOR/libxor.a Flag/libflag.a
-	$(CC) -o main main.o Tree/tree.o -L SzyfrXOR -l xor -L Tree -l tree -L Flag -l flag
+	$(CC) -o Huffcomp main.o Tree/tree.o -L SzyfrXOR -l xor -L Tree -l tree -L Flag -l flag
 
 main.o: main.c
 	$(CC) -c $^
 
-Tree/libtree.a: Tree/tree.o Tree/treemaker.o Tree/bitbajt.o Tree/krokiet.o Tree/treemaker2.o
+Tree/libtree.a: Tree/tree.o Tree/treemaker.o Tree/bitbajt.o Tree/krokiet.o
 	ar rvs Tree/libtree.a $^
 
 SzyfrXOR/libxor.a: SzyfrXOR/szyfr.o
@@ -16,4 +16,4 @@ Flag/libflag.a: Flag/flag.o
 
 
 clean:
-	rm */*.o *.o main */lib*.a verboseDump
+	rm */*.o *.o Huffcomp */lib*.a verboseDump .mysteriousFile

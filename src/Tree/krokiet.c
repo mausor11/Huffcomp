@@ -19,7 +19,7 @@ void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 	// znaleźliśmy liść - zakończyć dla tego znaku
 	else {
 		obiad[tree->znak].kod[poziom] = what;
-		obiad[tree->znak].kod[poziom+1] = poziom;
+		obiad[tree->znak].kod[poziom+1] = -1;
 		obiad[tree->znak].done = 1;
 	}
 	if(tree->left_node != NULL)
@@ -39,7 +39,8 @@ void fillKrokiet12(d_t16 tree, krokiet_t12 obiad[], int poziom, int what) {
 	// znaleźliśmy liść - zakończyć dla tego znaku
 	else {
 		obiad[tree->znak].kod[poziom] = what;
-		obiad[tree->znak].kod[poziom+1] = poziom;
+		obiad[tree->znak].kod[poziom+1] = -1;
+//		obiad[tree->znak].kod[poziom+2] = -1;
 		obiad[tree->znak].done = 1;
 	}
 	if(tree->left_node != NULL)
@@ -59,7 +60,7 @@ void fillKrokiet16(d_t16 tree, krokiet_t16 *obiad, int poziom, int what, unsigne
         // znaleźliśmy liść - zakończyć dla tego znaku
     else {
         (obiad + (*whichDone))->kod[poziom] = what;
-        (obiad + (*whichDone))->kod[poziom+1] = poziom;
+        (obiad + (*whichDone))->kod[poziom+1] = -1;
         (obiad + (*whichDone))->done = 1;
 		(obiad + (*whichDone))->znak = tree->znak;
         (*whichDone)++;
@@ -107,7 +108,7 @@ void printKrokiet(FILE *in, krokiet_t obiad[]) {
 	for(int i = 0; i < 256; i++)
 		if(obiad[i].done == 1) {
 			fprintf(in, "==== %c - ", i);
-			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
+			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) ; j++)
 				fprintf(in, "%d", obiad[i].kod[j]);
 			fprintf(in, "\n");
 		}
@@ -119,7 +120,7 @@ void printKrokiet12(FILE *in, krokiet_t12 obiad[]) {
 	for(int i = 0; i < 4096; i++)
 		if(obiad[i].done == 1) {
 			fprintf(in, "==== short: %d - ", i);
-			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ) && obiad[i].kod[j+1] >= 0; j++)
+			for(int j = 1; ( (obiad[i].kod[j] == 0) || (obiad[i].kod[j] == 1) ); j++)
 				fprintf(in, "%d", obiad[i].kod[j]);
 			fprintf(in, "\n");
 		}
@@ -131,7 +132,7 @@ void printKrokiet16(FILE *in, krokiet_t16 obiad[], short ile) {
         if((obiad +i)->done == 1) {
         // patrz tu
             fprintf(in, "==== short: %d - ", (obiad + i)->znak);
-            for(int j = 1; ( ((obiad +i)->kod[j] == 0) || ((obiad +i)->kod[j] == 1) ) && (obiad +i)->kod[j+1] >= 0; j++)
+            for(int j = 1; ( ((obiad +i)->kod[j] == 0) || ((obiad +i)->kod[j] == 1) ); j++ )
                 fprintf(in, "%d", (obiad +i)->kod[j]);
             fprintf(in, "\n");
         }
@@ -147,7 +148,7 @@ void codeFile(krokiet_t obiad[], FILE *in, FILE *out, unsigned char *temp, char 
 	while(liczba != 0) {
 		for(int i = 0; i < liczba; i++) {
 			int j = 1;
-			while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1) && obiad[*(buf+i)].kod[j+1] >= 0 ) {
+			while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1 ) ){
 
 				// zapełnienie temp
 				if(*cntr == 8) {
@@ -174,7 +175,7 @@ void codeFile12(krokiet_t12 obiad[], FILE *in, FILE *out, unsigned short *temp, 
 	while(liczba) {
 		for(int i = 0; i < liczba; i++) {
 			int j = 1;
-			while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1) && obiad[*(buf+i)].kod[j+1] >= 0 ) {
+			while( (obiad[*(buf+i)].kod[j] == 0) || (obiad[*(buf+i)].kod[j] == 1) ) {
 
 				// zapełnienie temp
 				if(*cntr == 16) {
@@ -211,7 +212,7 @@ void codeFile16(krokiet_t16 *obiad, FILE *in, FILE *out, unsigned short *temp, c
 				k++;
 			}
             int j = 1;
-			while( ( (obiad+k)->kod[j] == 0) || ( (obiad+k)->kod[j] == 1) && (obiad+k)->kod[j+1] >= 0 ) {
+			while( ((obiad+k)->kod[j] == 0) || ( (obiad+k)->kod[j] == 1) ) {
 
                 // zapełnienie temp
                 if(*cntr == 16) {
@@ -232,11 +233,11 @@ void codeFile16(krokiet_t16 *obiad, FILE *in, FILE *out, unsigned short *temp, c
 }
 
 
-/////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 
 d_t decodeFile(d_t tree, FILE *in, FILE *out, union eitbit *temp, char *cntr) {
-	int liczba, whatBit, i;
+	int liczba, i;
 	unsigned char recieved;
 	unsigned char *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
 	d_t tremp = tree;
@@ -293,10 +294,75 @@ d_t decode(d_t tree, union eitbit *temp, char *cntr) {
 }
 
 
+d_t16 decodeFile12(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *cntr) {
+	int liczba, i;
+	unsigned short recieved;
+	unsigned short *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
+	unsigned char outchar;
+	char whether = 0;
+	d_t16 tremp = tree;
+	while(liczba = fread(buf, sizeof(short), 100, in) ) {
+		i = 0;
+		while(i < liczba) {
+		cahr = NULL;
+            while(cahr == NULL) {
+                if(!(*cntr)) {
+                    if(i < liczba) {
+                        temp->D = *(buf + i++);
+                        (*cntr) += 16;
+                    }
+                    else
+                        break;		// jeżeli to, to ostatni short jest w temp->C
+                }
+                tremp = decode16(tremp, temp, cntr);
+                if((tremp->counter) ) {
+                	if(!whether) {		// outchar pusty
+	                    recieved = tremp->znak;
+    	                cahr = &recieved;
+    	                outchar = 0;
+    	                outchar = (recieved >>= 4);				// środkowe 8 bitów shorta
+    	                fwrite(&outchar, sizeof(char), 1, out);
+						printBits(outchar, 8);
+						printf("\n");
+	                    recieved = tremp->znak;
+						recieved &= 0b0000000000001111;			// wszelki
+						outchar = recieved;
+						whether = 1;				// outchar ma coś w sobie;
+					}
+					else {
+						recieved = tremp->znak;
+						cahr = &recieved;
+						recieved >>= 8;
+						recieved &= 0b0000000000001111;			// na wszelki
+						outchar <<= 4;
+						outchar += recieved;
+    	                fwrite(&outchar, sizeof(char), 1, out);		// część z pierwszej dwunastki, część z drugiej
+						printBits(outchar, 8);
+						printf("\n");
+						recieved = tremp->znak;
+						recieved &= 0b0000000011111111;			// wszelki
+						outchar = 0;
+						outchar += recieved;
+    	                fwrite(&outchar, sizeof(char), 1, out);
+						printBits(outchar, 8);
+						printf("\n");
+
+						whether = 0;								// outchar pusty
+					}
+   	                tremp = tree;
+                }
+            }
+        }
+    }
+    if(cahr != NULL)
+        tremp = tree;
+    free(buf);
+    return tremp;
+}
 
 
 d_t16 decodeFile16(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *cntr) {
-	int liczba, whatBit, i;
+	int liczba, i;
 	unsigned short recieved;
 	unsigned short *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
 	d_t16 tremp = tree;
@@ -328,8 +394,6 @@ d_t16 decodeFile16(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *c
     free(buf);
     return tremp;
 }
-
-
 
 
 d_t16 decode16(d_t16 tree, union sixtbit *temp, char *cntr) {

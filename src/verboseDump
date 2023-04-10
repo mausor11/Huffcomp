@@ -1,0 +1,21 @@
+
+Huffman tree:
+====	level 1 | number: 0; count:0
+====	level 2 | number: 0; count:0
+====	level 3 | number: 353; count:-1
+====	level 3 | number: 0; count:0
+====	level 4 | number: 0; count:0
+====	level 5 | number: 0; count:0
+====	level 6 | number: 1638; count:-1
+====	level 6 | number: 1590; count:-1
+====	level 5 | number: 0; count:0
+====	level 6 | number: 1381; count:-1
+====	level 6 | number: 354; count:-1
+====	level 4 | number: 0; count:0
+====	level 5 | number: 0; count:0
+====	level 6 | number: 10; count:-1
+====	level 6 | number: 1606; count:-1
+====	level 5 | number: 1896; count:-1
+====	level 2 | number: 1558; count:-1
+
+

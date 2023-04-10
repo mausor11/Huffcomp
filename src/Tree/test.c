@@ -46,5 +46,8 @@ int main(){
 	free(abc);
 	free(ccc);
 	fclose(in);
+
+	
+
 	return 0;
 }

@@ -22,7 +22,7 @@ int bajt(unsigned char *ret, FILE *input, int many) {
 int bajt2(unsigned short *ret, FILE *input, int many) {
 //	int i = 0;
 	int how = many;
-	char *aaa = malloc(3 * sizeof( *aaa) );
+	unsigned char *aaa = malloc(3 * sizeof( *aaa) );
 	while(how && (fread(aaa, sizeof(char), 3, input) == 3 ) ) {
 		*(ret - how + many) += *aaa;
 		*(ret - how + many) <<= 8;
@@ -45,11 +45,6 @@ int bajt3(unsigned short *ret, FILE *input, int many) {
     return fread(ret, sizeof(short), many, input);
 }
 
-void secwet() {
-	FILE *in = fopen(".mysteriousFile", "w");
-	fprintf(in, "Yay, you found me :3");
-	fclose(in);
-}
 
 void printBits( unsigned int n, int b )
 {

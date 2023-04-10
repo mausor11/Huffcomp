@@ -110,6 +110,7 @@ char MagicNum(FILE *input, unsigned char magicNumber, bool Verbose) {
     if(Verbose) {
 		printf(
 			"====\n"
+			"====\n"
 			"==== CONTROL SUM\n"
 		);
     }
@@ -129,11 +130,6 @@ char MagicNum(FILE *input, unsigned char magicNumber, bool Verbose) {
     while((fread(&x, sizeof(char), 1, input)) == 1) {
         magicNumber = x^magicNumber;
 	}
-	if(Verbose)
-		printf(
-			"====\n"
-			"==== Control sum has been determined\n"
-			);
 	return magicNumber;
 }
 

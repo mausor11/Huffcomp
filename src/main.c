@@ -9,7 +9,6 @@
 #include "SzyfrXOR/szyfr.h"
 #include "Tree/tree.h"
 #include "Tree/treemaker.h"
-#include "Tree/treemaker2.h"
 #include "Tree/bitbajt.h"
 #include "Tree/krokiet.h"
 #include "Flag/flag.h"
@@ -36,7 +35,7 @@ bool Verbose = false;
 
 bool Comp = false, Decomp = false;
 
-void setVerbose () {
+	void setVerbose () {
 	Verbose = true;
 }
 
@@ -85,19 +84,18 @@ int main(int argc, char **argv) {
 	}
 
 	if(Verbose) {
-		printf("==== Huffman coding\n");
+		printf("==== Huffcomp - Huffman compressor & decompressor\n");
 		printf("==== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
 		printf("==== Command: ");
 		for(i=0;i<argc;i++)
 			printf("%s ", argv[i]);
 		printf("\n");
 	}
-	secwet();
 	if(input == NULL) {
 		fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-2]);
 		return -1;
 	} else if(output == NULL) {
-		fprintf(stderr, "%s: FILE %s is not open!\n",argv[0], argv[argc-1]);
+		fprintf(stderr, "%s: File %s is not open!\n",argv[0], argv[argc-1]);
 		return -1;
 	}
 
@@ -155,14 +153,14 @@ int main(int argc, char **argv) {
 				flagCmprs = 'z';
 				Comp = true;
 				if(Verbose == true)
-					printf("==== getopt: Chosen force compression\n");
+					printf("==== getopt: Chosen force compression.\n");
 				break;
 
 			case 'x':
 				flagCmprs = 'x';
 				Decomp = true;
 				if(Verbose == true)
-					printf("==== getopt: Chosen force decompression\n");
+					printf("==== getopt: Chosen force decompression.\n");
 				break;
 
 			case 'h':
@@ -207,7 +205,7 @@ int main(int argc, char **argv) {
 		fseek(input, 2, SEEK_SET);
 		fread(&magicNumber, sizeof(char), 1, input);
 		if(MagicNum(input, magicNumber, Verbose) != checkmagicNumber) {
-			fprintf(stderr, "%s:\tThere was an error reading the file, it is either not compressed or corrupted.\n\tTry a different file.\n", argv[0]);
+			fprintf(stderr, "%s:\tThere was an error reading the file, it is either not compressed or corrupted.\n\t\tTry a different file.\n", argv[0]);
 			fclose(input);
 			fclose(output);
 			return -1;
@@ -237,7 +235,7 @@ int main(int argc, char **argv) {
 			flagCmprs = 'z';
 			if(Verbose){
 				printf(
-				"====\n==== CHECKSUM\n"
+				"====\n====\n==== CHECKSUM\n"
 				"==== Input file analized, it's not a compressed file.\n"
 				"==== Chosen compression.\n");
 			}
@@ -248,7 +246,7 @@ int main(int argc, char **argv) {
 			flagCmprs = 'z';
 			if(Verbose){
 				printf(
-				"====\n==== CHECKSUM\n"
+				"====\n====\n==== CHECKSUM\n"
 				"==== Input file analized, it's not a compressed file.\n"
 				"==== Chosen compression.\n");
 			}
@@ -258,7 +256,7 @@ int main(int argc, char **argv) {
 				flagCmprs = 'x';
 				if(Verbose){
 					printf(
-					"====\n==== CHECKSUM\n"
+					"====\n====\n==== CHECKSUM\n"
 					"==== Input file analized, it's a compressed file.\n"
 					"==== Chosen decompression.\n");
 				}
@@ -267,6 +265,7 @@ int main(int argc, char **argv) {
 				flagCmprs = 'z';
 				if(Verbose){
 					printf(
+					"====\n"
 					"====\n"
 					"==== CHECKSUM\n"
 					"==== Input file analized, it's a decompressed or a corrupted compressed file.\n"
@@ -282,6 +281,7 @@ int main(int argc, char **argv) {
 		char isLast;
 		if(Verbose){
 			printf(
+			"====\n"
 			"====\n"
 			"==== COMPRESSION\n"
 			);
@@ -348,6 +348,7 @@ int main(int argc, char **argv) {
 						XOR2(output, charNumber,Verbose, password);
 						if(Verbose) {
 							printf(
+								"====\n"
 								"====\n"
 								"==== ENCRYPTING FILE\n"
 								"==== File has been encrypted.\n"
@@ -426,13 +427,14 @@ int main(int argc, char **argv) {
 
 /* powrót do początku pliku */
 				if(fseek(input, 0, SEEK_SET) ){
-					fprintf(stderr, "%s:\tThere was an error while reading the file.\n\tAborting.\n", argv[0]);
+					fprintf(stderr, "%s:\tThere was an error while reading the file. Aborting.\n", argv[0]);
 					return EXIT_FAILURE;
 				}
 
 /* kompresja pliku input */
 				if(Verbose) {
 					printf(
+						"====\n"
 						"====\n"
 						"==== COMPRESSING FILE\n"
 					);
@@ -457,6 +459,7 @@ int main(int argc, char **argv) {
 					XOR2(output, charNumber,Verbose, password);
 					if(Verbose) {
 						printf(
+							"====\n"
 							"====\n"
 							"==== ENCRYPTING FILE\n"
 							"==== File has been encrypted.\n"
@@ -579,136 +582,136 @@ int main(int argc, char **argv) {
 							"==== Ouput file has been compressed accordingly.\n"
 						, huh
 						);
+						fclose(dump);
+					}
+					fclose(input);
+					fclose(output);
+					return 0;
+				}
+
+
+				if(Verbose){
+					printf(
+						"====\n"
+						"==== File read.\n"
+						"==== Current 'heap', with numerical values,\n"
+						"==== has been written to verboseDump.\n"
+					);
+					fprintf(dump, "\nHeap:\n");
+					writeTree16(dump, tree12, 0);
+					fprintf(dump, "\n\n");
+				}
+				tree12 = makeHTree16(tree12);
+				temp12 = 0;
+				ile12 = 0;
+				counter16(tree12, &ile12);
+				if(Verbose) {
+					printf(
+						"====\n"
+						"==== Created Huffman tree, written to verboseDump\n"
+					);
+					fprintf(dump, "\nHuffman tree:\n");
+					writeTree16(dump, tree12, 0);
+					fprintf(dump, "\n\n");
+				}
+
+				prepareKrokiet12(midObiad);
+				fillKrokiet12(tree12, midObiad, 0, -2);
+
+				if(Verbose) {
+					printf(
+						"====\n"
+						"==== Created a dictionary, written to verboseDump.\n"
+					);
+					fprintf(dump, "\nDictionary:\n");
+					printKrokiet12(dump, midObiad);
+					fprintf(dump, "\n\n");
+				}
+
+				temp12 = 0;
+				cntr12 = 0;
+				codeTree12(tree12, output, &temp12, &cntr12);
+
+				if(Verbose) {
+					printf(
+						"====\n"
+						"==== Huffman tree has been coded and written in output file.\n"
+					);
+				}
+				if(fseek(input, 0, SEEK_SET) ){
+					fprintf(stderr, "%s:\tThere was an error while reading the file. Aborting.\n", argv[0]);
+					return EXIT_FAILURE;
+					}
+				if(Verbose) {
+					printf(
+						"====\n"
+						"====\n"
+						"==== COMPRESSING FILE\n"
+					);
+				}
+
+				codeFile12(midObiad, input, output, &temp12, &cntr12);
+				if(isLast == 1) {
+					fseek(input, -1, SEEK_END);
+					fread(aaa, sizeof(char), 1, input);
+					int jjj = 1;
+					while( (midObiad[*aaa].kod[jjj] == 0 || midObiad[*aaa].kod[jjj] == 1 )
+							&& midObiad[*aaa].kod[jjj+1] >= 0 ) {
+						if(cntr12 == 16) {
+							fwrite(&temp12, sizeof(short), 1, output);
+							temp12 = 0;
+							cntr12 -= 16;
+						}
+						temp12 <<= 1;
+						temp12 += midObiad[*aaa].kod[jjj++];
+						cntr12++;
+					}
+				}
+				else if(isLast == 2) {
+					fseek(input, -2, SEEK_END);
+					fread(aaa, sizeof(char), 2, input);
+					int jjj = 1;
+					while( (midObiad[*aaa].kod[jjj] == 0 || midObiad[*aaa].kod[jjj] == 1 )
+							&& midObiad[*aaa].kod[jjj+1] >= 0 ) {
+						if(cntr12 == 16) {
+							fwrite(&temp12, sizeof(short), 1, output);
+							temp12 = 0;
+							cntr12 -= 16;
+						}
+						temp12 <<= 1;
+						temp12 += midObiad[*aaa].kod[jjj++];
+						cntr12++;
+					}
+					while( (midObiad[*(aaa+1)].kod[jjj] == 0 || midObiad[*(aaa+1)].kod[jjj] == 1 )
+							&& midObiad[*(aaa+1)].kod[jjj+1] >= 0 ) {
+						if(cntr12 == 16) {
+							fwrite(&temp12, sizeof(short), 1, output);
+							temp12 = 0;
+							cntr12 -= 16;
+						}
+						temp12 <<= 1;
+						temp12 += midObiad[*(aaa+1)].kod[jjj++];
+						cntr12++;
 					}
 				}
 
-				else {
-					if(Verbose){
-						printf(
-							"====\n"
-							"==== File read.\n"
-							"==== Current 'heap', with numerical values,\n"
-							"==== has been written to verboseDump.\n"
-						);
-						fprintf(dump, "\nHeap:\n");
-						writeTree16(dump, tree12, 0);
-						fprintf(dump, "\n\n");
-					}
-
-					tree12 = makeHTree16(tree12);
-					temp12 = 0;
-					counter16(tree12, &ile12);
-					if(Verbose) {
-						printf(
-							"====\n"
-							"==== Created Huffman tree, written to verboseDump\n"
-						);
-						fprintf(dump, "\nHuffman tree:\n");
-						writeTree16(dump, tree12, 0);
-						fprintf(dump, "\n\n");
-					}
-
-
-					addFlag(output, flagBit, encypt, cntr12, ile12, magicNumber, isLast);
-
-					prepareKrokiet12(midObiad);
-					fillKrokiet12(tree12, midObiad, 0, -2);
-
-					if(Verbose) {
-						printf(
-							"====\n"
-							"==== Created a dictionary, written to verboseDump.\n"
-						);
-						fprintf(dump, "\nDictionary:\n");
-						printKrokiet12(dump, midObiad);
-						fprintf(dump, "\n\n");
-					}
-
-					temp12 = 0;
-					cntr12 = 0;
-					codeTree12(tree12, output, &temp12, &cntr12);
-
-					if(Verbose) {
-						printf(
-							"====\n"
-							"==== Huffman tree has been coded and written in output file.\n"
-						);
-					}
-
-					if(fseek(input, 0, SEEK_SET) ){
-						fprintf(stderr, "%s:\tThere was an error while reading the file.\n\tAborting.\n", argv[0]);
-						return EXIT_FAILURE;
-					}
-					if(Verbose) {
-						printf(
-							"====\n"
-							"==== COMPRESSING FILE\n"
-						);
-					}
-
-					codeFile12(midObiad, input, output, &temp12, &cntr12);
-					if(isLast == 1) {
-						fseek(input, -1, SEEK_END);
-						fread(aaa, sizeof(char), 1, input);
-						int jjj = 1;
-						while( (midObiad[*aaa].kod[jjj] == 0 || midObiad[*aaa].kod[jjj] == 1 )
-								&& midObiad[*aaa].kod[jjj+1] >= 0 ) {
-							if(cntr12 == 16) {
-								fwrite(&temp12, sizeof(short), 1, output);
-								temp12 = 0;
-								cntr12 -= 16;
-							}
-							temp12 <<= 1;
-							temp12 += midObiad[*aaa].kod[jjj++];
-							cntr12++;
-						}
-					}
-					else if(isLast == 2) {
-						fseek(input, -2, SEEK_END);
-						fread(aaa, sizeof(char), 2, input);
-						int jjj = 1;
-						while( (midObiad[*aaa].kod[jjj] == 0 || midObiad[*aaa].kod[jjj] == 1 )
-								&& midObiad[*aaa].kod[jjj+1] >= 0 ) {
-							if(cntr12 == 16) {
-								fwrite(&temp12, sizeof(short), 1, output);
-								temp12 = 0;
-								cntr12 -= 16;
-							}
-							temp12 <<= 1;
-							temp12 += midObiad[*aaa].kod[jjj++];
-							cntr12++;
-						}
-						while( (midObiad[*(aaa+1)].kod[jjj] == 0 || midObiad[*(aaa+1)].kod[jjj] == 1 )
-								&& midObiad[*(aaa+1)].kod[jjj+1] >= 0 ) {
-							if(cntr12 == 16) {
-								fwrite(&temp12, sizeof(short), 1, output);
-								temp12 = 0;
-								cntr12 -= 16;
-							}
-							temp12 <<= 1;
-							temp12 += midObiad[*(aaa+1)].kod[jjj++];
-							cntr12++;
-						}
-					}
-
-					temp12 <<= (16 - cntr12);
-					fwrite(&temp12, sizeof(short), 1, output);
-					if(Verbose) {
-						printf(
-							"====\n"
-							"==== File has been correctly compressed.\n"
-						);
-					}
+				temp12 <<= (16 - cntr12);
+				fwrite(&temp12, sizeof(short), 1, output);
+				if(Verbose) {
+					printf(
+						"====\n"
+						"==== File has been correctly compressed.\n"
+					);
 				}
 
 
 				fseek(output, 0, SEEK_SET);
 				addFlag(output, flagBit, encypt, cntr12, ile12, magicNumber, isLast);
 
-
 				if(encypt == true) {
 					if(Verbose) {
 						printf(
+							"====\n"
 							"====\n"
 							"==== ENCRYPTING FILE\n"
 						);
@@ -816,6 +819,7 @@ int main(int argc, char **argv) {
 						if(Verbose) {
 							printf(
 								"====\n"
+								"====\n"
 								"==== ENCRYPTING FILE\n"
 								"==== File has been encrypted.\n"
 							);
@@ -837,9 +841,6 @@ int main(int argc, char **argv) {
 
 					fclose(input);
 					fclose(output);
-					if(output == NULL){
-						printf("closed output\n");
-					}
 					return 0;
 				}
 
@@ -901,13 +902,14 @@ int main(int argc, char **argv) {
 
 
 				if(fseek(input, 0, SEEK_SET) ){
-					fprintf(stderr, "%s:\tThere was an error while reading the file.\n\tAborting.\n", argv[0]);
+					fprintf(stderr, "%s:\tThere was an error while reading the file. Aborting.\n", argv[0]);
 					freeTree16(tree16);
 					return EXIT_FAILURE;
 				}
 
 				if(Verbose) {
 					printf(
+						"====\n"
 						"====\n"
 						"==== COMPRESSING FILE\n"
 					);
@@ -952,6 +954,7 @@ int main(int argc, char **argv) {
 					XOR2(output, charNumber,Verbose, password);
 					if(Verbose) {
 						printf(
+							"====\n"
 							"====\n"
 							"==== ENCRYPTING FILE\n"
 							"==== File has been encrypted.\n"
@@ -998,8 +1001,9 @@ int main(int argc, char **argv) {
 
 		if(Verbose){
 			printf(
-			"====\n"
-			"==== DECOMPRESSION\n"
+				"====\n"
+				"====\n"
+				"==== DECOMPRESSION\n"
 			);
 		}
 
@@ -1171,12 +1175,6 @@ int main(int argc, char **argv) {
 // 12-bit dekompresja
 			case 12:
 				printf("work in progress\n");
-				union sixtbit twlv;
-				char cntr12 = 0;
-				d_t16 ntree12 = NULL, lastTree12;
-
-				fseek(input, 6, SEEK_SET);
-				last = Flag & 0b00001111;
 
 				if(liscie == 1) {
 					int i, j, liczba;
@@ -1185,6 +1183,7 @@ int main(int argc, char **argv) {
 					char cntr = 8;
 					fread(&tremp, sizeof(char), 1, input);
 					liczba = fread(buf, sizeof(char), 100, input);
+					last = Flag & 0b00001111;
 					while(liczba) {
 						for( i = 0; i < liczba-1; i++ ){
 							for(j = 0; j < 8; j++)
@@ -1206,6 +1205,13 @@ int main(int argc, char **argv) {
 				}
 
 				else {
+					union sixtbit twlv;
+					char cntr12 = 0;
+					d_t16 ntree12 = NULL, lastTree12;
+
+					fseek(input, 6, SEEK_SET);
+					last = Flag & 0b00001111;
+
 					fread(&(twlv.C), sizeof(short), 1, input);
 					fread(&(twlv.D), sizeof(short), 1, input);
 
@@ -1227,7 +1233,7 @@ int main(int argc, char **argv) {
 	/*
 	/* dekodowanie pozostałych bajtów pliku -
 	   faktycznej zawartości pliku pierwotnego */
-	/*
+
 					lastTree12 = decodeFile12(ntree12, input, output, &twlv, &cntr12);
 
 	/* dekodowanie ostatniego bitu,
@@ -1411,7 +1417,11 @@ int main(int argc, char **argv) {
 						}
 						int addition = -1;
 						unsigned char addit;
-						FILE *additional = fopen(".mysteriousFile", "wb+");
+						FILE *additional = tmpfile();
+						if(additional == NULL) {
+							fprintf(stderr, "%s:\tSomething's wrong, can't open a temp file. Aborting.\n", argv[0]);
+							return -1;
+						}
 						fseek(output, 0, SEEK_SET);
 						while(fread(&addit, sizeof(char), 1, output) ) {
 							fwrite(&addit, sizeof(char), 1, additional);
@@ -1455,5 +1465,6 @@ int main(int argc, char **argv) {
 		);
 		fclose(dump);
 	}
+	fprintf(stdout, "%s:\tDone doing things.\n", argv[0]);
 	return 0;
 }
