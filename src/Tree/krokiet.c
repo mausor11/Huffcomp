@@ -19,8 +19,8 @@ void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 	// znaleźliśmy liść - zakończyć dla tego znaku
 	else {
 		obiad[tree->znak].kod[poziom] = what;
-		obiad[tree->znak].kod[poziom+1] = -1;
-		obiad[tree->znak].done = 1;
+		obiad[tree->znak].kod[poziom+1] = -1;			// znacznik końca kodu
+		obiad[tree->znak].done = 1;						// oznaczenie, że dla tego znaku jest skończony kod
 	}
 	if(tree->left_node != NULL)
 		fillKrokiet(tree->left_node, obiad, poziom+1, 0);
@@ -40,7 +40,6 @@ void fillKrokiet12(d_t16 tree, krokiet_t12 obiad[], int poziom, int what) {
 	else {
 		obiad[tree->znak].kod[poziom] = what;
 		obiad[tree->znak].kod[poziom+1] = -1;
-//		obiad[tree->znak].kod[poziom+2] = -1;
 		obiad[tree->znak].done = 1;
 	}
 	if(tree->left_node != NULL)
@@ -294,12 +293,10 @@ d_t decode(d_t tree, union eitbit *temp, char *cntr) {
 }
 
 
-d_t16 decodeFile12(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *cntr) {
+d_t16 decodeFile12(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *cntr, char *whether, unsigned char *outchar) {
 	int liczba, i;
 	unsigned short recieved;
 	unsigned short *buf = malloc(100 * sizeof(*buf) ), *cahr = NULL;
-	unsigned char outchar;
-	char whether = 0;
 	d_t16 tremp = tree;
 	while(liczba = fread(buf, sizeof(short), 100, in) ) {
 		i = 0;
@@ -316,38 +313,38 @@ d_t16 decodeFile12(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *c
                 }
                 tremp = decode16(tremp, temp, cntr);
                 if((tremp->counter) ) {
-                	if(!whether) {		// outchar pusty
+                	if(!(*whether)) {		// outchar pusty
 	                    recieved = tremp->znak;
     	                cahr = &recieved;
-    	                outchar = 0;
-    	                outchar = (recieved >>= 4);				// środkowe 8 bitów shorta
-    	                fwrite(&outchar, sizeof(char), 1, out);
-						printBits(outchar, 8);
+    	                (*outchar) = 0;
+    	                (*outchar) = (recieved >>= 4);				// środkowe 8 bitów shorta
+    	                fwrite(outchar, sizeof(char), 1, out);
+						printBits((*outchar), 8);
 						printf("\n");
 	                    recieved = tremp->znak;
 						recieved &= 0b0000000000001111;			// wszelki
-						outchar = recieved;
-						whether = 1;				// outchar ma coś w sobie;
+						(*outchar) = recieved;
+						(*whether) = 1;				// outchar ma coś w sobie;
 					}
 					else {
 						recieved = tremp->znak;
 						cahr = &recieved;
 						recieved >>= 8;
 						recieved &= 0b0000000000001111;			// na wszelki
-						outchar <<= 4;
-						outchar += recieved;
-    	                fwrite(&outchar, sizeof(char), 1, out);		// część z pierwszej dwunastki, część z drugiej
-						printBits(outchar, 8);
+						(*outchar) <<= 4;
+						(*outchar) += recieved;
+    	                fwrite(outchar, sizeof(char), 1, out);		// część z pierwszej dwunastki, część z drugiej
+						printBits((*outchar), 8);
 						printf("\n");
 						recieved = tremp->znak;
 						recieved &= 0b0000000011111111;			// wszelki
-						outchar = 0;
-						outchar += recieved;
-    	                fwrite(&outchar, sizeof(char), 1, out);
-						printBits(outchar, 8);
+						(*outchar) = 0;
+						(*outchar) += recieved;
+    	                fwrite(outchar, sizeof(char), 1, out);
+						printBits((*outchar), 8);
 						printf("\n");
 
-						whether = 0;								// outchar pusty
+						(*whether) = 0;								// outchar pusty
 					}
    	                tremp = tree;
                 }

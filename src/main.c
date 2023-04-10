@@ -15,7 +15,7 @@
 
 
 char *usage =
-	"Usage: %s [options] input_file output_file\n"
+	"Usage: ./Huffcomp [options] input_file output_file\n"
 	"	List of options:\n"
 	"		* -z - force compressoion;\n"
 	"		* -x - force decompression;\n"
@@ -651,6 +651,7 @@ int main(int argc, char **argv) {
 				}
 
 				codeFile12(midObiad, input, output, &temp12, &cntr12);
+
 				if(isLast == 1) {
 					fseek(input, -1, SEEK_END);
 					fread(aaa, sizeof(char), 1, input);
@@ -1233,31 +1234,86 @@ int main(int argc, char **argv) {
 	/*
 	/* dekodowanie pozostałych bajtów pliku -
 	   faktycznej zawartości pliku pierwotnego */
-
-					lastTree12 = decodeFile12(ntree12, input, output, &twlv, &cntr12);
+					char whether = 0;
+					unsigned char outchar = 0;
+					lastTree12 = decodeFile12(ntree12, input, output, &twlv, &cntr12, &whether, &outchar);
 
 	/* dekodowanie ostatniego bitu,
 	   który może być częściowo wykorzystany */
-	/*
+
 					last+=cntr12;
-	// po tym sporo do zmiany 
+					unsigned short roon;				//ran out of names
+	// po tym sporo do zmiany
 					while(last) {
-						if(lastTree16->counter) {
-							fwrite( &(lastTree16->znak), sizeof(short), 1, output);
-							lastTree16 = ntree16;
+						if(lastTree12->counter) {
+							if(!whether) {
+								roon = lastTree12->znak;
+								roon >>= 4;
+								roon &= 0b0000000011111111;
+								outchar = roon;
+								fwrite( &(outchar), sizeof(char), 1, output);
+								outchar = 0;
+								roon = lastTree12->znak;
+								roon &= 0b0000000000001111;
+								outchar = roon;
+								whether = 1;
+							}
+							else {
+								roon = lastTree12->znak;
+								roon >>= 8;
+								roon &= 0b0000000000001111;
+								outchar <<= 4;
+								outchar += roon;
+								fwrite( &outchar, sizeof(char), 1, output);
+								outchar = 0;
+								roon = lastTree12->znak;
+								roon &= 0b0000000011111111;
+								outchar = roon;
+								fwrite( &outchar, sizeof(char), 1, output);
+								outchar = 0;
+								whether = 0;
+							}
+							lastTree12 = ntree12;
 						}
-						if(!bit2(sixsaas.C, 15) ) {
-							sixsaas.cd <<=1;
+						if(!bit2(twlv.C, 15) ) {
+							twlv.cd <<=1;
 							last--;
-							lastTree16 = lastTree16->left_node;
+							lastTree12 = lastTree12->left_node;
 						}
 						else {
-							sixsaas.cd <<=1;
+							twlv.cd <<=1;
 							last--;
-							lastTree16 = lastTree16->right_node;
+							lastTree12 = lastTree12->right_node;
 						}
 					}
-					fwrite(&(lastTree16->znak), sizeof(short), 1, output);
+					if(!whether) {
+						roon = lastTree12->znak;
+						roon >>= 4;
+						roon &= 0b0000000011111111;
+						outchar = roon;
+						fwrite( &(outchar), sizeof(char), 1, output);
+						outchar = 0;
+						roon = lastTree12->znak;
+						roon <<= 4;
+						roon &= 0b0000000011110000;
+						outchar = roon;
+						whether = 1;
+					}
+					else {
+						roon = lastTree12->znak;
+						roon >>= 8;
+						roon &= 0b0000000000001111;
+						outchar += roon;
+						fwrite( &outchar, sizeof(char), 1, output);
+						outchar = 0;
+						roon = lastTree12->znak;
+						roon &= 0b0000000011111111;
+						outchar = roon;
+						fwrite( &outchar, sizeof(char), 1, output);
+						outchar = 0;
+						whether;
+					}
+
 					if(Verbose) {
 						printf(
 							"====\n"

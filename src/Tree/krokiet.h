@@ -68,7 +68,7 @@ void codeFile16(krokiet_t16 [], FILE *, FILE *, unsigned short *, char *);
 
 
 d_t decodeFile(d_t, FILE *, FILE *, union eitbit *, char *);
-d_t16 decodeFile12(d_t16, FILE *, FILE *, union sixtbit *, char *);
+d_t16 decodeFile12(d_t16, FILE *, FILE *, union sixtbit *, char *, char *, unsigned char *);
 d_t16 decodeFile16(d_t16, FILE *, FILE *, union sixtbit *, char *);
 
 

@@ -1,239 +1,43 @@
 
 Heap:
-====	level 1 | number: 1044; count:33334
-====	level 2 | number: 321; count:33333
-====	level 3 | number: 80; count:33333
-====	level 4 | number: 10; count:1
-====	level 3 | number: 578; count:33333
-====	level 4 | number: 337; count:33333
-====	level 5 | number: 338; count:1
-====	level 4 | number: 579; count:1
-====	level 5 | number: 835; count:33333
-====	level 6 | number: 594; count:33333
-====	level 6 | number: 851; count:33333
-====	level 2 | number: 1060; count:33333
-====	level 3 | number: 1076; count:33333
-====	level 4 | number: 1092; count:66667
-====	level 5 | number: 1349; count:66666
-====	level 6 | number: 1108; count:66666
-====	level 7 | number: 1124; count:33333
-====	level 8 | number: 1109; count:1
-====	level 8 | number: 1140; count:33334
-====	level 9 | number: 1156; count:33333
-====	level 10 | number: 1172; count:33333
-====	level 11 | number: 1188; count:33334
-====	level 12 | number: 1204; count:33333
-====	level 13 | number: 1220; count:33333
-====	level 14 | number: 1236; count:33334
-====	level 15 | number: 1252; count:33333
-====	level 16 | number: 1268; count:33333
-====	level 17 | number: 1285; count:33334
-====	level 18 | number: 1301; count:33333
-====	level 19 | number: 1317; count:33333
-====	level 20 | number: 1333; count:33334
-====	level 6 | number: 1350; count:1
-====	level 7 | number: 1606; count:33333
-====	level 8 | number: 1365; count:66666
-====	level 9 | number: 1381; count:33334
-====	level 10 | number: 1397; count:33333
-====	level 11 | number: 1413; count:33333
-====	level 12 | number: 1429; count:33334
-====	level 13 | number: 1445; count:33333
-====	level 8 | number: 1863; count:33333
-====	level 9 | number: 1622; count:33333
-====	level 9 | number: 2120; count:33333
-====	level 10 | number: 1879; count:33333
-====	level 11 | number: 1880; count:1
-====	level 10 | number: 2121; count:1
-====	level 11 | number: 2377; count:33333
-====	level 12 | number: 2136; count:33333
-====	level 12 | number: 2634; count:33333
-====	level 13 | number: 2393; count:33333
-====	level 13 | number: 2891; count:33333
-====	level 14 | number: 2650; count:33333
-====	level 14 | number: 2892; count:1
-====	level 15 | number: 3148; count:33333
-====	level 16 | number: 3405; count:33333
-====	level 17 | number: 3662; count:33333
-====	level 18 | number: 3663; count:1
-====	level 19 | number: 3919; count:33333
+====	level 1 | number: 1606; count:1
+====	level 2 | number: 353; count:22
+====	level 3 | number: 1558; count:22
+====	level 4 | number: 611; count:1
+====	level 5 | number: 1382; count:1
+====	level 2 | number: 1622; count:1
+====	level 3 | number: 1654; count:1
+====	level 4 | number: 2058; count:1
 
 
 
 Huffman tree:
 ====	level 1 | number: 0; count:0
 ====	level 2 | number: 0; count:0
+====	level 3 | number: 353; count:-1
 ====	level 3 | number: 0; count:0
 ====	level 4 | number: 0; count:0
 ====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 3662; count:-1
-====	level 7 | number: 3405; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 3148; count:-1
-====	level 7 | number: 2650; count:-1
+====	level 6 | number: 1622; count:-1
+====	level 6 | number: 1382; count:-1
 ====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 2891; count:-1
-====	level 7 | number: 2393; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 2634; count:-1
-====	level 7 | number: 2136; count:-1
+====	level 6 | number: 611; count:-1
+====	level 6 | number: 1606; count:-1
 ====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 2377; count:-1
-====	level 7 | number: 1879; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 2120; count:-1
-====	level 7 | number: 1622; count:-1
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1863; count:-1
-====	level 7 | number: 1445; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1413; count:-1
-====	level 7 | number: 1397; count:-1
-====	level 3 | number: 0; count:0
-====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1606; count:-1
-====	level 7 | number: 1317; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1301; count:-1
-====	level 7 | number: 1268; count:-1
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1252; count:-1
-====	level 7 | number: 1220; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1204; count:-1
-====	level 7 | number: 1172; count:-1
-====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1156; count:-1
-====	level 7 | number: 1124; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 1076; count:-1
-====	level 7 | number: 1060; count:-1
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 851; count:-1
-====	level 7 | number: 594; count:-1
-====	level 6 | number: 0; count:0
-====	level 7 | number: 835; count:-1
-====	level 7 | number: 337; count:-1
-====	level 2 | number: 0; count:0
-====	level 3 | number: 0; count:0
-====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 578; count:-1
-====	level 7 | number: 80; count:-1
-====	level 6 | number: 1365; count:-1
-====	level 5 | number: 0; count:0
-====	level 6 | number: 1108; count:-1
-====	level 6 | number: 1349; count:-1
-====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 0; count:0
-====	level 7 | number: 321; count:-1
-====	level 7 | number: 0; count:0
-====	level 8 | number: 0; count:0
-====	level 9 | number: 0; count:0
-====	level 10 | number: 0; count:0
-====	level 11 | number: 338; count:-1
-====	level 11 | number: 10; count:-1
-====	level 10 | number: 3663; count:-1
-====	level 9 | number: 0; count:0
-====	level 10 | number: 2892; count:-1
-====	level 10 | number: 2121; count:-1
-====	level 8 | number: 0; count:0
-====	level 9 | number: 0; count:0
-====	level 10 | number: 1880; count:-1
-====	level 10 | number: 1350; count:-1
-====	level 9 | number: 0; count:0
-====	level 10 | number: 1109; count:-1
-====	level 10 | number: 579; count:-1
-====	level 6 | number: 1429; count:-1
-====	level 5 | number: 0; count:0
-====	level 6 | number: 1381; count:-1
-====	level 6 | number: 1333; count:-1
-====	level 3 | number: 0; count:0
-====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 1285; count:-1
-====	level 6 | number: 1236; count:-1
-====	level 5 | number: 0; count:0
-====	level 6 | number: 1188; count:-1
-====	level 6 | number: 1140; count:-1
-====	level 4 | number: 0; count:0
-====	level 5 | number: 0; count:0
-====	level 6 | number: 1044; count:-1
-====	level 6 | number: 3919; count:-1
-====	level 5 | number: 1092; count:-1
+====	level 5 | number: 2058; count:-1
+====	level 5 | number: 1654; count:-1
+====	level 2 | number: 1558; count:-1
 
 
 
 Dictionary:
-==== short: 10 - 1010010001
-==== short: 80 - 100001
-==== short: 321 - 101000
-==== short: 337 - 011111
-==== short: 338 - 1010010000
-==== short: 578 - 100000
-==== short: 579 - 101001111
-==== short: 594 - 011101
-==== short: 835 - 011110
-==== short: 851 - 011100
-==== short: 1044 - 11100
-==== short: 1060 - 011011
-==== short: 1076 - 011010
-==== short: 1092 - 1111
-==== short: 1108 - 10010
-==== short: 1109 - 101001110
-==== short: 1124 - 011001
-==== short: 1140 - 11011
-==== short: 1156 - 011000
-==== short: 1172 - 010111
-==== short: 1188 - 11010
-==== short: 1204 - 010110
-==== short: 1220 - 010101
-==== short: 1236 - 11001
-==== short: 1252 - 010100
-==== short: 1268 - 010011
-==== short: 1285 - 11000
-==== short: 1301 - 010010
-==== short: 1317 - 010001
-==== short: 1333 - 10111
-==== short: 1349 - 10011
-==== short: 1350 - 101001101
-==== short: 1365 - 10001
-==== short: 1381 - 10110
-==== short: 1397 - 001111
-==== short: 1413 - 001110
-==== short: 1429 - 10101
-==== short: 1445 - 001101
-==== short: 1606 - 010000
-==== short: 1622 - 001011
-==== short: 1863 - 001100
-==== short: 1879 - 001001
-==== short: 1880 - 101001100
-==== short: 2120 - 001010
-==== short: 2121 - 101001011
-==== short: 2136 - 000111
-==== short: 2377 - 001000
-==== short: 2393 - 000101
-==== short: 2634 - 000110
-==== short: 2650 - 000011
-==== short: 2891 - 000100
-==== short: 2892 - 101001010
-==== short: 3148 - 000010
-==== short: 3405 - 000001
-==== short: 3662 - 000000
-==== short: 3663 - 101001001
-==== short: 3919 - 11101
+==== short: 353 - 00
+==== short: 611 - 01010
+==== short: 1382 - 01001
+==== short: 1558 - 1
+==== short: 1606 - 01011
+==== short: 1622 - 01000
+==== short: 1654 - 0111
+==== short: 2058 - 0110
 
 

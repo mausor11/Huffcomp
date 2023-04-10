@@ -24,6 +24,8 @@ int bajt2(unsigned short *ret, FILE *input, int many) {
 	int how = many;
 	unsigned char *aaa = malloc(3 * sizeof( *aaa) );
 	while(how && (fread(aaa, sizeof(char), 3, input) == 3 ) ) {
+		*(ret-how+many) = 0;
+		*(ret-how+many+1) = 0;
 		*(ret - how + many) += *aaa;
 		*(ret - how + many) <<= 8;
 		*(ret - how + many) += *(aaa+1);
@@ -40,6 +42,9 @@ int bajt2(unsigned short *ret, FILE *input, int many) {
 	free(aaa);
     return many - how;
 }
+
+
+
 
 int bajt3(unsigned short *ret, FILE *input, int many) {
     return fread(ret, sizeof(short), many, input);
