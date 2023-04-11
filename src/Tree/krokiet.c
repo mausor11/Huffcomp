@@ -319,8 +319,6 @@ d_t16 decodeFile12(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *c
     	                (*outchar) = 0;
     	                (*outchar) = (recieved >>= 4);				// środkowe 8 bitów shorta
     	                fwrite(outchar, sizeof(char), 1, out);
-						printBits((*outchar), 8);
-						printf("\n");
 	                    recieved = tremp->znak;
 						recieved &= 0b0000000000001111;			// wszelki
 						(*outchar) = recieved;
@@ -334,15 +332,11 @@ d_t16 decodeFile12(d_t16 tree, FILE *in, FILE *out, union sixtbit *temp, char *c
 						(*outchar) <<= 4;
 						(*outchar) += recieved;
     	                fwrite(outchar, sizeof(char), 1, out);		// część z pierwszej dwunastki, część z drugiej
-						printBits((*outchar), 8);
-						printf("\n");
 						recieved = tremp->znak;
 						recieved &= 0b0000000011111111;			// wszelki
 						(*outchar) = 0;
 						(*outchar) += recieved;
     	                fwrite(outchar, sizeof(char), 1, out);
-						printBits((*outchar), 8);
-						printf("\n");
 
 						(*whether) = 0;								// outchar pusty
 					}

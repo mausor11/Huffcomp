@@ -16,20 +16,20 @@
 
 char *usage =
 	"Usage: ./Huffcomp [options] input_file output_file\n"
-	"	List of options:\n"
-	"		* -z - force compressoion;\n"
-	"		* -x - force decompression;\n"
-	"			Warning: if both -z and -x are chosen,\n"
-	"				 last one will be executed.\n"
-	"		* -o - compression type:\n"
-	"			+ 0 - no compression, copying file;\n"
-	"			+ 1 - 8-bit compression;\n"
-	"			+ 2 - 12-bit compression;\n"
-	"			+ 3 - 16-bit compression;\n"
-	"		* -c - encrypt output file;\n"
-	"			+ password;\n"
-	"		* -v - print additional info into stdout;\n"
-	"		* -h - print help.\n";
+	"    List of options:\n"
+	"       * -z - force compressoion;\n\n"
+	"       * -x - force decompression;\n"
+	"           Warning: if both -z and -x are chosen,\n"
+	"                    the programme will not do anything.\n\n"
+	"       * -o - compression type:\n"
+	"           + 0 - no compression, copying file;\n"
+	"           + 1 - 8-bit compression;\n"
+	"           + 2 - 12-bit compression;\n"
+	"           + 3 - 16-bit compression;\n\n"
+	"       * -c - encrypt output file;\n"
+	"           + password;\n\n"
+	"       * -v - print additional info into stdout;\n\n"
+	"       * -h - print help.\n\n";
 
 bool Verbose = false;
 
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
 	if(Verbose) {
 		printf("==== Huffcomp - Huffman compressor & decompressor\n");
-		printf("==== Copyright (C), by Bartosz Dańko and Jan Machowski\n");
+		printf("==== Copyright (C), by Jan Machowski and Bartosz Dańko\n");
 		printf("==== Command: ");
 		for(i=0;i<argc;i++)
 			printf("%s ", argv[i]);
@@ -109,6 +109,15 @@ int main(int argc, char **argv) {
 	while ( (opt = getopt (argc, argv, "o:c:vhxz") ) != -1 ) {
 		switch(opt) {
 			case 'o':
+				if(*optarg != '1' && *optarg != '2' && *optarg != '3' && *optarg != '0') {
+					fprintf(stderr, "%s: Wrong -o parameter!\n", argv[0]);
+					fclose(input);
+					fclose(output);
+					if(Verbose) {
+						fclose(dump);
+					}
+					return -1;
+				}
 				flagBit = atoi (optarg);
 				if(Verbose == true) {
 					printf("====\n");
@@ -416,7 +425,6 @@ int main(int argc, char **argv) {
 				}
 
 /* zakodowanie i zapisanie drzewa */
-
 				codeTree(tree, output, &temp, &cntr);
 				if(Verbose) {
 					printf(
@@ -520,26 +528,6 @@ int main(int argc, char **argv) {
 
 					tree12 = add16(tree12, temp12);
 				}
-				if(isLast > 0) {
-					temp12 = 0;
-					temp12 += *aaa;
-					temp12 &= 0b11111111;
-					if(isLast == 2) {
-						temp12 <<= 8;
-						temp12 += *(aaa+1);
-						temp12 >>= 4;
-						temp12 &= 0b0000111111111111;
-						tree12 = add16(tree12, temp12);
-
-						temp12 = 0;
-						temp12 += *(aaa+1);
-						temp12 &= 0b1111;
-						tree12 = add16(tree12, temp12);
-					}
-					else {
-						tree12 = add16(tree12, temp12);
-					}
-				}
 
 				counter16(tree12, &ile12);
 				temp12 = 0;
@@ -589,6 +577,12 @@ int main(int argc, char **argv) {
 					return 0;
 				}
 
+				if(isLast == 1) {
+					fwrite(aaa, sizeof(char), 1, output);
+				}
+				else if(isLast == 2) {
+					fwrite(aaa, sizeof(char), 2, output);
+				}
 
 				if(Verbose){
 					printf(
@@ -652,59 +646,15 @@ int main(int argc, char **argv) {
 
 				codeFile12(midObiad, input, output, &temp12, &cntr12);
 
-				if(isLast == 1) {
-					fseek(input, -1, SEEK_END);
-					fread(aaa, sizeof(char), 1, input);
-					int jjj = 1;
-					while( (midObiad[*aaa].kod[jjj] == 0 || midObiad[*aaa].kod[jjj] == 1 )
-							&& midObiad[*aaa].kod[jjj+1] >= 0 ) {
-						if(cntr12 == 16) {
-							fwrite(&temp12, sizeof(short), 1, output);
-							temp12 = 0;
-							cntr12 -= 16;
-						}
-						temp12 <<= 1;
-						temp12 += midObiad[*aaa].kod[jjj++];
-						cntr12++;
-					}
-				}
-				else if(isLast == 2) {
-					fseek(input, -2, SEEK_END);
-					fread(aaa, sizeof(char), 2, input);
-					int jjj = 1;
-					while( (midObiad[*aaa].kod[jjj] == 0 || midObiad[*aaa].kod[jjj] == 1 )
-							&& midObiad[*aaa].kod[jjj+1] >= 0 ) {
-						if(cntr12 == 16) {
-							fwrite(&temp12, sizeof(short), 1, output);
-							temp12 = 0;
-							cntr12 -= 16;
-						}
-						temp12 <<= 1;
-						temp12 += midObiad[*aaa].kod[jjj++];
-						cntr12++;
-					}
-					while( (midObiad[*(aaa+1)].kod[jjj] == 0 || midObiad[*(aaa+1)].kod[jjj] == 1 )
-							&& midObiad[*(aaa+1)].kod[jjj+1] >= 0 ) {
-						if(cntr12 == 16) {
-							fwrite(&temp12, sizeof(short), 1, output);
-							temp12 = 0;
-							cntr12 -= 16;
-						}
-						temp12 <<= 1;
-						temp12 += midObiad[*(aaa+1)].kod[jjj++];
-						cntr12++;
-					}
-				}
-
 				temp12 <<= (16 - cntr12);
 				fwrite(&temp12, sizeof(short), 1, output);
+
 				if(Verbose) {
 					printf(
 						"====\n"
 						"==== File has been correctly compressed.\n"
 					);
 				}
-
 
 				fseek(output, 0, SEEK_SET);
 				addFlag(output, flagBit, encypt, cntr12, ile12, magicNumber, isLast);
@@ -754,7 +704,7 @@ int main(int argc, char **argv) {
 				unsigned short checkForLast;
 				/*	dla sprawdzenia parzystości bajtów
 					pliku wejściowego (da się inaczej,
-					ale ostatni bajt i tak będzie istotny */
+					ale ostatni bajt i tak będzie istotny) */
 
 				isLast = 0;
 				d_t16 tree16 = NULL;
@@ -861,9 +811,7 @@ int main(int argc, char **argv) {
 				}
 
 				tree16 = makeHTree16(tree16);
-//				temp16 = 0;
 				ile16 = 0;
-//				cntr16 = 0;
 				counter16(tree16, &ile16);
 				if(Verbose) {
 					printf(
@@ -892,7 +840,6 @@ int main(int argc, char **argv) {
 					fprintf(dump, "\n\n");
 				}
 
-//				cntr16 = 0;
 				codeTree16(tree16, output, &temp16, &cntr16);
 				if(Verbose) {
 					printf(
@@ -1046,7 +993,7 @@ int main(int argc, char **argv) {
 			if(temp == 'K')
 				isLast = 2;
 			else
-				isLast == 'J';
+				isLast = 1;
 		}
 
 		if(Flag & 0b00100000) {
@@ -1073,7 +1020,7 @@ int main(int argc, char **argv) {
 // 8-bit dekompresja
 			case 8:
 
-/* deklaracja zmiennych */
+/* oryginalny plik miał jeden, powtarzający się, znak */
 				if(liscie == 1) {
 					int i, j, liczba;
 					unsigned char tremp;
@@ -1101,7 +1048,11 @@ int main(int argc, char **argv) {
 					}
 					free(buf);
 				}
+
+/* standardowa procedura - >1 znak */
 				else {
+
+/* deklaracja zmiennych */
 					union eitbit trempe;
 					char cntr = 8;
 					d_t ntree = NULL, lastTree;
@@ -1112,7 +1063,7 @@ int main(int argc, char **argv) {
 					fread(&(trempe.A), sizeof(char), 1, input);
 					fread(&(trempe.B), sizeof(char), 1, input);
 
-	/* odtworzenie drzewa z pliku */
+/* odtworzenie drzewa z pliku */
 
 					ntree = readTree(input, &liscie, &trempe, &cntr);
 
@@ -1127,12 +1078,12 @@ int main(int argc, char **argv) {
 						fprintf(dump, "\n\n");
 					}
 
-	/* dekodowanie pozostałych bajtów pliku -
+/* dekodowanie pozostałych bajtów pliku -
 	   faktycznej zawartości pliku pierwotnego */
 
 					lastTree = decodeFile(ntree, input, output, &trempe, &cntr);
 
-	/* dekodowanie ostatniego bitu,
+/* dekodowanie ostatniego bitu,
 	   który może być tylko częściowo wykorzystany */
 
 					last+=cntr;
@@ -1175,7 +1126,6 @@ int main(int argc, char **argv) {
 
 // 12-bit dekompresja
 			case 12:
-				printf("work in progress\n");
 
 				if(liscie == 1) {
 					int i, j, liczba;
@@ -1208,10 +1158,27 @@ int main(int argc, char **argv) {
 				else {
 					union sixtbit twlv;
 					char cntr12 = 0;
+					char *extraChars = malloc(2 * sizeof(char) );
 					d_t16 ntree12 = NULL, lastTree12;
 
 					fseek(input, 6, SEEK_SET);
 					last = Flag & 0b00001111;
+
+					if(Verbose) {
+						if(isLast) {
+							printf(
+								"====\n"
+								"==== Detected an additional byte.\n"
+							);
+						}
+					}
+
+					if(isLast == 1) {
+						fread(extraChars, sizeof(char), 1, input);
+					}
+					else if (isLast == 2) {
+						fread(extraChars, sizeof(char), 2, input);
+					}
 
 					fread(&(twlv.C), sizeof(short), 1, input);
 					fread(&(twlv.D), sizeof(short), 1, input);
@@ -1231,27 +1198,26 @@ int main(int argc, char **argv) {
 						writeTree16(dump, ntree12, 0);
 						fprintf(dump, "\n\n");
 					}
-	/*
-	/* dekodowanie pozostałych bajtów pliku -
-	   faktycznej zawartości pliku pierwotnego */
-					char whether = 0;
+
+					char whether = 0;			// potrzebne do
 					unsigned char outchar = 0;
 					lastTree12 = decodeFile12(ntree12, input, output, &twlv, &cntr12, &whether, &outchar);
 
-	/* dekodowanie ostatniego bitu,
-	   który może być częściowo wykorzystany */
-
 					last+=cntr12;
-					unsigned short roon;				//ran out of names
-	// po tym sporo do zmiany
+					unsigned short roon;				// ran out of names
+
 					while(last) {
 						if(lastTree12->counter) {
 							if(!whether) {
+
+								printf("%d\n", whether);
+
 								roon = lastTree12->znak;
 								roon >>= 4;
 								roon &= 0b0000000011111111;
 								outchar = roon;
 								fwrite( &(outchar), sizeof(char), 1, output);
+								printf("%c\n", outchar);
 								outchar = 0;
 								roon = lastTree12->znak;
 								roon &= 0b0000000000001111;
@@ -1259,17 +1225,22 @@ int main(int argc, char **argv) {
 								whether = 1;
 							}
 							else {
+
+								printf("%d\n", whether);
+
 								roon = lastTree12->znak;
 								roon >>= 8;
 								roon &= 0b0000000000001111;
 								outchar <<= 4;
 								outchar += roon;
 								fwrite( &outchar, sizeof(char), 1, output);
+								printf("%c\n", outchar);
 								outchar = 0;
 								roon = lastTree12->znak;
 								roon &= 0b0000000011111111;
 								outchar = roon;
 								fwrite( &outchar, sizeof(char), 1, output);
+								printf("%c\n", outchar);
 								outchar = 0;
 								whether = 0;
 							}
@@ -1303,6 +1274,7 @@ int main(int argc, char **argv) {
 						roon = lastTree12->znak;
 						roon >>= 8;
 						roon &= 0b0000000000001111;
+						outchar <<= 4;
 						outchar += roon;
 						fwrite( &outchar, sizeof(char), 1, output);
 						outchar = 0;
@@ -1314,6 +1286,16 @@ int main(int argc, char **argv) {
 						whether;
 					}
 
+
+
+	/* możliwość niepełnego znaku w oryginalnym pliku */
+					if(isLast == 1) {
+						fwrite(extraChars, sizeof(char), 1, output);
+					}
+					else if (isLast == 2) {
+						fwrite(extraChars, sizeof(char), 2, output);
+					}
+
 					if(Verbose) {
 						printf(
 							"====\n"
@@ -1322,43 +1304,9 @@ int main(int argc, char **argv) {
 						);
 					}
 
-	/* możliwość nieparzystego bajta w oryginalnym pliku */
-	/*
-					if(isLast) {
-						if(Verbose) {
-							printf(
-								"====\n"
-								"==== Detected an additional byte - removing...\n"
-							);
-						}
-						int addition = -1;
-						unsigned char addit;
-						FILE *additional = fopen(".mysteriousFile", "wb+");
-						fseek(output, 0, SEEK_SET);
-						while(fread(&addit, sizeof(char), 1, output) ) {
-							fwrite(&addit, sizeof(char), 1, additional);
-							addition++;
-						}
-						fclose(output);
-						output = fopen(argv[argc-1], "wb");
-						fseek(additional, 0, SEEK_SET);
-						while(addition) {
-							fread(&addit, sizeof(char), 1, additional);
-							fwrite(&addit, sizeof(char), 1, output);
-							addition--;
-						}
-						if(Verbose) {
-							printf(
-								"====\n"
-								"==== Additional byte successfully removed.\n"
-							);
-						}
-						fclose(additional);
-					}
-	*/
-				freeTree16(ntree12);
+					freeTree16(ntree12);
+					free(extraChars);
 				}
-			// tutej jeszcze verbose
 				break;
 
 
