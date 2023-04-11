@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
 						flagBit = 1;
 						break;
 				}
-				if(Verbose){ printf("==== Bit number: %d\n", charNumber); };
+				if(Verbose){ printf("==== Bit number: %d.\n", charNumber); };
 				break;
 
 			case 'c':
@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
 				if(Verbose) {
 					printf(
 						"====\n"
-						"==== getopt: Chosen option -c. Changes to %c\n====\n",
+						"==== getopt: Chosen option -c. Changes to %c.\n====\n",
 						 flagCrypt);
 				}
 				break;
@@ -310,7 +310,7 @@ int main(int argc, char **argv) {
 				isLast = 0;
 				if(Verbose) {
 					printf(
-						"==== 8-bit compression\n"
+						"==== 8-bit compression.\n"
 						);
 				}
 /* liczenie wszystkich znaków w input */
@@ -374,7 +374,7 @@ int main(int argc, char **argv) {
 							"==== Control sum has been added: "
 						);
 						printBits(magicNumber, 8);
-						printf("\n");
+						printf(".\n");
 						fclose(dump);
 					}
 
@@ -404,7 +404,7 @@ int main(int argc, char **argv) {
 				if(Verbose) {
 					printf(
 						"====\n"
-						"==== Created Huffman tree, written to verboseDump\n"
+						"==== Created Huffman tree, written to verboseDump.\n"
 					);
 					fprintf(dump, "\nHuffman tree:\n");
 					writeTree(dump, tree, 0);
@@ -485,7 +485,7 @@ int main(int argc, char **argv) {
 						"==== Control sum has been added: "
 					);
 					printBits(magicNumber, 8);
-					printf("\n");
+					printf(".\n");
 				}
 
 /* zwolnienie alokowanej pamięci */
@@ -499,7 +499,7 @@ int main(int argc, char **argv) {
 			case 2:
 				if(Verbose) {
 					printf(
-						"==== 12-bit compression\n"
+						"==== 12-bit compression.\n"
 						);
 				}
 				fseek(input, 0, SEEK_SET);
@@ -567,7 +567,7 @@ int main(int argc, char **argv) {
 						printf(
 							"====\n"
 							"==== Detected one character in file: number %d.\n"
-							"==== Ouput file has been compressed accordingly.\n"
+							"==== Input file has been compressed accordingly.\n"
 						, huh
 						);
 						fclose(dump);
@@ -577,11 +577,20 @@ int main(int argc, char **argv) {
 					return 0;
 				}
 
-				if(isLast == 1) {
-					fwrite(aaa, sizeof(char), 1, output);
-				}
-				else if(isLast == 2) {
-					fwrite(aaa, sizeof(char), 2, output);
+				if(isLast) {
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Input file's size isn't divisible by 3.\n"
+							"==== It will be compressed accordingly.\n"
+						);
+					}
+					if(isLast == 1) {
+						fwrite(aaa, sizeof(char), 1, output);
+					}
+					else if(isLast == 2) {
+						fwrite(aaa, sizeof(char), 2, output);
+					}
 				}
 
 				if(Verbose){
@@ -602,7 +611,7 @@ int main(int argc, char **argv) {
 				if(Verbose) {
 					printf(
 						"====\n"
-						"==== Created Huffman tree, written to verboseDump\n"
+						"==== Created Huffman tree, written to verboseDump.\n"
 					);
 					fprintf(dump, "\nHuffman tree:\n");
 					writeTree16(dump, tree12, 0);
@@ -686,7 +695,7 @@ int main(int argc, char **argv) {
 						"==== Control sum has been added: "
 					);
 					printBits(magicNumber, 8);
-					printf("\n");
+					printf(".\n");
 				}
 
 				free(aaa);
@@ -712,7 +721,7 @@ int main(int argc, char **argv) {
 
 				if(Verbose) {
 					printf(
-						"==== 16-bit compression\n"
+						"==== 16-bit compression.\n"
 						);
 				}
 
@@ -786,7 +795,7 @@ int main(int argc, char **argv) {
 							"==== Control sum has been added: "
 						);
 						printBits(magicNumber, 8);
-						printf("\n");
+						printf(".\n");
 						fclose(dump);
 					}
 
@@ -816,11 +825,19 @@ int main(int argc, char **argv) {
 				if(Verbose) {
 					printf(
 						"====\n"
-						"==== Created Huffman tree, written to verboseDump\n"
+						"==== Created Huffman tree, written to verboseDump.\n"
 					);
 					fprintf(dump, "\nHuffman tree:\n");
 					writeTree16(dump, tree16, 0);
 					fprintf(dump, "\n\n");
+				}
+
+				if(isLast && Verbose) {
+					printf(
+						"====\n"
+						"==== Input file's size isn't divisible by 2.\n"
+						"==== It will be compressed accordingly.\n"
+					);
 				}
 
 				addFlag(output, flagBit, encypt, cntr16, ile16, magicNumber, isLast);
@@ -920,7 +937,7 @@ int main(int argc, char **argv) {
 						"==== Control sum has been added: "
 					);
 					printBits(magicNumber, 8);
-					printf("\n");
+					printf(".\n");
 				}
 				free(bigObiad);
 				freeTree16(tree16);
@@ -1007,7 +1024,7 @@ int main(int argc, char **argv) {
 		if(Verbose) {
 			printf(
 			"====\n"
-			"==== %d-bit decompression\n"
+			"==== %d-bit decompression.\n"
 			, charNumber
 			);
 		}
@@ -1071,7 +1088,7 @@ int main(int argc, char **argv) {
 						printf(
 							"====\n"
 							"==== Huffman tree has been remade from code,\n"
-							"==== written to verboseDump\n"
+							"==== written to verboseDump.\n"
 						);
 						fprintf(dump, "\nHuffman tree:\n");
 						writeTree(dump, ntree, 0);
@@ -1168,7 +1185,7 @@ int main(int argc, char **argv) {
 						if(isLast) {
 							printf(
 								"====\n"
-								"==== Detected an additional byte.\n"
+								"==== Detected an additional byte(s).\n"
 							);
 						}
 					}
@@ -1209,15 +1226,11 @@ int main(int argc, char **argv) {
 					while(last) {
 						if(lastTree12->counter) {
 							if(!whether) {
-
-								printf("%d\n", whether);
-
 								roon = lastTree12->znak;
 								roon >>= 4;
 								roon &= 0b0000000011111111;
 								outchar = roon;
 								fwrite( &(outchar), sizeof(char), 1, output);
-								printf("%c\n", outchar);
 								outchar = 0;
 								roon = lastTree12->znak;
 								roon &= 0b0000000000001111;
@@ -1225,22 +1238,17 @@ int main(int argc, char **argv) {
 								whether = 1;
 							}
 							else {
-
-								printf("%d\n", whether);
-
 								roon = lastTree12->znak;
 								roon >>= 8;
 								roon &= 0b0000000000001111;
 								outchar <<= 4;
 								outchar += roon;
 								fwrite( &outchar, sizeof(char), 1, output);
-								printf("%c\n", outchar);
 								outchar = 0;
 								roon = lastTree12->znak;
 								roon &= 0b0000000011111111;
 								outchar = roon;
 								fwrite( &outchar, sizeof(char), 1, output);
-								printf("%c\n", outchar);
 								outchar = 0;
 								whether = 0;
 							}

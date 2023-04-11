@@ -34,7 +34,6 @@ void freeTree(d_t tree) {
 }
 
 
-// potrzeba?
 void freeTree16(d_t16 tree) {
     if(tree->left_node != NULL)
         freeTree16(tree->left_node);

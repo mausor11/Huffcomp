@@ -73,7 +73,7 @@ d_t makeHTree (d_t tree){
         tab[i].tree->right_node = NULL;
         tab[i].tree->left_node = NULL;
     }
-	    // łączymy od dołu (najrzadszych) węzły w jedno drzewo
+    // łączymy od dołu (najrzadszych) węzły w jedno drzewo
     for(i = 0; tab[1].tree != NULL; i++) {
         int j = many-i-1, temp;
         tree = createTree();
@@ -208,15 +208,12 @@ void codeTree12(d_t16 tree, FILE *output, unsigned short *temp, char *cntr) {
 			(*cntr) -= 4;
 			saas.cd <<= (*cntr);
 
-			// przy odczycie trzeba będzie przesuwać o 4 do tyłu
-			// i nie zapomnieć tej przesuniętej czwórki
 		}
 		else {	// nie mamy pełnego shorta, kontynuujemy
 			saas.cd <<= 12;
 			(*cntr)+=12;
 		}
 
-//		saas.cd <<= *cntr;
 		*temp = saas.C;
 	}
 	if(tree->left_node != NULL)

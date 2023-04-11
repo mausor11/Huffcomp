@@ -121,7 +121,6 @@ void checkFlag(FILE *output, char *sum, char *flag, short *lisc, bool Verbose) {
         return;
     }
 	fread(&Sum, sizeof(char), 1, output);
-//    check = fseek(output, 3, SEEK_SET);
 
 	*sum = Sum;
 	fread(&Flag, sizeof(char), 1, output);
@@ -175,39 +174,37 @@ void checkFlagfromFile(FILE *output) {
 
     int check = fseek(output, 2, SEEK_SET);
     if(check != 0 ) {
-        fprintf(stderr, "Error with fseek\n");
+        fprintf(stderr, "Error with fseek.\n");
         return;
     }
     check = fseek(output, 3, SEEK_SET);
     fread(&Flag, sizeof(char), 1, output);
-	printf("Flaga: ");
+	printf("Flag: ");
 	printBits2(Flag, 8);
-	printf("\n");
-    //*flag = Flag;
+	printf(".\n");
 	if(Flag & maskSzyfr) {
-		printf("1. Encypting: true\n");
+		printf("1. Encypting: true.\n");
 	} else {
-		printf("1. Encypting: false\n");
+		printf("1. Encypting: false.\n");
 	}
     unsigned char tmp = Flag;
     tmp = tmp & maskComp;
      tmp >>= 6;
-	printf("2. Compression level: %d\n", tmp);
+	printf("2. Compression level: %d.\n", tmp);
 
     tmp = Flag;
     tmp = tmp & maskMask;
 	printf("3. Mask: %d (", tmp);
 	printBits2(tmp,4);
-	printf(")\n");
+	printf(").\n");
     check = fseek(output, 4, SEEK_SET);
     fread(&Liscie, sizeof(short), 1, output);
-//    *lisc = Liscie;
 	printf("4. Leaves: %d (", Liscie);
 	printBits2(Liscie, 16);
-	printf(")\n");
+	printf(").\n");
     check = fseek(output, 2, SEEK_SET);
     fread(&tmp, sizeof(char), 1, output);
     printf("5. MagicNum: %d (", tmp);
     printBits2(tmp, 8);
-    printf(")\n");
+    printf(").\n");
 }

@@ -55,9 +55,7 @@ void XOR2(FILE *output, int char_number, bool Verbose, char *pass ) {
 		printf(
 			"====\n"
 			"==== XOR ENCRYPTION\n"
-			"==== Finished password will be written into .crypt file.\n"
 		);
-		dump = fopen(".crypt", "wb");
 	}
 
     for(int i=0;i<strlen(pass);i++) {
@@ -124,7 +122,7 @@ char MagicNum(FILE *input, unsigned char magicNumber, bool Verbose) {
     }
     check = fseek(input, 1, SEEK_CUR);
     if(check != 0 ) {
-            fprintf(stderr, "Error with fseek\n");
+            fprintf(stderr, "Error with fseek.\n");
             return EXIT_FAILURE;
     }
     while((fread(&x, sizeof(char), 1, input)) == 1) {

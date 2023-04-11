@@ -10,7 +10,7 @@ int bit(unsigned char resource, int which){	//which od 0 do 7
 	return (resource & mask) ? 1 : 0;
 }
 
-int bit2(unsigned short resource, int which){	//which od 0 do 7
+int bit2(unsigned short resource, int which){	//which od 0 do 15
     int mask = 1 << which;
     return (resource & mask) ? 1 : 0;
 }
@@ -20,7 +20,6 @@ int bajt(unsigned char *ret, FILE *input, int many) {
 }
 
 int bajt2(unsigned short *ret, FILE *input, int many) {
-//	int i = 0;
 	int how = many;
 	unsigned char *aaa = malloc(3 * sizeof( *aaa) );
 	while(how && (fread(aaa, sizeof(char), 3, input) == 3 ) ) {

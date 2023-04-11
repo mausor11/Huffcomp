@@ -39,6 +39,5 @@ void commonest16(d_t16, int *);
 
 void counter(d_t, short*);
 void counter16(d_t16, short*);
-void counter16int(d_t16, int*);
 
 #endif

@@ -16,4 +16,4 @@ Flag/libflag.a: Flag/flag.o
 
 
 clean:
-	rm */*.o *.o Huffcomp */lib*.a verboseDump .mysteriousFile
+	rm */*.o *.o Huffcomp */lib*.a verboseDump
