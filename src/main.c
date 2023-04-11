@@ -22,7 +22,7 @@ char *usage =
 	"           Warning: if both -z and -x are chosen,\n"
 	"                    the programme will not do anything.\n\n"
 	"       * -o - compression type:\n"
-	"           + 0 - no compression, copying file;\n"
+	"           + 0 - no compression - copying file;\n"
 	"           + 1 - 8-bit compression;\n"
 	"           + 2 - 12-bit compression;\n"
 	"           + 3 - 16-bit compression;\n\n"
@@ -211,10 +211,16 @@ int main(int argc, char **argv) {
 	}
 
 	if(flagCmprs == 'x') {	// forced decomp, sprawdamy czy można
-		fseek(input, 2, SEEK_SET);
+		if(fseek(input, 2, SEEK_SET)) {
+			fprintf(stderr, "%s:\tGiven file is either not compressed or corrupted.\n\t\tTry a different file.\n", argv[0]);
+			fclose(input);
+			fclose(output);
+			if(Verbose) fclose(dump);
+			return -1;
+		}
 		fread(&magicNumber, sizeof(char), 1, input);
 		if(MagicNum(input, magicNumber, Verbose) != checkmagicNumber) {
-			fprintf(stderr, "%s:\tThere was an error reading the file, it is either not compressed or corrupted.\n\t\tTry a different file.\n", argv[0]);
+			fprintf(stderr, "%s:\tGiven file is either not compressed or corrupted.\n\t\tTry a different file.\n", argv[0]);
 			fclose(input);
 			fclose(output);
 			return -1;
@@ -380,6 +386,7 @@ int main(int argc, char **argv) {
 
 					fclose(input);
 					fclose(output);
+					printf("%s:\tDone doing things.\n", argv[0]);
 					return 0;
 				}
 
@@ -399,8 +406,8 @@ int main(int argc, char **argv) {
 
 /* tworzenie drzewa Huffmana i tablicy alfabetowej */
 				tree = makeHTree(tree);
-				ile = 0;
-				counter(tree, &ile);
+//				ile = 0;
+//				counter(tree, &ile);
 				if(Verbose) {
 					printf(
 						"====\n"
@@ -540,7 +547,7 @@ int main(int argc, char **argv) {
 	Przykładowo, w pliku występuje wyłącznie 'a', czyli 01100001.
 	Znaki 12-bitowe to 011000010110 i 000101100001. - dwa różne, nie ten przypadek.
 */
-				if(ile == 1) {
+				if(ile12 == 1) {
 					unsigned char temp222;
 					unsigned short huh;
 					fseek(input, 6, SEEK_SET);
@@ -563,6 +570,7 @@ int main(int argc, char **argv) {
 					huh <<= 4;
 					huh &= 0b0000111100000000;
 					huh += temp222;
+
 					if(Verbose) {
 						printf(
 							"====\n"
@@ -570,10 +578,40 @@ int main(int argc, char **argv) {
 							"==== Input file has been compressed accordingly.\n"
 						, huh
 						);
+					}
+
+					fseek(output, 0, SEEK_SET);
+					addFlag(output, flagBit, encypt, cntr12, ile12, magicNumber, isLast);
+
+					if(encypt == true) {
+						fseek(output, 6, SEEK_SET);
+						XOR2(output, charNumber,Verbose, password);
+						if(Verbose) {
+							printf(
+								"====\n"
+								"====\n"
+								"==== ENCRYPTING FILE\n"
+								"==== File has been encrypted.\n"
+							);
+						}
+					}
+
+					magicNumber = MagicNum(output,magicNumber, Verbose);
+					fseek(output,2,SEEK_SET);
+					fwrite(&magicNumber, sizeof(char), 1, output);
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Control sum has been added: "
+						);
+						printBits(magicNumber, 8);
+						printf(".\n");
 						fclose(dump);
 					}
+
 					fclose(input);
 					fclose(output);
+					printf("%s:\tDone doing things.\n", argv[0]);
 					return 0;
 				}
 
@@ -605,9 +643,6 @@ int main(int argc, char **argv) {
 					fprintf(dump, "\n\n");
 				}
 				tree12 = makeHTree16(tree12);
-				temp12 = 0;
-				ile12 = 0;
-				counter16(tree12, &ile12);
 				if(Verbose) {
 					printf(
 						"====\n"
@@ -798,9 +833,9 @@ int main(int argc, char **argv) {
 						printf(".\n");
 						fclose(dump);
 					}
-
 					fclose(input);
 					fclose(output);
+					printf("%s:\tDone doing things.\n", argv[0]);
 					return 0;
 				}
 
@@ -820,8 +855,6 @@ int main(int argc, char **argv) {
 				}
 
 				tree16 = makeHTree16(tree16);
-				ile16 = 0;
-				counter16(tree16, &ile16);
 				if(Verbose) {
 					printf(
 						"====\n"
@@ -1063,6 +1096,12 @@ int main(int argc, char **argv) {
 							}
 						}
 					}
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Succesfully decompressed file.\n"
+						);
+					}
 					free(buf);
 				}
 
@@ -1168,6 +1207,12 @@ int main(int argc, char **argv) {
 								last--;
 							}
 						}
+					}
+					if(Verbose) {
+						printf(
+							"====\n"
+							"==== Succesfully decompressed file.\n"
+						);
 					}
 					free(buf);
 				}
