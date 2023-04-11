@@ -8,6 +8,34 @@
 // czym jest krokiet? -> krokiet.h
 
 
+void prepareKrokiet(krokiet_t obiad []) {
+	for(int i = 0; i < 256; i++) {
+		obiad[i].done = -1;
+		for(int j = 0; j < 258; j++)
+			obiad[i].kod[j] = -1;
+	}
+}
+
+
+void prepareKrokiet12(krokiet_t12 obiad []) {
+	for(int i = 0; i < 4096; i++) {
+		obiad[i].done = -1;
+		for(int j = 0; j < 4098; j++)
+			obiad[i].kod[j] = -1;
+	}
+}
+
+void prepareKrokiet16(krokiet_t16 *obiad, unsigned short ile) {
+    for(int i = 0; i < ile; i++) {
+        (obiad+i)->done = -1;
+        for(int j = 0; j < 65538; j++)
+            (obiad+i)->kod[j] = -1;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////
+
 
 void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 	// jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
@@ -30,13 +58,11 @@ void fillKrokiet(d_t tree, krokiet_t obiad[], int poziom, int what) {
 
 
 void fillKrokiet12(d_t16 tree, krokiet_t12 obiad[], int poziom, int what) {
-	// jesteśmy w węźle - wszystkie kody znaków w nim dostają zero
 	if(tree->counter == 0) {
 		for(int i = 0; i < 4096; i++)
 			if(obiad[i].done != 1)
 				obiad[i].kod[poziom] = what;
 	}
-	// znaleźliśmy liść - zakończyć dla tego znaku
 	else {
 		obiad[tree->znak].kod[poziom] = what;
 		obiad[tree->znak].kod[poziom+1] = -1;
@@ -74,34 +100,6 @@ void fillKrokiet16(d_t16 tree, krokiet_t16 *obiad, int poziom, int what, unsigne
 ////////////////////////////////////////////////////////////////////
 
 
-void prepareKrokiet(krokiet_t obiad []) {
-	for(int i = 0; i < 256; i++) {
-		obiad[i].done = -1;
-		for(int j = 0; j < 258; j++)
-			obiad[i].kod[j] = -1;
-	}
-}
-
-
-void prepareKrokiet12(krokiet_t12 obiad []) {
-	for(int i = 0; i < 4096; i++) {
-		obiad[i].done = -1;
-		for(int j = 0; j < 4098; j++)
-			obiad[i].kod[j] = -1;
-	}
-}
-
-void prepareKrokiet16(krokiet_t16 *obiad, unsigned short ile) {
-    for(int i = 0; i < ile; i++) {
-        (obiad+i)->done = -1;
-        for(int j = 0; j < 65538; j++)
-            (obiad+i)->kod[j] = -1;
-    }
-}
-
-
-////////////////////////////////////////////////////////////////
-
 
 void printKrokiet(FILE *in, krokiet_t obiad[]) {
 	for(int i = 0; i < 256; i++)
@@ -129,7 +127,6 @@ void printKrokiet12(FILE *in, krokiet_t12 obiad[]) {
 void printKrokiet16(FILE *in, krokiet_t16 obiad[], short ile) {
     for(int i = 0; i < ile; i++)
         if((obiad +i)->done == 1) {
-        // patrz tu
             fprintf(in, "==== short: %d - ", (obiad + i)->znak);
             for(int j = 1; ( ((obiad +i)->kod[j] == 0) || ((obiad +i)->kod[j] == 1) ); j++ )
                 fprintf(in, "%d", (obiad +i)->kod[j]);
@@ -190,12 +187,6 @@ void codeFile12(krokiet_t12 obiad[], FILE *in, FILE *out, unsigned short *temp, 
 		}
 
 		liczba = bajt2(buf, in, 100);	// kolejna dawka danych
-
-//		if(liczba > 0 &&  ( *(buf+liczba-1) != lastCheck ) ) {
-//			lastCheck = *(buf+liczba-1);
-//		}
-		// ^ nie wykona tego, jeżeli wczytało niepełny short na koniec
-
 	}
 	free(buf);
 }
